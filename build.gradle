@@ -1,0 +1,9 @@
+ext {
+    type = "hello here"
+}
+
+allprojects {
+    task hello << { task -> println "I'm $task.project.name and $task.project.type" }
+}
+
+

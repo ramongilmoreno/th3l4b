@@ -1,0 +1,34 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':base:model')
+    compile project(':base:runtime')
+}
+
+// http://stackoverflow.com/questions/10615966/compiling-3-2-antlr-grammar-with-gradle
+
+configurations {
+    antlr4
+}
+
+dependencies {
+    compile 'org.antlr:antlr4-runtime:4.3'
+    antlr4 'org.antlr:antlr4:4.3'
+}
+
+def antlrTargetDirectory = 'build/generated-sources/antlr'
+
+task antlrCodeGeneration () { 
+    println 'About to generate ANTLR4 products...'
+    mkdir(antlrCodeGeneration)
+    javaexec {
+        classpath configurations.antlr4
+        main 'org.antlr.v4.Tool'
+        args 'src/main/antlr/Sample.g4', '-o', antlrTargetDirectory 
+    } 
+} 
+
+compileJava {
+    dependsOn antlrCodeGeneration
+    source antlrTargetDirectory
+}

@@ -1,0 +1,12 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+
+dependencies {
+    compile project(":base:common")
+}
+
+ext {
+    type = "even inner yet more at $project.rootDir"
+}
+
+
