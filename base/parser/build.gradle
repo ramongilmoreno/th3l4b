@@ -16,19 +16,25 @@ dependencies {
     antlr4 'org.antlr:antlr4:4.3'
 }
 
-def antlrTargetDirectory = 'build/generated-sources/antlr'
+def antlrTargetDirectory = file('build/generated-sources/antlr')
+
+task antlrMkdirs () {
+    antlrTargetDirectory.mkdirs()
+}
 
 task antlrCodeGeneration () { 
+    dependsOn antlrMkdirs
     println 'About to generate ANTLR4 products...'
-    mkdir(antlrCodeGeneration)
     javaexec {
         classpath configurations.antlr4
         main 'org.antlr.v4.Tool'
-        args 'src/main/antlr/Sample.g4', '-o', antlrTargetDirectory 
+        workingDir file('src/main/antlr')
+        args 'Sample.g4', '-o', antlrTargetDirectory.absolutePath 
     } 
 } 
 
-compileJava {
-    dependsOn antlrCodeGeneration
-    source antlrTargetDirectory
-}
+// http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
+compileJava.dependsOn antlrCodeGeneration
+eclipseClasspath.dependsOn antlrMkdirs
+sourceSets.main.java.srcDirs += antlrTargetDirectory 
+

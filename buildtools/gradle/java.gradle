@@ -20,3 +20,5 @@ def fqn (p) {
 }
 
 eclipse.project { p -> name = fqn(project) }
+
+eclipse.classpath.defaultOutputDir = file('build/classes')
