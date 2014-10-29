@@ -16,7 +16,9 @@ dependencies {
     antlr4 'org.antlr:antlr4:4.3'
 }
 
-def antlrTargetDirectory = file('build/generated-sources/antlr')
+
+def pkg = 'com.th3l4b.srm.model.parser.generated'
+def antlrTargetDirectory = file('build/generated-sources/antlr/' + pkg.replaceAll(/\./, "/"))
 
 task antlrMkdirs () {
     antlrTargetDirectory.mkdirs()
@@ -29,7 +31,7 @@ task antlrCodeGeneration () {
         classpath configurations.antlr4
         main 'org.antlr.v4.Tool'
         workingDir file('src/main/antlr')
-        args 'Sample.g4', '-o', antlrTargetDirectory.absolutePath 
+        args 'ModelParser.g4', '-o', antlrTargetDirectory.absolutePath, '-package', pkg
     } 
 } 
 
