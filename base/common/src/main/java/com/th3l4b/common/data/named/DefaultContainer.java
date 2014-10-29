@@ -1,15 +1,24 @@
-package com.th3l4b.common.named;
+package com.th3l4b.common.data.named;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class DefaultContainer<N extends INamed> implements IContainer<N> {
+import com.th3l4b.common.data.propertied.DefaultPropertied;
+import com.th3l4b.common.data.propertied.IPropertied;
+
+public class DefaultContainer<N extends INamed> extends DefaultPropertied
+		implements IContainer<N>, IPropertied {
 
 	LinkedHashMap<String, N> _map = new LinkedHashMap<String, N>();
 
 	@Override
 	public Iterator<N> iterator() {
 		return _map.values().iterator();
+	}
+
+	@Override
+	public N get(String name) throws Exception {
+		return _map.get(name);
 	}
 
 	@Override
