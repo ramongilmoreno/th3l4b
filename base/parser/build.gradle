@@ -18,10 +18,11 @@ dependencies {
 
 
 def pkg = 'com.th3l4b.srm.model.parser.generated'
-def antlrTargetDirectory = file('build/generated-sources/antlr/' + pkg.replaceAll(/\./, "/"))
+def antlrTargetDirectory = 'build/generated-sources/antlr'
+def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + pkg.replaceAll(/\./, "/")
 
 task antlrMkdirs () {
-    antlrTargetDirectory.mkdirs()
+    file(antlrTargetDirectoryDeep).mkdirs()
 }
 
 task antlrCodeGeneration () { 
@@ -31,12 +32,12 @@ task antlrCodeGeneration () {
         classpath configurations.antlr4
         main 'org.antlr.v4.Tool'
         workingDir file('src/main/antlr')
-        args 'ModelParser.g4', '-o', antlrTargetDirectory.absolutePath, '-package', pkg
+        args 'ModelParser.g4', '-o', file(antlrTargetDirectoryDeep).absolutePath, '-package', pkg
     } 
 } 
 
 // http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
 compileJava.dependsOn antlrCodeGeneration
 eclipseClasspath.dependsOn antlrMkdirs
-sourceSets.main.java.srcDirs += antlrTargetDirectory 
+sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
 
