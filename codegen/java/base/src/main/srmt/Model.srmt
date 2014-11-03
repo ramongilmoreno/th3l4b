@@ -1,0 +1,22 @@
+#
+# SRM Template
+#
+
+unit: entity
+names: JavaNames as java
+filename: <%=java.packageDir(model)%>/base/<%=java.entityName(entity)%>.java
+content:
+
+package <%=java.package(model)%>.base;
+
+public interface I<%=java.entityName(entity)%> extends com.th3l4b.srm.model.runtime.IRuntimeEntity {
+
+<% iterate field f %>
+    String get<%=java.fieldName(f)%> () throws Exception;
+    void set<%=java.fieldName(f)%> (String value) throws Exception;
+    boolean isSet<%=java.fieldName(f)%> () throws Exception;
+    void reset<%=java.fieldName(f)%> () throws Exception;
+<% end iterate %>
+}
+
+

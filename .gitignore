@@ -5,3 +5,4 @@ workspace/
 .gradle
 .settings/
 .gitignore
+*.swp
