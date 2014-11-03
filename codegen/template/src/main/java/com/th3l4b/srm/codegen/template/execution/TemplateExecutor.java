@@ -9,7 +9,7 @@ import com.th3l4b.srm.model.base.IEntity;
 import com.th3l4b.srm.model.base.IField;
 import com.th3l4b.srm.model.base.IModel;
 
-public class TemplateExecutioner {
+public class TemplateExecutor {
 
 	/**
 	 * Writes in the {@link ITemplateExecutionContext#getOut()} the result of
