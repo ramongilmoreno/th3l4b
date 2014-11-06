@@ -7,6 +7,7 @@ dependencies {
 
 // http://stackoverflow.com/questions/10615966/compiling-3-2-antlr-grammar-with-gradle
 
+/*
 configurations {
     antlr4
 }
@@ -16,10 +17,9 @@ dependencies {
     antlr4 'org.antlr:antlr4:4.3'
 }
 
-
 def pkg = 'com.th3l4b.srm.model.parser.generated'
 def antlrTargetDirectory = 'build/generated-sources/antlr'
-def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + pkg.replaceAll(/\./, "/")
+def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + pkg.replaceAll(/\./, '/')
 
 task antlrMkdirs () {
     file(antlrTargetDirectoryDeep).mkdirs()
@@ -40,4 +40,11 @@ task antlrCodeGeneration () {
 compileJava.dependsOn antlrCodeGeneration
 eclipseClasspath.dependsOn antlrMkdirs
 sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
+*/
+
+ext {
+    antlrPackage = "com.th3l4b.srm.model.parser.generated"
+    antlrGrammar = "ModelParser.g4"
+}
+apply from: rootProject.file('buildtools/gradle/antlr.gradle')
 

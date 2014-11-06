@@ -5,3 +5,8 @@ dependencies {
     compile project(":base:runtime")
 }
 
+ext {
+    antlrPackage = "a.b.c"
+    antlrGrammar = "ABC.g4"
+}
+

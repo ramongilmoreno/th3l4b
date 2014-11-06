@@ -1,0 +1,35 @@
+// http://stackoverflow.com/questions/10615966/compiling-3-2-antlr-grammar-with-gradle
+
+configurations {
+    antlr4
+}
+
+dependencies {
+    compile 'org.antlr:antlr4-runtime:4.3'
+    antlr4 'org.antlr:antlr4:4.3'
+}
+
+
+def antlrTargetDirectory = 'build/generated-sources/antlr'
+def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + antlrPackage.replaceAll(/\./, "/")
+
+task 'antlrMkdirs-$name' () {
+    file(antlrTargetDirectoryDeep).mkdirs()
+}
+
+task 'antlrCodeGeneration-$name' () { 
+    dependsOn 'antlrMkdirs-$name'
+    println 'About to generate ANTLR4 products...'
+    javaexec {
+        classpath configurations.antlr4
+        main 'org.antlr.v4.Tool'
+        workingDir file('src/main/antlr')
+        args antlrGrammar, '-o', file(antlrTargetDirectoryDeep).absolutePath, '-package', antlrPackage 
+    } 
+} 
+
+// http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
+compileJava.dependsOn 'antlrCodeGeneration-$name'
+eclipseClasspath.dependsOn 'antlrMkdirs-$name'
+sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
+
