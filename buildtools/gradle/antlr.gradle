@@ -12,14 +12,15 @@ dependencies {
 
 def antlrTargetDirectory = 'build/generated-sources/antlr'
 def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + antlrPackage.replaceAll(/\./, "/")
+def taskName = eclipse.project.name;
 
-task 'antlrMkdirs-$name' () {
+task "antlrMkdirs-$taskName" () {
     file(antlrTargetDirectoryDeep).mkdirs()
 }
 
-task 'antlrCodeGeneration-$name' () { 
-    dependsOn 'antlrMkdirs-$name'
-    println 'About to generate ANTLR4 products...'
+task "antlrCodeGeneration-$taskName" () { 
+    dependsOn "antlrMkdirs-$taskName"
+    println "About to generate ANTLR4 products for $antlrGrammar..."
     javaexec {
         classpath configurations.antlr4
         main 'org.antlr.v4.Tool'
@@ -29,7 +30,7 @@ task 'antlrCodeGeneration-$name' () {
 } 
 
 // http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
-compileJava.dependsOn 'antlrCodeGeneration-$name'
-eclipseClasspath.dependsOn 'antlrMkdirs-$name'
+compileJava.dependsOn "antlrCodeGeneration-$taskName"
+eclipseClasspath.dependsOn "antlrMkdirs-$taskName"
 sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
 

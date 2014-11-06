@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.model.base.DefaultModel;
-import com.th3l4b.srm.model.parser.generated.ModelParserLexer;
-import com.th3l4b.srm.model.parser.generated.ModelParserParser;
+import com.th3l4b.srm.model.parser.generated.ModelLexer;
+import com.th3l4b.srm.model.parser.generated.ModelParser;
 import com.th3l4b.srm.model.utils.PrintModel;
 
 public class TestParser {
@@ -31,9 +31,9 @@ public class TestParser {
 				
 				// http://www.theendian.com/blog/antlr-4-lexer-parser-and-listener-with-example-grammar/
 				ANTLRInputStream ais = new ANTLRInputStream(sw.getBuffer().toString());
-				ModelParserLexer lexer = new ModelParserLexer(ais);
+				ModelLexer lexer = new ModelLexer(ais);
 				CommonTokenStream ts = new CommonTokenStream(lexer);
-				ModelParserParser parser = new ModelParserParser(ts);
+				ModelParser parser = new ModelParser(ts);
 				
 				DefaultModel model = new DefaultModel();
 				parser.document(model);

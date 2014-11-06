@@ -1,7 +1,7 @@
 // https://github.com/antlr/grammars-v4/blob/15df18159653f7ae2963cc73bec7d2b8939a9363/c/C.g4 
 // https://github.com/antlr/grammars-v4/blob/master/java/Java.g4
 
-grammar ModelParser;
+grammar Model;
 
 @parser::members {
     protected void setName(com.th3l4b.common.data.named.INamed named,

@@ -5,46 +5,9 @@ dependencies {
     compile project(':base:runtime')
 }
 
-// http://stackoverflow.com/questions/10615966/compiling-3-2-antlr-grammar-with-gradle
-
-/*
-configurations {
-    antlr4
-}
-
-dependencies {
-    compile 'org.antlr:antlr4-runtime:4.3'
-    antlr4 'org.antlr:antlr4:4.3'
-}
-
-def pkg = 'com.th3l4b.srm.model.parser.generated'
-def antlrTargetDirectory = 'build/generated-sources/antlr'
-def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + pkg.replaceAll(/\./, '/')
-
-task antlrMkdirs () {
-    file(antlrTargetDirectoryDeep).mkdirs()
-}
-
-task antlrCodeGeneration () { 
-    dependsOn antlrMkdirs
-    println 'About to generate ANTLR4 products...'
-    javaexec {
-        classpath configurations.antlr4
-        main 'org.antlr.v4.Tool'
-        workingDir file('src/main/antlr')
-        args 'ModelParser.g4', '-o', file(antlrTargetDirectoryDeep).absolutePath, '-package', pkg
-    } 
-} 
-
-// http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
-compileJava.dependsOn antlrCodeGeneration
-eclipseClasspath.dependsOn antlrMkdirs
-sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
-*/
-
 ext {
     antlrPackage = "com.th3l4b.srm.model.parser.generated"
-    antlrGrammar = "ModelParser.g4"
+    antlrGrammar = "Model.g4"
 }
 apply from: rootProject.file('buildtools/gradle/antlr.gradle')
 

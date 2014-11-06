@@ -1,12 +1,12 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
 
 dependencies {
-    compile project(":base:parser")
-    compile project(":base:runtime")
+    compile project(':base:model')
+    compile project(':base:runtime')
 }
 
 ext {
-    antlrPackage = "a.b.c"
-    antlrGrammar = "ABC.g4"
+    antlrPackage = "com.th3l4b.srm.template.generated"
+    antlrGrammar = "Template.g4"
 }
-
+apply from: rootProject.file('buildtools/gradle/antlr.gradle')
