@@ -1,15 +1,20 @@
-grammar Template;
+lexer grammar TemplateLexer;
 
+Unit: 'unit';
+Entity: 'entity';
+Model: 'model';
+Names: 'names';
+FilenameToken: 'filename';
+Content: 'content';
 
-document:
-     'unit' Colon ('entity'|'model')
-    'names' Colon JavaClass 'as' Identifier
- 'filename' Colon Identifier
-  'content' Colon
-    ;
+Text: (.*? Dynamic)*?;
+
+Dynamic: Open -> pushMode(DYNAMIC);
+
+Filename:  FilenameToken Colon -> pushMode(TEXTSINGLELINE);
+
 
 JavaClass: Identifier ('.' Identifier)+;
-    
 
 Identifier
     :   Letter LetterOrDigit*
@@ -50,3 +55,16 @@ LineComment
     ;
 
 Colon: ':';
+
+Open: '<%';
+
+// https://theantlrguy.atlassian.net/wiki/display/ANTLR4/Lexer+Rules
+mode DYNAMIC;
+
+CLOSE: '%>' -> popMode;
+    
+mode TEXTSINGLELINE;
+
+ENDOFLINE: [\r\n] -> popMode;
+
+
