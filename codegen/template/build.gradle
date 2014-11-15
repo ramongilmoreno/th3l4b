@@ -5,8 +5,3 @@ dependencies {
     compile project(':base:runtime')
 }
 
-ext {
-    antlrPackage = "com.th3l4b.srm.template.generated"
-    antlrGrammar = "Template.g4"
-}
-apply from: rootProject.file('buildtools/gradle/antlr.gradle')

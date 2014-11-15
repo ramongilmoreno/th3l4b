@@ -1,9 +1,9 @@
 #
-# SRM Template
+# SRM sample template
 #
 
 unit: entity
-names: JavaNames as java
+names: JavaNames java, OtherName other
 file: <%=java.packageDir(model)%>/base/<%=java.entityName(entity)%>.java
 content:
 
@@ -17,6 +17,5 @@ public interface I<%=java.entityName(entity)%> extends com.th3l4b.srm.model.runt
     boolean isSet<%=java.fieldName(f)%> () throws Exception;
     void reset<%=java.fieldName(f)%> () throws Exception;
 <% end iterate %>
+
 }
-
-

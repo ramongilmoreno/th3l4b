@@ -24,7 +24,7 @@ public class TemplateExecutor {
 			ITemplateExecutionContext context) throws Exception {
 		if (node instanceof ITextNode) {
 			ITextNode textNode = (ITextNode) node;
-			context.getOut().write(textNode.getSubstitution());
+			context.getOut().write(textNode.getText());
 			for (ITemplateNode n : node.children()) {
 				internalExecute(n, context);
 			}
