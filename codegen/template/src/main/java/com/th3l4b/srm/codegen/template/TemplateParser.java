@@ -1,4 +1,4 @@
-package com.th3l4b.srm.codegen.template.parser;
+package com.th3l4b.srm.codegen.template;
 
 import java.io.PushbackReader;
 import java.io.Reader;

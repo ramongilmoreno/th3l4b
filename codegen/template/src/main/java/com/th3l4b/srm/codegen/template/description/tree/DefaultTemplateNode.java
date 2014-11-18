@@ -21,7 +21,7 @@ public class DefaultTemplateNode implements ITemplateNode {
 			for (ITemplateNode child : node.children()) {
 				print(child, out);
 			}
-			out.println("<% end iterate %>");
+			out.print("<% end iterate %>");
 			return true;
 		} else if (node instanceof ITextNode) {
 			ITextNode t = (ITextNode) node;

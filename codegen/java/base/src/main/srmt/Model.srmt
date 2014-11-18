@@ -18,5 +18,3 @@ public interface I<%=java.entityName(entity)%> extends com.th3l4b.srm.model.runt
     void reset<%=java.fieldName(f)%> () throws Exception;
 <% end iterate %>
 }
-
-
