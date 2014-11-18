@@ -14,11 +14,12 @@ import com.th3l4b.srm.codegen.template.parser.TemplateParser;
 public class TestTemplateParser {
 	@Test
 	public void test() throws Exception {
-		InputStream is = getClass().getResourceAsStream("SampleTemplate.srmt");
+		String name = "SampleTemplate";
+		InputStream is = getClass().getResourceAsStream(name + ".srmt");
 		try {
 			InputStreamReader isr = new InputStreamReader(is,
 					ITextConstants.UTF_8);
-			ITemplate template = new TemplateParser().parse(isr);
+			ITemplate template = new TemplateParser().parse(name, isr);
 			PrintWriter out2 = new PrintWriter(System.out, true);
 			DefaultTemplate.print(template, out2);
 			out2.flush();

@@ -70,9 +70,10 @@ public class TemplateParser {
 		throw new IllegalStateException("Could not find keyword: " + keyword);
 	}
 
-	public ITemplate parse(Reader reader) throws Exception {
+	public ITemplate parse(String name, Reader reader) throws Exception {
 		DefaultTemplate r = new DefaultTemplate();
-
+		r.setTemplateName(name);
+		
 		Status status = Status.AwaitingUnit;
 
 		PushbackReader pbr = new PushbackReader(reader, MAX_LINE);
@@ -126,8 +127,8 @@ public class TemplateParser {
 								+ names);
 					}
 					String clazz = parts[0];
-					String name = parts[1];
-					r.getNames().add(new DefaultNamesEntry(clazz, name));
+					String n = parts[1];
+					r.getNames().add(new DefaultNamesEntry(clazz, n));
 				}
 				status = Status.AwaitingFilename;
 				break;
@@ -155,7 +156,7 @@ public class TemplateParser {
 				break;
 			}
 		}
-		parseSpecial(reader, r.getContentRoot());
+		parseSpecial(pbr, r.getContentRoot());
 
 		// Return composed result
 		return r;

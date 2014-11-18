@@ -4,7 +4,7 @@
 
 unit: entity
 names: JavaNames java, OtherName other
-file: <%=java.packageDir(model)%>/base/<%=java.entityName(entity)%>.java
+file: java/<%=java.packageDir(model)%>/base/<%=java.entityName(entity)%>.java
 content:
 
 package <%=java.package(model)%>.base;

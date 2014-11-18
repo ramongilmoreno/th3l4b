@@ -9,10 +9,21 @@ import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
 
 public class DefaultTemplate implements ITemplate {
 
+	private String _templateName;
 	private TemplateUnit _templateUnit;
 	private Collection<INamesEntry> _names = new ArrayList<INamesEntry>();
 	private ITemplateNode _fileNameRoot = new DefaultTemplateNode();
 	private ITemplateNode _contentRoot = new DefaultTemplateNode();
+
+	@Override
+	public String getTemplateName() throws Exception {
+		return _templateName;
+	}
+
+	@Override
+	public void setTemplateName(String name) throws Exception {
+		_templateName = name;
+	}
 
 	@Override
 	public TemplateUnit getTemplateUnit() throws Exception {
@@ -41,6 +52,10 @@ public class DefaultTemplate implements ITemplate {
 
 	public static void print(ITemplate template, PrintWriter out)
 			throws Exception {
+		out.println("#");
+		out.println("# " + template.getTemplateName());
+		out.println("#");
+		out.println();
 		out.print("unit: ");
 		out.println(template.getTemplateUnit().name());
 		out.print("names: ");
@@ -49,7 +64,7 @@ public class DefaultTemplate implements ITemplate {
 			if (first) {
 				first = false;
 			} else {
-				out.print(",");
+				out.print(", ");
 			}
 			out.print("" + name.getClazz() + " " + name.getName());
 		}
