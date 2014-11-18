@@ -34,7 +34,8 @@ public class TemplateExecutor {
 			case entity:
 				IModel m = (IModel) context.getCurrent();
 				for (IEntity e : m) {
-					ChangeCurrent newContext = new ChangeCurrent(e, context);
+					ChangeCurrent newContext = new ChangeCurrent(
+							iterationNode.getParameterName(), e, context);
 					for (ITemplateNode n : node.children()) {
 						internalExecute(n, newContext);
 					}
@@ -43,7 +44,8 @@ public class TemplateExecutor {
 			case field: {
 				IEntity e = (IEntity) context.getCurrent();
 				for (IField f : e) {
-					ChangeCurrent newContext = new ChangeCurrent(f, context);
+					ChangeCurrent newContext = new ChangeCurrent(
+							iterationNode.getParameterName(), f, context);
 					for (ITemplateNode n : node.children()) {
 						internalExecute(n, newContext);
 					}
@@ -56,7 +58,8 @@ public class TemplateExecutor {
 					if (f.isReference()) {
 						continue;
 					}
-					ChangeCurrent newContext = new ChangeCurrent(f, context);
+					ChangeCurrent newContext = new ChangeCurrent(
+							iterationNode.getParameterName(), f, context);
 					for (ITemplateNode n : node.children()) {
 						internalExecute(n, newContext);
 					}
@@ -69,7 +72,8 @@ public class TemplateExecutor {
 					if (!f.isReference()) {
 						continue;
 					}
-					ChangeCurrent newContext = new ChangeCurrent(f, context);
+					ChangeCurrent newContext = new ChangeCurrent(
+							iterationNode.getParameterName(), f, context);
 					for (ITemplateNode n : node.children()) {
 						internalExecute(n, newContext);
 					}
@@ -82,7 +86,8 @@ public class TemplateExecutor {
 								+ " as: " + iterationNode.getIteration());
 			}
 		} else if (node instanceof ISubstitutionNode) {
-			String todo;
+			ISubstitutionNode sn = (ISubstitutionNode) node;
+//			Pattern.compile("(^\\.+)\\.(^\\(+)\\((^\\)+)\\)");
 		} else {
 			throw new IllegalArgumentException("Don't know how to handle an "
 					+ ITemplateNode.class + " as: " + node);

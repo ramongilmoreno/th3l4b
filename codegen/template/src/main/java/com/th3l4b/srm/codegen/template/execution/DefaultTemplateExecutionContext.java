@@ -1,23 +1,29 @@
 package com.th3l4b.srm.codegen.template.execution;
 
 import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import com.th3l4b.srm.model.base.IModel;
 
 public class DefaultTemplateExecutionContext implements
 		ITemplateExecutionContext {
 
-	private Map<String, Object> _objects = new LinkedHashMap<String, Object>();
+	private String _name;
+	private Object _object;
+
 	private PrintWriter _out;
 	private IModel _model;
 	private Object _current;
 	private ITemplateExecutionContext _parent;
 
 	@Override
-	public Map<String, Object> getObjects() throws Exception {
-		return _objects;
+	public Object getObject(String name) throws Exception {
+		return _name.equals(name) ? _object : null;
+	}
+
+	@Override
+	public void setObject(String name, Object object) throws Exception {
+		_name = name;
+		_object = object;
 	}
 
 	@Override

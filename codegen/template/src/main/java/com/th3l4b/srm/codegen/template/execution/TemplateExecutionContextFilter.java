@@ -1,7 +1,6 @@
 package com.th3l4b.srm.codegen.template.execution;
 
 import java.io.PrintWriter;
-import java.util.Map;
 
 import com.th3l4b.srm.model.base.IModel;
 
@@ -16,8 +15,12 @@ public class TemplateExecutionContextFilter implements ITemplateExecutionContext
 		setDelegate(delegate);
 	}
 	
-	public Map<String, Object> getObjects() throws Exception {
-		return _delegate.getObjects();
+	public Object getObject(String name) throws Exception {
+		return _delegate.getObject(name);
+	}
+
+	public void setObject(String name, Object object) throws Exception {
+		_delegate.setObject(name, object);
 	}
 
 	public PrintWriter getOut() throws Exception {

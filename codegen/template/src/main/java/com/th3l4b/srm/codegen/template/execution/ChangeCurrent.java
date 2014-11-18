@@ -1,22 +1,32 @@
 package com.th3l4b.srm.codegen.template.execution;
 
+import com.th3l4b.common.data.NullSafe;
+
 public class ChangeCurrent extends ChangeParent {
 
+	private String _name;
 	private Object _current;
 
-	public ChangeCurrent(Object current, ITemplateExecutionContext delegate)
+	public ChangeCurrent(String name, Object current, ITemplateExecutionContext delegate)
 			throws Exception {
 		super(delegate);
-		setCurrent(current);
-	}
-
-	@Override
-	public void setCurrent(Object current) throws Exception {
+		_name = name;
 		_current = current;
 	}
-
+	
 	@Override
-	public Object getCurrent() throws Exception {
-		return _current;
+	public Object getObject(String name) throws Exception {
+		if (NullSafe.equals(_name, name)) {
+			return _current;
+		} else {
+			return super.getObject(name);
+		}
 	}
+	
+	@Override
+	public void setObject(String name, Object object) throws Exception {
+		_name = name;
+		_current = object;
+	}
+
 }

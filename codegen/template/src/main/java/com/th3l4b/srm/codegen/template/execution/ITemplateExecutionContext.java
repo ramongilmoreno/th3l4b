@@ -1,12 +1,12 @@
 package com.th3l4b.srm.codegen.template.execution;
 
 import java.io.PrintWriter;
-import java.util.Map;
 
 import com.th3l4b.srm.model.base.IModel;
 
 public interface ITemplateExecutionContext {
-	Map<String, Object> getObjects () throws Exception;
+	Object getObject (String name) throws Exception;
+	void setObject (String name, Object object) throws Exception;
 	PrintWriter getOut () throws Exception;
 	IModel getModel () throws Exception;
 	void setModel (IModel model) throws Exception;
