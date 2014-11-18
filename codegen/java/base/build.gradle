@@ -1,0 +1,6 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':codegen:java:runtime')
+}
+

@@ -1,0 +1,8 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':base:model')
+    compile project(':base:runtime')
+    compile project(':codegen:template:runtime')
+}
+

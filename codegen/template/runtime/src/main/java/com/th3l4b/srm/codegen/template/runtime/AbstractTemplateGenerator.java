@@ -1,4 +1,4 @@
-package com.th3l4b.srm.codegen.template;
+package com.th3l4b.srm.codegen.template.runtime;
 
 import java.io.File;
 import java.io.FileOutputStream;

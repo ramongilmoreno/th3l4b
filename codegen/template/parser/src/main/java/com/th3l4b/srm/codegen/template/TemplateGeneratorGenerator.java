@@ -11,6 +11,7 @@ import com.th3l4b.srm.codegen.template.description.tree.IIterationNode;
 import com.th3l4b.srm.codegen.template.description.tree.ISubstitutionNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITextNode;
+import com.th3l4b.srm.codegen.template.runtime.AbstractTemplateGenerator;
 import com.th3l4b.srm.model.base.IEntity;
 import com.th3l4b.srm.model.base.IModel;
 
