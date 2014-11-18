@@ -41,3 +41,7 @@ def fqn (p) {
 eclipse.project { p -> name = fqn(project) }
 
 eclipse.classpath.defaultOutputDir = file('build/classes')
+
+task b (dependsOn: ['build', 'eclipse']) {}
+task c (dependsOn: ['clean', 'cleanEclipse']) {}
+
