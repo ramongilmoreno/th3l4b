@@ -1,0 +1,7 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':codegen:template:parser')
+    compile group: 'org.apache.ant', name: 'ant', version: '1.9.4' 
+}
+
