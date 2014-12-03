@@ -13,6 +13,7 @@ import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITextNode;
 import com.th3l4b.srm.codegen.template.runtime.AbstractTemplateGenerator;
 import com.th3l4b.srm.model.base.IEntity;
+import com.th3l4b.srm.model.base.IField;
 import com.th3l4b.srm.model.base.IModel;
 
 public class TemplateGeneratorGenerator {
@@ -39,11 +40,11 @@ public class TemplateGeneratorGenerator {
 						+ ": model) {");
 				break;
 			case field:
-				out.println("for (" + IEntity.class.getName() + " " + param
+				out.println("for (" + IField.class.getName() + " " + param
 						+ ": entity) {");
 				break;
 			case fieldImmediate: {
-				out.println("for (" + IEntity.class.getName() + " " + param
+				out.println("for (" + IField.class.getName() + " " + param
 						+ ": entity) {");
 				PrintWriter iout = IndentedWriter.get(out);
 				iout.println("if (" + param + ".isReference()) { continue };");
@@ -51,7 +52,7 @@ public class TemplateGeneratorGenerator {
 				break;
 			}
 			case fieldReference: {
-				out.println("for (" + IEntity.class.getName() + " " + param
+				out.println("for (" + IField.class.getName() + " " + param
 						+ ": entity) {");
 				PrintWriter iout = IndentedWriter.get(out);
 				iout.println("if (!" + param + ".isReference()) { continue };");

@@ -1,22 +1,12 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
 
-// https://gist.github.com/xconnecting/3957190
-configurations { taskdef }
-
 dependencies {
-    compile project(':codegen:java:runtime')
-    compile project(':codegen:template:runtime')
-    taskdef project(':codegen:template:ant')
+    compile project(':codegen:template:ant')
+    compile project(':base:model')
 }
 
-task gt << {
-    ant.taskdef(
-    	name:'templategen',
-    	classpath: configurations.taskdef.asPath,
-    	classname: "com.th3l4b.srm.codegen.template.ant.TemplateTask")
-    	
-    ant.templategen ( todir: 'build/generated-sources/java', packageName: 'a.b.c' ) {
-        fileset(dir: 'src/main/srmt', includes: '*.srmt')
-    }
+ext {
+    templatePackage = "com.th3l4b.srm.codegen.java.generated"
 }
+apply from: rootProject.file('buildtools/gradle/template.gradle')
 

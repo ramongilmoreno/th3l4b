@@ -4,12 +4,12 @@
 
 unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=java.packageDir(model)%>/base/<%=java.entityName(entity)%>.java
+file: <%=java.pkg(model).replaceAll("\\.", "/")%>/base/<%=java.name(entity)%>.java
 content:
 
-package <%=java.package(model)%>.base;
+package <%=java.pkg(model)%>.base;
 
-public interface I<%=java.entityName(entity)%> extends com.th3l4b.srm.model.runtime.IRuntimeEntity {
+public interface I<%=java.name(entity)%> extends com.th3l4b.srm.model.runtime.IRuntimeEntity {
 
 <% iterate field f %>
     String get<%=java.name(f)%> () throws Exception;

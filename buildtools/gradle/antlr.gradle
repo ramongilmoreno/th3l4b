@@ -15,7 +15,9 @@ def antlrTargetDirectoryDeep = antlrTargetDirectory + '/' + antlrPackage.replace
 def taskName = eclipse.project.name;
 
 task "antlrMkdirs-$taskName" () {
-    file(antlrTargetDirectoryDeep).mkdirs()
+    doLast {
+        file(antlrTargetDirectoryDeep).mkdirs()
+    }
 }
 
 task "antlrCodeGeneration-$taskName" () { 
@@ -33,8 +35,9 @@ task "antlrCodeGeneration-$taskName" () {
     }
 } 
 
-// http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
-compileJava.dependsOn "antlrCodeGeneration-$taskName"
+// http://forums.gradle.org/gradle/topics/is_there_a_way_to_trigger_build_on_dependent_modules_before_executing_a_custom_task_that_compilejava_depends_on
+compileJava.doFirst { tasks."antlrCodeGeneration-$taskName".execute() }
+
 eclipseClasspath.dependsOn "antlrMkdirs-$taskName"
 sourceSets.main.java.srcDirs += file(antlrTargetDirectory) 
 
