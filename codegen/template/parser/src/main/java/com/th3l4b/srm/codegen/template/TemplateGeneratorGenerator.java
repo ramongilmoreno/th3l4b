@@ -78,7 +78,6 @@ public class TemplateGeneratorGenerator {
 				content(n, out);
 			}
 		}
-
 	}
 
 	public void content(ITemplate template, String pkg, PrintWriter out)

@@ -162,7 +162,7 @@ public class TemplateParser {
 		return r;
 	}
 
-	public void parseSpecial(Reader reader, ITemplateNode node)
+	private void parseSpecial(Reader reader, ITemplateNode node)
 			throws Exception {
 		PushbackReader pbr = new PushbackReader(reader, 1);
 		Stack<ITemplateNode> stack = new Stack<ITemplateNode>();

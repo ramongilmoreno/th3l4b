@@ -1,0 +1,32 @@
+// https://gist.github.com/xconnecting/3957190
+
+dependencies {
+    compile project(':codegen:template:runtime')
+    compile project(':codegen:template:ant')
+}
+
+
+def templateTargetDirectory = file('build/generated-sources/template')
+def taskName = eclipse.project.name;
+
+task "templateMkdirs-$taskName" () {
+    templateTargetDirectory.mkdirs()
+}
+
+task "templateCodeGeneration-$taskName" () { 
+    dependsOn "templateMkdirs-$taskName"
+    ant.taskdef(
+        name:'templategen',
+        classpath: project.configurations.runtime.asPath,
+        classname: "com.th3l4b.srm.codegen.template.ant.TemplateTask")
+
+    ant.templategen ( todir: templateTargetDirectory, packageName: templatePackage ) {
+        fileset(dir: file('src/main/srmt'), includes: '*.srmt')
+    }
+} 
+
+// http://forums.gradle.org/gradle/topics/including_secondary_class_folders_besides_build_classes_main
+compileJava.dependsOn "templateCodeGeneration-$taskName"
+eclipseClasspath.dependsOn "templateMkdirs-$taskName"
+sourceSets.main.java.srcDirs += templateTargetDirectory 
+

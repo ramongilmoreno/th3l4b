@@ -5,6 +5,7 @@ configurations { taskdef }
 
 dependencies {
     compile project(':codegen:java:runtime')
+    compile project(':codegen:template:runtime')
     taskdef project(':codegen:template:ant')
 }
 
@@ -15,8 +16,7 @@ task gt << {
     	classname: "com.th3l4b.srm.codegen.template.ant.TemplateTask")
     	
     ant.templategen ( todir: 'build/generated-sources/java', packageName: 'a.b.c' ) {
-        //fileset(dir: 'src/main/srmt')
+        fileset(dir: 'src/main/srmt', includes: '*.srmt')
     }
-    ant.echo "Hola"
 }
 
