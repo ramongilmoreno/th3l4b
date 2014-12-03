@@ -20,14 +20,16 @@ task "antlrMkdirs-$taskName" () {
 
 task "antlrCodeGeneration-$taskName" () { 
     dependsOn "antlrMkdirs-$taskName"
-    fileTree('src/main/antlr').visit {grammarFile ->
-        println "About to generate ANTLR4 products for $grammarFile..."
-        javaexec {
-            classpath configurations.antlr4
-            main 'org.antlr.v4.Tool'
-            workingDir file('src/main/antlr')
-            args grammarFile.file.absolutePath, '-o', file(antlrTargetDirectoryDeep).absolutePath, '-package', antlrPackage 
-        } 
+    doLast {
+        fileTree('src/main/antlr').visit {grammarFile ->
+            println "About to generate ANTLR4 products for $grammarFile..."
+            javaexec {
+                classpath configurations.antlr4
+                main 'org.antlr.v4.Tool'
+                workingDir file('src/main/antlr')
+                args grammarFile.file.absolutePath, '-o', file(antlrTargetDirectoryDeep).absolutePath, '-package', antlrPackage 
+           }    
+        }
     }
 } 
 
