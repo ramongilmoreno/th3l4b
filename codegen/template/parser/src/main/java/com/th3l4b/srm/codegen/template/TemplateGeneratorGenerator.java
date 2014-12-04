@@ -1,6 +1,7 @@
 package com.th3l4b.srm.codegen.template;
 
 import java.io.PrintWriter;
+import java.util.Map;
 
 import com.th3l4b.common.text.IndentedWriter;
 import com.th3l4b.common.text.codegen.JavaEscape;
@@ -114,9 +115,9 @@ public class TemplateGeneratorGenerator {
 		if (isEntity) {
 			iout.print(IEntity.class.getName() + " entity, ");
 		}
-		iout.println(IModel.class.getName() + " model, "
-				+ PrintWriter.class.getName() + " out) throws "
-				+ Exception.class.getName() + " {");
+		iout.println(IModel.class.getName() + " model, " + Map.class.getName()
+				+ "<String, String> properties, " + PrintWriter.class.getName()
+				+ " out) throws " + Exception.class.getName() + " {");
 		content(template.getFileNameRoot(), iiout);
 		iout.println("}");
 		out.println();
@@ -126,9 +127,9 @@ public class TemplateGeneratorGenerator {
 		if (isEntity) {
 			iout.print(IEntity.class.getName() + " entity, ");
 		}
-		iout.println(IModel.class.getName() + " model, "
-				+ PrintWriter.class.getName() + " out) throws "
-				+ Exception.class.getName() + " {");
+		iout.println(IModel.class.getName() + " model, " + Map.class.getName()
+				+ "<String, String> properties, " + PrintWriter.class.getName()
+				+ " out) throws " + Exception.class.getName() + " {");
 		content(template.getContentRoot(), iiout);
 		iout.println("}");
 		iiout.flush();

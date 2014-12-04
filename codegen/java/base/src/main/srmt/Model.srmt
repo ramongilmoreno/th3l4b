@@ -4,10 +4,10 @@
 
 unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=java.pkg(model).replaceAll("\\.", "/")%>/base/<%=java.name(entity)%>.java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/base/<%=java.name(entity)%>.java
 content:
 
-package <%=java.pkg(model)%>.base;
+package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base;
 
 public interface I<%=java.name(entity)%> extends com.th3l4b.srm.model.runtime.IRuntimeEntity {
 

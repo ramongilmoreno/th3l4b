@@ -28,22 +28,23 @@ public class TemplateTask extends Task {
 	File _todir;
 	String _packageName;
 
+	public void l(String msg) {
+		log(msg, Project.MSG_ERR);
+	}
+
 	/**
 	 * @see http://www.developer.com/lang/article.php/
 	 *      10924_3636196_2/More-on-Custom-Ant-Tasks.htm
 	 */
 	public void addFileset(FileSet fileSet) {
-		log("addFileset: " + fileSet.toString(), Project.MSG_ERR);
 		_input.add(fileSet);
 	}
 
 	public void addConfiguredFileset(FileSet fileSet) {
-		log("addConfiguredFileset: " + fileSet.toString(), Project.MSG_ERR);
 		_input.add(fileSet);
 	}
 
 	public FileSet createFileset() {
-		log("createFileset", Project.MSG_ERR);
 		return new FileSet();
 	}
 
@@ -52,7 +53,6 @@ public class TemplateTask extends Task {
 	}
 
 	public void setTodir(File todir) {
-		log("setToDir: " + todir.getAbsolutePath(), Project.MSG_ERR);
 		_todir = todir;
 	}
 
@@ -61,7 +61,6 @@ public class TemplateTask extends Task {
 	}
 
 	public void setPackageName(String packageName) {
-		log("setPackageName: " + packageName, Project.MSG_ERR);
 		_packageName = packageName;
 	}
 
@@ -69,13 +68,11 @@ public class TemplateTask extends Task {
 	public void execute() throws BuildException {
 		try {
 
-			log("START", Project.MSG_ERR);
 			for (FileSet fs : _input) {
-				log("FILESET: " + fs, Project.MSG_ERR);
 				DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 				for (String fn : ds.getIncludedFiles()) {
 					File f = new File(ds.getBasedir(), fn);
-					log("FILENAME: " + f.getAbsolutePath(), Project.MSG_ERR);
+					l("Processing template file: " + f.getAbsolutePath());
 					String name = f.getName().replaceAll("\\.srmt$", "");
 
 					// Parse template
@@ -86,7 +83,6 @@ public class TemplateTask extends Task {
 								ITextConstants.UTF_8);
 						try {
 							template = new TemplateParser().parse(name, isr);
-							log("Template read", Project.MSG_ERR);
 						} finally {
 							isr.close();
 						}
@@ -96,11 +92,10 @@ public class TemplateTask extends Task {
 							fis.close();
 						}
 					}
-					log("TEMPLATE: " + template, Project.MSG_ERR);
 
 					// Ensure target directory exists
 					File td = new File(getTodir(),
-							CodegenUtils.packageToDir(getPackageName()));
+							CodegenUtils.pkgToDir(getPackageName()));
 					if (!td.exists()) {
 						if (!td.mkdirs()) {
 							throw new IllegalStateException(
@@ -111,6 +106,7 @@ public class TemplateTask extends Task {
 
 					// Generate template class
 					File t = new File(td, name + ".java");
+					l("Producing file: " + t.getAbsolutePath());
 					FileOutputStream fos = new FileOutputStream(t);
 					try {
 						OutputStreamWriter osw = new OutputStreamWriter(fos,
@@ -136,7 +132,7 @@ public class TemplateTask extends Task {
 
 				}
 			}
-			log("END", Project.MSG_ERR);
+			l("Finished");
 		} catch (Exception e) {
 			throw new BuildException(e);
 		}

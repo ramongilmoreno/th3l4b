@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Map;
 
 import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.model.base.IEntity;
@@ -14,18 +15,21 @@ public abstract class AbstractTemplateGenerator {
 
 	public static abstract class Model extends AbstractTemplateGenerator {
 
-		protected abstract void file(IModel model, PrintWriter out)
+		protected abstract void file(IModel model,
+				Map<String, String> properties, PrintWriter out)
 				throws Exception;
 
-		protected abstract void content(IModel model, PrintWriter out)
+		protected abstract void content(IModel model,
+				Map<String, String> properties, PrintWriter out)
 				throws Exception;
 
 		@Override
-		public void internalProduce(IModel model, File outputDir)
+		public void internalProduce(IModel model,
+				Map<String, String> properties, File outputDir)
 				throws Exception {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
-			file(model, pw);
+			file(model, properties, pw);
 			pw.flush();
 			sw.flush();
 			File target = new File(outputDir, sw.getBuffer().toString());
@@ -35,7 +39,7 @@ public abstract class AbstractTemplateGenerator {
 						ITextConstants.UTF_8);
 				try {
 					PrintWriter out = new PrintWriter(osw);
-					content(model, out);
+					content(model, properties, out);
 					out.flush();
 					if (out.checkError()) {
 						throw new Exception("Could not write to file: "
@@ -56,19 +60,22 @@ public abstract class AbstractTemplateGenerator {
 	public static abstract class Entity extends AbstractTemplateGenerator {
 
 		protected abstract void file(IEntity entity, IModel model,
-				PrintWriter out) throws Exception;
+				Map<String, String> properties, PrintWriter out)
+				throws Exception;
 
 		protected abstract void content(IEntity entity, IModel model,
-				PrintWriter out) throws Exception;
+				Map<String, String> properties, PrintWriter out)
+				throws Exception;
 
 		@Override
-		public void internalProduce(IModel model, File outputDir)
+		public void internalProduce(IModel model,
+				Map<String, String> properties, File outputDir)
 				throws Exception {
 
 			for (IEntity entity : model) {
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
-				file(entity, model, pw);
+				file(entity, model, properties, pw);
 				pw.flush();
 				sw.flush();
 				File target = new File(outputDir, sw.getBuffer().toString());
@@ -78,7 +85,7 @@ public abstract class AbstractTemplateGenerator {
 							ITextConstants.UTF_8);
 					try {
 						PrintWriter out = new PrintWriter(osw);
-						content(entity, model, out);
+						content(entity, model, properties, out);
 						out.flush();
 						if (out.checkError()) {
 							throw new Exception("Could not write to file: "
@@ -97,7 +104,8 @@ public abstract class AbstractTemplateGenerator {
 		}
 	}
 
-	public void produce(IModel model, File outputDir) throws Exception {
+	public void produce(IModel model, Map<String, String> properties,
+			File outputDir) throws Exception {
 		if (!outputDir.exists()) {
 			if (!outputDir.mkdirs()) {
 				throw new Exception("Failed to create directory: "
@@ -110,10 +118,10 @@ public abstract class AbstractTemplateGenerator {
 					+ outputDir.getAbsolutePath());
 		}
 
-		internalProduce(model, outputDir);
+		internalProduce(model, properties, outputDir);
 	}
 
-	public abstract void internalProduce(IModel model, File outputDir)
-			throws Exception;
+	public abstract void internalProduce(IModel model,
+			Map<String, String> properties, File outputDir) throws Exception;
 
 }
