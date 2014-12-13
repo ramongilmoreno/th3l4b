@@ -58,14 +58,14 @@ properties[com.th3l4b.common.data.propertied.IPropertied p]:
 ;
 
 model [com.th3l4b.srm.model.base.IModel m]:
-    'model' id = Identifier { setName($m, $id.getText()); } properties[m]? ';'
+    'model' id = string { setName($m, $id.r); } properties[m]? ';'
     ;
 
 entity [com.th3l4b.srm.model.base.IModel m]
     @init {
         com.th3l4b.srm.model.base.DefaultEntity e = new com.th3l4b.srm.model.base.DefaultEntity();
     }:
-    'entity' id = Identifier { setName(e, $id.getText()); add($m, e); }
+    'entity' id = string { setName(e, $id.r); add($m, e); }
     '{' field[e]+ '}'
     properties[e]? ';'
     ;
@@ -74,25 +74,11 @@ field [com.th3l4b.srm.model.base.IEntity e]
     @init {
         com.th3l4b.srm.model.base.DefaultField f = new com.th3l4b.srm.model.base.DefaultField();
     }:
-    'field' name = Identifier type = string { setName(f, $name.getText()); setType(f, $type.r); add($e, f); }
+    'field' name = string type = string { setName(f, $name.r); setType(f, $type.r); add($e, f); }
     properties[f]? ';'
     ;
 
 string returns [ String r ]: s = StringLiteral { $r = unquote($s.getText()); };
-
-Identifier
-    :   Letter LetterOrDigit*
-    ;
-
-fragment
-Letter
-    :   [a-zA-Z$_] 
-    ;
-
-fragment
-LetterOrDigit
-    :   [a-zA-Z0-9$_]
-    ;
 
 StringLiteral
     :   '"' StringCharacters? '"'

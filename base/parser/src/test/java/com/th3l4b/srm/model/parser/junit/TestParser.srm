@@ -2,11 +2,11 @@
 # Sample for parsers
 #
 
-model Sample;
+model "Sample";
 
-entity Entity1 {
-    field Field11 "String";
-    field Field12 "Integer"
+entity "Entity1" {
+    field "Field11" "String";
+    field "Field12" "Integer"
     	properties { "C" = "c"; };
 }
 	properties {
@@ -14,8 +14,8 @@ entity Entity1 {
 		"b" = "b";
 	};
 	
-entity Entity2 {
-    field Field21 "String"
+entity "Entity2" {
+    field "Field21" "String"
     	properties {
     		"d" = "D";
     		"E" = "e";
