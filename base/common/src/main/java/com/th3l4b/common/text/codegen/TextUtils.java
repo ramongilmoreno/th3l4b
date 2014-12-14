@@ -1,6 +1,9 @@
 package com.th3l4b.common.text.codegen;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -9,6 +12,9 @@ import java.io.Writer;
 import java.text.Normalizer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.th3l4b.common.text.IPrintable;
+import com.th3l4b.common.text.ITextConstants;
 
 public class TextUtils {
 
@@ -158,7 +164,6 @@ public class TextUtils {
 		return r;
 	}
 
-
 	public static String escapeJavaString(String src) throws Exception {
 		StringWriter out = new StringWriter(src.length());
 		escapeJavaString(src, out);
@@ -208,5 +213,29 @@ public class TextUtils {
 			write(i.intValue(), out);
 		}
 		return out.toString();
+	}
+
+	public static void print(File f, IPrintable p) throws Exception {
+		FileOutputStream fos = new FileOutputStream(f);
+		try {
+			OutputStreamWriter osw = new OutputStreamWriter(fos,
+					ITextConstants.UTF_8);
+			try {
+				PrintWriter pw = new PrintWriter(osw);
+				p.print(pw);
+				pw.close();
+				if (pw.checkError()) {
+					throw new IOException("Could not produce file: "
+							+ f.getAbsolutePath());
+				}
+
+			} finally {
+				osw.close();
+			}
+
+		} finally {
+			fos.close();
+		}
+
 	}
 }

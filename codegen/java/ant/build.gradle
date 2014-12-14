@@ -1,0 +1,7 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+apply from: rootProject.file('buildtools/gradle/ant.gradle')
+
+dependencies {
+    compile project(':codegen:java:base')
+}
+

@@ -2,10 +2,7 @@ package com.th3l4b.srm.codegen.template.ant;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +13,10 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
+import com.th3l4b.common.text.IPrintable;
 import com.th3l4b.common.text.ITextConstants;
+import com.th3l4b.common.text.codegen.TextUtils;
+import com.th3l4b.srm.codegen.template.CompositeTemplateGeneratorGenerator;
 import com.th3l4b.srm.codegen.template.TemplateGeneratorGenerator;
 import com.th3l4b.srm.codegen.template.TemplateParser;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
@@ -67,6 +67,18 @@ public class TemplateTask extends Task {
 	@Override
 	public void execute() throws BuildException {
 		try {
+			// Ensure target directory exists
+			final String pkg = getPackageName();
+			File td = new File(getTodir(), CodegenUtils.pkgToDir(pkg));
+			if (!td.exists()) {
+				if (!td.mkdirs()) {
+					throw new IllegalStateException(
+							"Could not create target directory: "
+									+ td.getAbsolutePath());
+				}
+			}
+
+			final ArrayList<ITemplate> all = new ArrayList<ITemplate>();
 
 			for (FileSet fs : _input) {
 				DirectoryScanner ds = fs.getDirectoryScanner(getProject());
@@ -92,45 +104,34 @@ public class TemplateTask extends Task {
 							fis.close();
 						}
 					}
-
-					// Ensure target directory exists
-					File td = new File(getTodir(),
-							CodegenUtils.pkgToDir(getPackageName()));
-					if (!td.exists()) {
-						if (!td.mkdirs()) {
-							throw new IllegalStateException(
-									"Could not create target directory: "
-											+ td.getAbsolutePath());
-						}
-					}
+					all.add(template);
 
 					// Generate template class
+					final TemplateGeneratorGenerator tgg = new TemplateGeneratorGenerator();
+					final ITemplate ftemplate = template;
 					File t = new File(td, name + ".java");
 					l("Producing file: " + t.getAbsolutePath());
-					FileOutputStream fos = new FileOutputStream(t);
-					try {
-						OutputStreamWriter osw = new OutputStreamWriter(fos,
-								ITextConstants.UTF_8);
-						try {
-							PrintWriter pw = new PrintWriter(osw);
-							TemplateGeneratorGenerator tgg = new TemplateGeneratorGenerator();
-							tgg.content(template, getPackageName(), pw);
-							pw.close();
-							if (pw.checkError()) {
-								throw new IOException(
-										"Could not produce file: "
-												+ t.getAbsolutePath());
-							}
+					TextUtils.print(t, new IPrintable() {
+						@Override
+						public void print(PrintWriter out) throws Exception {
+							tgg.content(ftemplate, pkg, out);
 
-						} finally {
-							osw.close();
 						}
-
-					} finally {
-						fos.close();
-					}
+					});
 
 				}
+				// Generate all templates class
+				File f = new File(td,
+						CompositeTemplateGeneratorGenerator.CLASS_NAME
+								+ ".java");
+				l("Producing all templates file: " + f.getAbsolutePath());
+				TextUtils.print(f, new IPrintable() {
+					@Override
+					public void print(PrintWriter out) throws Exception {
+						new CompositeTemplateGeneratorGenerator().content(all,
+								pkg, out);
+					}
+				});
 			}
 			l("Finished");
 		} catch (Exception e) {

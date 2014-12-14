@@ -11,7 +11,7 @@ import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.model.base.IEntity;
 import com.th3l4b.srm.model.base.IModel;
 
-public abstract class AbstractTemplateGenerator {
+public abstract class AbstractTemplateGenerator implements ITemplateGenerator {
 
 	public static abstract class Model extends AbstractTemplateGenerator {
 
