@@ -216,6 +216,21 @@ public class TextUtils {
 	}
 
 	public static void print(File f, IPrintable p) throws Exception {
+		// Ensure target dir exists
+		File dir = f.getParentFile();
+		if (!dir.exists()) {
+			if (!dir.mkdirs()) {
+				throw new IllegalStateException(
+						"Failed to create directory for file: "
+								+ f.getAbsolutePath());
+			}
+		}
+		if (!dir.isDirectory()) {
+			throw new IllegalArgumentException(
+					"Target directory for file is actually a file itself: "
+							+ f.getAbsolutePath());
+		}
+
 		FileOutputStream fos = new FileOutputStream(f);
 		try {
 			OutputStreamWriter osw = new OutputStreamWriter(fos,

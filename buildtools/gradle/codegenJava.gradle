@@ -1,0 +1,37 @@
+// https://gist.github.com/xconnecting/3957190
+
+dependencies {
+    compile project(':codegen:java:runtime')
+
+    compile project(':codegen:java:ant')
+}
+
+
+def codegenJavaTargetDirectory = file('build/generated-sources/codegenJava')
+def taskName = eclipse.project.name;
+
+task "codegenJavaMkdirs-$taskName" () {
+    doLast {
+        codegenJavaTargetDirectory.mkdirs()
+    }
+}
+
+task "codegenJavaCodeGeneration-$taskName" () { 
+    dependsOn "codegenJavaMkdirs-$taskName"
+    doLast {
+        ant.taskdef(
+            name:'codegenJava',
+            classpath: project.configurations.compile.asPath,
+            classname: "com.th3l4b.srm.codegen.java.ant.JavaTask")
+
+        ant.codegenJava( todir: codegenJavaTargetDirectory, packageName: codegenJavaPackage ) {
+            fileset(dir: file('src/main/srm'), includes: '*.srm')
+        }
+    }
+} 
+
+// http://forums.gradle.org/gradle/topics/is_there_a_way_to_trigger_build_on_dependent_modules_before_executing_a_custom_task_that_compilecodegenJava_depends_on
+compileJava.doFirst { tasks."codegenJavaCodeGeneration-$taskName".execute() }
+eclipseClasspath.dependsOn "codegenJavaMkdirs-$taskName"
+sourceSets.main.java.srcDirs += codegenJavaTargetDirectory 
+

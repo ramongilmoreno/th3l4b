@@ -73,7 +73,7 @@ public class TemplateParser {
 	public ITemplate parse(String name, Reader reader) throws Exception {
 		DefaultTemplate r = new DefaultTemplate();
 		r.setTemplateName(name);
-		
+
 		Status status = Status.AwaitingUnit;
 
 		PushbackReader pbr = new PushbackReader(reader, MAX_LINE);
@@ -182,12 +182,12 @@ public class TemplateParser {
 					parents.peek().children().add(n);
 					sb.setLength(0);
 					parseEscape(reader, parents);
+					continue;
 				} else {
 					reader.unread(c2);
 				}
-			} else {
-				sb.append((char) c);
 			}
+			sb.append((char) c);
 		}
 		DefaultTextNode n = new DefaultTextNode(sb.toString());
 		parents.peek().children().add(n);

@@ -2,6 +2,7 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 apply from: rootProject.file('buildtools/gradle/ant.gradle')
 
 dependencies {
+    compile project(':base:parser')
     compile project(':codegen:java:base')
 }
 

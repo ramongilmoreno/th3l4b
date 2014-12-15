@@ -1,13 +1,12 @@
 package com.th3l4b.srm.codegen.template.runtime;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import com.th3l4b.common.text.ITextConstants;
+import com.th3l4b.common.text.IPrintable;
+import com.th3l4b.common.text.codegen.TextUtils;
 import com.th3l4b.srm.model.base.IEntity;
 import com.th3l4b.srm.model.base.IModel;
 
@@ -24,8 +23,8 @@ public abstract class AbstractTemplateGenerator implements ITemplateGenerator {
 				throws Exception;
 
 		@Override
-		public void internalProduce(IModel model,
-				Map<String, String> properties, File outputDir)
+		public void internalProduce(final IModel model,
+				final Map<String, String> properties, File outputDir)
 				throws Exception {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -33,27 +32,13 @@ public abstract class AbstractTemplateGenerator implements ITemplateGenerator {
 			pw.flush();
 			sw.flush();
 			File target = new File(outputDir, sw.getBuffer().toString());
-			FileOutputStream fos = new FileOutputStream(target);
-			try {
-				OutputStreamWriter osw = new OutputStreamWriter(fos,
-						ITextConstants.UTF_8);
-				try {
-					PrintWriter out = new PrintWriter(osw);
+			TextUtils.print(target, new IPrintable() {
+				@Override
+				public void print(PrintWriter out) throws Exception {
 					content(model, properties, out);
-					out.flush();
-					if (out.checkError()) {
-						throw new Exception("Could not write to file: "
-								+ target.getAbsolutePath());
-					}
-
-				} finally {
-					osw.close();
 				}
 
-			} finally {
-				fos.close();
-			}
-
+			});
 		}
 	}
 
@@ -68,38 +53,24 @@ public abstract class AbstractTemplateGenerator implements ITemplateGenerator {
 				throws Exception;
 
 		@Override
-		public void internalProduce(IModel model,
-				Map<String, String> properties, File outputDir)
+		public void internalProduce(final IModel model,
+				final Map<String, String> properties, File outputDir)
 				throws Exception {
 
 			for (IEntity entity : model) {
+				final IEntity fentity = entity;
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
 				file(entity, model, properties, pw);
 				pw.flush();
 				sw.flush();
 				File target = new File(outputDir, sw.getBuffer().toString());
-				FileOutputStream fos = new FileOutputStream(target);
-				try {
-					OutputStreamWriter osw = new OutputStreamWriter(fos,
-							ITextConstants.UTF_8);
-					try {
-						PrintWriter out = new PrintWriter(osw);
-						content(entity, model, properties, out);
-						out.flush();
-						if (out.checkError()) {
-							throw new Exception("Could not write to file: "
-									+ target.getAbsolutePath());
-						}
-
-					} finally {
-						osw.close();
+				TextUtils.print(target, new IPrintable() {
+					@Override
+					public void print(PrintWriter out) throws Exception {
+						content(fentity, model, properties, out);
 					}
-
-				} finally {
-					fos.close();
-				}
-
+				});
 			}
 		}
 	}
@@ -121,7 +92,7 @@ public abstract class AbstractTemplateGenerator implements ITemplateGenerator {
 		internalProduce(model, properties, outputDir);
 	}
 
-	public abstract void internalProduce(IModel model,
-			Map<String, String> properties, File outputDir) throws Exception;
-
+	public abstract void internalProduce(final IModel model,
+			final Map<String, String> properties, File outputDir)
+			throws Exception;
 }

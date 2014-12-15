@@ -1,6 +1,8 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
 
-dependencies {
-    compile project(':codegen:java:ant')
+ext {
+    codegenJavaPackage = "com.th3l4b.srm.codegen.sample.generated"
 }
+
+apply from: rootProject.file('buildtools/gradle/codegenJava.gradle')
 
