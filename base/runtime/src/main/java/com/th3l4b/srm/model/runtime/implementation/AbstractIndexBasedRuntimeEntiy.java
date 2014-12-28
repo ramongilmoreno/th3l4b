@@ -14,24 +14,24 @@ public abstract class AbstractIndexBasedRuntimeEntiy extends
 
 	protected abstract int indexOfField(String field) throws Exception;
 
-	@Override
-	public String get(String field) throws Exception {
-		return _values[indexOfField(field)];
-	}
-
-	@Override
-	public void set(String field, String value) throws Exception {
-		_values[indexOfField(field)] = value;
-		_isSet[indexOfField(field)] = true;
-	}
-
-	@Override
-	public boolean isSet(String field) throws Exception {
-		return _isSet[indexOfField(field)];
-	}
-
-	@Override
-	public void unSet(String field) throws Exception {
-		_isSet[indexOfField(field)] = false;
-	}
+//	@Override
+//	public String get(String field) throws Exception {
+//		return _values[indexOfField(field)];
+//	}
+//
+//	@Override
+//	public void set(String field, String value) throws Exception {
+//		_values[indexOfField(field)] = value;
+//		_isSet[indexOfField(field)] = true;
+//	}
+//
+//	@Override
+//	public boolean isSet(String field) throws Exception {
+//		return _isSet[indexOfField(field)];
+//	}
+//
+//	@Override
+//	public void unSet(String field) throws Exception {
+//		_isSet[indexOfField(field)] = false;
+//	}
 }

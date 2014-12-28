@@ -9,7 +9,7 @@ content:
 
 package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>;
 
-public interface I<%=java.name(model)%>Finder {
+public interface I<%=java.name(model)%>Finder extends com.th3l4b.srm.model.runtime.IFinder {
 
 <% iterate entity e %>
     java.lang.Iterable<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(e)%>> all<%=java.name(e)%> () throws Exception;

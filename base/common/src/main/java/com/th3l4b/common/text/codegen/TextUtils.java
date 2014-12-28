@@ -164,36 +164,6 @@ public class TextUtils {
 		return r;
 	}
 
-	public static String escapeJavaString(String src) throws Exception {
-		StringWriter out = new StringWriter(src.length());
-		escapeJavaString(src, out);
-		return out.getBuffer().toString();
-	}
-
-	public static void escapeJavaString(String src, Writer out)
-			throws Exception {
-		if (src == null) {
-			src = "";
-		}
-		StringReader in = new StringReader(src);
-		escapeJava(in, out);
-	}
-
-	public static void escapeJava(Reader in, Writer out) throws Exception {
-		int c;
-		while ((c = in.read()) != -1) {
-			if (c < ' ' || c > 127 || c == '\\' || c == '\"') {
-				out.write("\\u");
-				String s = Integer.toHexString((int) c);
-				for (int j = s.length(); j < 4; j++) {
-					out.write('0');
-				}
-				out.write(s);
-			} else {
-				out.write(c);
-			}
-		}
-	}
 
 	/**
 	 * Computes an String which is a limit unicode characters long as much from

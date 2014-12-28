@@ -1,0 +1,44 @@
+#
+# SRM Template for entities default implementation
+#
+
+unit: entity
+names: com.th3l4b.srm.codegen.java.base.JavaNames java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/base/impl/Default<%=java.name(entity)%>.java
+content:
+
+package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.impl;
+
+public class Default<%=java.name(entity)%> extends com.th3l4b.srm.model.runtime.implementation.AbstractRuntimeEntity {
+
+	public String entityType() throws Exception { return "<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName())%>"; }
+
+	// Fields enumeration
+	public static String[] FIELDS;
+	
+	static {
+		java.util.ArrayList<String> fl = new java.util.ArrayList<String>();
+<% iterate field f %>
+        fl.add("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName())%>");
+<% end iterate %>
+        FIELDS = fl.toArray(new String[fl.size()]);
+    }
+    
+    public String[] fields() throws Exception {
+    	return FIELDS;
+    }
+
+	// Fields
+<% iterate field f %>
+	private String _field_<%=java.name(f)%>;
+	private boolean _isSet_<%=java.name(f)%>;
+<% end iterate %>
+
+    // Accessors
+<% iterate field f %>
+    String get<%=java.name(f)%> () throws Exception { return _field_<%=java.name(f)%>; }
+    void set<%=java.name(f)%> (String value) throws Exception { _field_<%=java.name(f)%> = value; _isSet_<%=java.name(f)%> = true; }
+    boolean isSet<%=java.name(f)%> () throws Exception { return _isSet_<%=java.name(f)%>; }
+    void reset<%=java.name(f)%> () throws Exception { _isSet_<%=java.name(f)%> = false; }
+<% end iterate %>
+}
