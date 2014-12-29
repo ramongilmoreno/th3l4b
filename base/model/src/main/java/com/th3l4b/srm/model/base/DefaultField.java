@@ -4,27 +4,16 @@ import com.th3l4b.common.data.named.DefaultNamed;
 
 public class DefaultField extends DefaultNamed implements IField {
 
-	private String _type;
-	private boolean _isReference;
+	private String _target;
 	
 	@Override
-	public String getType() throws Exception {
-	return _type;
+	public String getTarget() throws Exception {
+	return _target;
 	}
 
 	@Override
-	public void setType(String type) throws Exception {
-		_type = type;
-	}
-
-	@Override
-	public boolean isReference() throws Exception {
-	return _isReference;
-	}
-
-	@Override
-	public void setReference(boolean isReference) throws Exception {
-		_isReference = isReference;
+	public void setTarget(String target) throws Exception {
+		_target = target;
 	}
 
 }

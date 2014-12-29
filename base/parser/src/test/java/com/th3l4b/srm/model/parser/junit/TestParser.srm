@@ -5,9 +5,10 @@
 model "Sample";
 
 entity "Entity1" {
-    field "Field11" "String";
-    field "Field12" "Integer"
+    field "Field11";
+    field "Field12"
     	properties { "C" = "c"; };
+    reference "Entity2";
 }
 	properties {
 		"A" = "a";
@@ -15,9 +16,11 @@ entity "Entity1" {
 	};
 	
 entity "Entity2" {
-    field "Field21" "String"
+    field "Field21"
     	properties {
     		"d" = "D";
     		"E" = "e";
     	};
+    reference "Entity1";
+    reference "Entity2";
 };

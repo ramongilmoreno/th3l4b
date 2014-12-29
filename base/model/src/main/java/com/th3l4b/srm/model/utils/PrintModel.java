@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
+import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.common.data.named.INamed;
 import com.th3l4b.common.data.propertied.IPropertied;
 import com.th3l4b.common.text.codegen.JavaEscape;
@@ -45,8 +46,19 @@ public class PrintModel {
 		for (IEntity e : sort(model)) {
 			out.println("entity " + e.getName() + " {");
 			for (IField f : sort(e)) {
-				out.print(INDENT + "field " + f.getName() + " ");
-				JavaEscape.javaTextQuoted(f.getType(), out);
+				String n = f.getName();
+				String t = f.getTarget();
+				if (t == null) {
+					out.print(INDENT + "field ");
+					JavaEscape.javaTextQuoted(n, out);
+				} else {
+					out.print(INDENT + "reference ");
+					JavaEscape.javaTextQuoted(t, out);
+					if (!NullSafe.equals(n,  t)) {
+						out.print(' ');
+						JavaEscape.javaTextQuoted(n, out);
+					}
+				}
 				printProperties(f, out, INDENT);
 				out.println(";");
 			}

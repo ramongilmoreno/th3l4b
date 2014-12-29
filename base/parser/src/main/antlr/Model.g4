@@ -13,10 +13,10 @@ grammar Model;
         }
     }
 
-   protected void setType(com.th3l4b.srm.model.base.IField field,
-            String type) throws RecognitionException {
+   protected void setTarget(com.th3l4b.srm.model.base.IField field,
+            String target) throws RecognitionException {
         try {
-            field.setType(type);
+            field.setTarget(target);
         } catch (Exception e) {
             throw new org.antlr.v4.runtime.InputMismatchException(this);
         }
@@ -66,7 +66,7 @@ entity [com.th3l4b.srm.model.base.IModel m]
         com.th3l4b.srm.model.base.DefaultEntity e = new com.th3l4b.srm.model.base.DefaultEntity();
     }:
     'entity' id = string { setName(e, $id.r); add($m, e); }
-    '{' field[e]+ '}'
+    '{' (field[e] | reference[e])+ '}'
     properties[e]? ';'
     ;
 
@@ -74,9 +74,18 @@ field [com.th3l4b.srm.model.base.IEntity e]
     @init {
         com.th3l4b.srm.model.base.DefaultField f = new com.th3l4b.srm.model.base.DefaultField();
     }:
-    'field' name = string type = string { setName(f, $name.r); setType(f, $type.r); add($e, f); }
+    'field' name = string { setName(f, $name.r); add($e, f); }
     properties[f]? ';'
-    ;
+    ;    
+
+reference [com.th3l4b.srm.model.base.IEntity e]
+    @init {
+        com.th3l4b.srm.model.base.DefaultField f = new com.th3l4b.srm.model.base.DefaultField();
+    }:
+    'reference' target = string { setName(f, $target.r); setTarget(f, $target.r); add($e, f); }
+    ( name = string { setName(f, $name.r); } )?
+    properties[f]? ';'
+    ;    
 
 string returns [ String r ]: s = StringLiteral { $r = unquote($s.getText()); };
 
