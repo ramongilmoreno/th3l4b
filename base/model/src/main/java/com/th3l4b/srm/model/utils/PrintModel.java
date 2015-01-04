@@ -39,12 +39,15 @@ public class PrintModel {
 	}
 
 	public static void print(IModel model, PrintWriter out) throws Exception {
-		out.print("model " + model.getName());
+		out.print("model ");
+		JavaEscape.javaTextQuoted(model.getName(), out);
 		printProperties(model, out, "");
 		out.println(";");
 		out.println();
 		for (IEntity e : sort(model)) {
-			out.println("entity " + e.getName() + " {");
+			out.print("entity ");
+			JavaEscape.javaTextQuoted(e.getName(), out);
+			out.println(" {");
 			for (IField f : sort(e)) {
 				String n = f.getName();
 				String t = f.getTarget();
@@ -54,7 +57,7 @@ public class PrintModel {
 				} else {
 					out.print(INDENT + "reference ");
 					JavaEscape.javaTextQuoted(t, out);
-					if (!NullSafe.equals(n,  t)) {
+					if (!NullSafe.equals(n, t)) {
 						out.print(' ');
 						JavaEscape.javaTextQuoted(n, out);
 					}
