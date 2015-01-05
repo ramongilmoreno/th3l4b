@@ -1,0 +1,51 @@
+#
+# SRM Template for entities default implementation
+#
+
+unit: entity
+names: com.th3l4b.srm.codegen.java.base.JavaNames java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/base/runtime/<%=java.name(entity)%>EntityRuntime.java
+content:
+
+package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.runtime;
+
+public class <%=java.name(entity)%>EntityRuntime extends com.th3l4b.srm.model.runtime.implementation.AbstractEntityRuntime {
+
+	@Override
+	public com.th3l4b.srm.model.runtime.IInstance create() throws Exception {
+		long l;
+		return new <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.impl.Default<%=java.name(entity)%>();
+	}
+
+    public <%=java.name(entity)%>EntityRuntime () throws java.lang.Exception {
+<% iterate field f %>
+		add(new com.th3l4b.srm.model.runtime.implementation.AbstractFieldRuntime() {
+
+			{
+				setName("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName())%>");
+			}
+
+			public String get(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+				<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%> i = (<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%>) instance;
+				return i.get<%=java.name(f)%>();
+			}
+		
+			public void set(String value, com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+				<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%> i = (<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%>) instance;
+				i.set<%=java.name(f)%>(value);
+			}
+		
+			public boolean isSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+				<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%> i = (<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%>) instance;
+				return i.isSet<%=java.name(f)%>();
+			}
+		
+			public void unSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+				<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%> i = (<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.base.I<%=java.name(entity)%>) instance;
+				i.unSet<%=java.name(f)%>();
+			}
+		
+		});
+<% end iterate %>
+    }
+}
