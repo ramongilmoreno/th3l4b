@@ -32,7 +32,7 @@ dependencies {
 
 def fqn (p) {
     if (p == p.rootProject) {
-        return p.name;
+        return "com.th3l4b.srm";
     } else {
         return fqn(p.parent) + "." + p.name;
     }
