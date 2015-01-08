@@ -1,4 +1,4 @@
-package com.th3l4b.srm.model.runtime.implementation;
+package com.th3l4b.srm.codegen.java.runtime;
 
 import com.th3l4b.common.data.named.DefaultNamedContainer;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;

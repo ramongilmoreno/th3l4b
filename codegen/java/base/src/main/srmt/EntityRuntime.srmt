@@ -9,7 +9,7 @@ content:
 
 package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.runtime;
 
-public class <%=java.name(entity)%>EntityRuntime extends com.th3l4b.srm.model.runtime.implementation.AbstractEntityRuntime {
+public class <%=java.name(entity)%>EntityRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractEntityRuntime {
 
 	@Override
 	public com.th3l4b.srm.model.runtime.IInstance create() throws Exception {
@@ -18,7 +18,7 @@ public class <%=java.name(entity)%>EntityRuntime extends com.th3l4b.srm.model.ru
 
     public <%=java.name(entity)%>EntityRuntime () throws java.lang.Exception {
 <% iterate field f %>
-		add(new com.th3l4b.srm.model.runtime.implementation.AbstractFieldRuntime() {
+		add(new com.th3l4b.srm.codegen.java.runtime.AbstractFieldRuntime() {
 
 			{
 				setName("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName())%>");

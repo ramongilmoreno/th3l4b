@@ -1,4 +1,4 @@
-package com.th3l4b.srm.model.runtime.implementation;
+package com.th3l4b.srm.codegen.java.runtime;
 
 import java.util.UUID;
 
