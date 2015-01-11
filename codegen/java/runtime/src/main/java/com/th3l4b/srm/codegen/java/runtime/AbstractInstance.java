@@ -11,7 +11,7 @@ public abstract class AbstractInstance implements IInstance {
 	private ICoordinates createCoordinates() throws Exception {
 		DefaultCoordinates r = new DefaultCoordinates();
 		r.setIdentifier(new DefaultIdentifier(type()));
-		r.setStatus(EntityStatus.ToCreate);
+		r.setStatus(EntityStatus.ToModify);
 		return r;
 	}
 
