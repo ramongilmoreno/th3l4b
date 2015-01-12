@@ -1,10 +1,10 @@
 package com.th3l4b.srm.model.runtime;
 
 import com.th3l4b.common.data.INamedPropertied;
-import com.th3l4b.common.data.named.IContainer;
 
 public interface IModelRuntime extends INamedPropertied {
-	IContainer<IEntityRuntime> entities () throws Exception;
+	IEntitiesRuntime entities () throws Exception;
+	IReverse reverse () throws Exception;
 	IFinder finder () throws Exception;
 	IUpdater updater () throws Exception;
 }
