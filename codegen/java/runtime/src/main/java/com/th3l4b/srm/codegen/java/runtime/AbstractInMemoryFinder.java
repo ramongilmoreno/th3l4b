@@ -1,5 +1,6 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.th3l4b.srm.model.runtime.EntityStatus;
@@ -10,10 +11,26 @@ import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 
 public abstract class AbstractInMemoryFinder implements IFinder {
-	
-	protected abstract IEntitiesRuntime entities () throws Exception;
-	
-	protected abstract Map<IIdentifier, IInstance> getMap () throws Exception;
+
+	protected abstract IEntitiesRuntime entities() throws Exception;
+
+	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
+
+	@SuppressWarnings("unchecked")
+	protected <T> void all(Class<T> clazz, Collection<T> r) throws Exception {
+		for (IInstance i : getMap().values()) {
+			if (clazz.isAssignableFrom(i.getClass())) {
+				r.add((T) i);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> T find(String type, String id, Class<T> clazz)
+			throws Exception {
+		DefaultIdentifier di = new DefaultIdentifier(type, id);
+		return (T) getMap().get(di);
+	}
 
 	@Override
 	public IInstance find(IIdentifier id) throws Exception {

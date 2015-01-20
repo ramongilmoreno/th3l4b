@@ -1,0 +1,25 @@
+#
+# SRM Template for in memory finder implementation
+#
+
+unit: model
+names: com.th3l4b.srm.codegen.java.base.JavaNames java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryFinder.java
+content:
+
+package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.inmemory;
+
+public abstract class Abstract<%=java.name(model)%>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.I<%=java.name(model)%>Finder {
+
+<% iterate entity e %>
+    public java.lang.Iterable<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>> all<%=java.name(e)%> () throws Exception {
+    	java.util.ArrayList<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>> r = new java.util.ArrayList<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>>();
+    	all(<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>.class, r);
+    	return r;
+    }
+    
+    public <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%> find<%=java.name(e)%> (java.lang.String id) throws Exception {
+		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>.class);
+    }
+<% end iterate %>
+}

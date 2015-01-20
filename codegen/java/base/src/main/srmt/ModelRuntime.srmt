@@ -1,0 +1,14 @@
+#
+# SRM Template for model runtime
+#
+
+unit: model
+names: com.th3l4b.srm.codegen.java.base.JavaNames java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/I<%=java.name(model)%>ModelRuntime.java
+content:
+
+package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>;
+
+public interface I<%=java.name(model)%>ModelRuntime extends com.th3l4b.srm.model.runtime.IModelRuntime {
+	<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.I<%=java.name(model)%>Finder finderOfModel () throws java.lang.Exception;
+}
