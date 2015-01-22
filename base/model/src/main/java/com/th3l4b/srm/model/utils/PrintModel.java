@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
+import com.th3l4b.common.data.INamedPropertied;
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.common.data.named.INamed;
 import com.th3l4b.common.data.propertied.IPropertied;
@@ -14,6 +15,7 @@ import com.th3l4b.common.text.codegen.JavaEscape;
 import com.th3l4b.srm.model.base.IEntity;
 import com.th3l4b.srm.model.base.IField;
 import com.th3l4b.srm.model.base.IModel;
+import com.th3l4b.srm.model.base.IReference;
 
 public class PrintModel {
 
@@ -50,20 +52,53 @@ public class PrintModel {
 			out.println(" {");
 			for (IField f : sort(e)) {
 				String n = f.getName();
-				String t = f.getTarget();
-				if (t == null) {
+				if (f instanceof IReference) {
+					IReference ref = (IReference) f;
+					out.print(INDENT + "reference ");
+					String t = ref.getTarget();
+					JavaEscape.javaTextQuoted(t, out);
+					boolean newLineByProperties = printProperties(f, out,
+							INDENT);
+					INamedPropertied reverse = ref.getReverse();
+					String rn = reverse.getName();
+					boolean printed = false;
+					String reverseString = "reverse";
+					if (!NullSafe.equals(rn, e.getName())) {
+						if (newLineByProperties) {
+							out.println();
+							out.print(INDENT);
+							out.print(INDENT);
+						} else {
+							out.print(' ');
+						}
+						out.print(reverseString);
+						out.print(' ');
+						JavaEscape.javaTextQuoted(rn, out);
+						printed = true;
+					}
+
+					if (!reverse.getProperties().isEmpty()) {
+						if (!printed) {
+							if (newLineByProperties) {
+								out.println();
+								out.print(INDENT);
+								out.print(INDENT);
+							} else {
+								out.print(' ');
+							}
+							out.print(reverseString);
+							printed = true;
+						}
+						printProperties(reverse, out, INDENT + INDENT);
+					}
+					out.println(";");
+
+				} else {
 					out.print(INDENT + "field ");
 					JavaEscape.javaTextQuoted(n, out);
-				} else {
-					out.print(INDENT + "reference ");
-					JavaEscape.javaTextQuoted(t, out);
-					if (!NullSafe.equals(n, t)) {
-						out.print(' ');
-						JavaEscape.javaTextQuoted(n, out);
-					}
+					printProperties(f, out, INDENT);
+					out.println(";");
 				}
-				printProperties(f, out, INDENT);
-				out.println(";");
 			}
 			out.print('}');
 			printProperties(e, out, "");
@@ -72,17 +107,22 @@ public class PrintModel {
 		}
 	}
 
-	private static void printProperties(IPropertied propertied,
+	/**
+	 * @return true if a new line was printed
+	 */
+	private static boolean printProperties(IPropertied propertied,
 			PrintWriter out, String prefix) throws Exception {
+		boolean r = false;
 		Map<String, String> p = propertied.getProperties();
 		if (p.isEmpty()) {
-			return;
+			return false;
 		}
 		int size = p.size();
 		if (size > 1) {
 			out.println();
 			prefix += INDENT;
 			out.print(prefix);
+			r = true;
 		} else {
 			out.print(' ');
 		}
@@ -109,5 +149,6 @@ public class PrintModel {
 			out.print(' ');
 		}
 		out.print("}");
+		return r;
 	}
 }

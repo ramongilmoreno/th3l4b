@@ -4,6 +4,14 @@
 grammar Model;
 
 @parser::members {
+    protected String getName(com.th3l4b.common.data.named.INamed named) throws RecognitionException {
+        try {
+            return named.getName();
+        } catch (Exception e) {
+            throw new org.antlr.v4.runtime.InputMismatchException(this);
+        }
+    }
+
     protected void setName(com.th3l4b.common.data.named.INamed named,
             String name) throws RecognitionException {
         try {
@@ -13,10 +21,10 @@ grammar Model;
         }
     }
 
-   protected void setTarget(com.th3l4b.srm.model.base.IField field,
+   protected void setTarget(com.th3l4b.srm.model.base.IReference ref,
             String target) throws RecognitionException {
         try {
-            field.setTarget(target);
+            ref.setTarget(target);
         } catch (Exception e) {
             throw new org.antlr.v4.runtime.InputMismatchException(this);
         }
@@ -80,11 +88,23 @@ field [com.th3l4b.srm.model.base.IEntity e]
 
 reference [com.th3l4b.srm.model.base.IEntity e]
     @init {
-        com.th3l4b.srm.model.base.DefaultField f = new com.th3l4b.srm.model.base.DefaultField();
+        com.th3l4b.srm.model.base.IReference f = new com.th3l4b.srm.model.base.DefaultReference();
+        com.th3l4b.common.data.INamedPropertied fr = null;
+        try {
+        	fr = f.getReverse();
+        } catch (Exception ex) {
+        	throw new RuntimeException(ex);
+        }
     }:
-    'reference' target = string { setName(f, $target.r); setTarget(f, $target.r); add($e, f); }
+    'reference' target = string { setName(f, $target.r); setTarget(f, $target.r); setName(fr, getName(e)); add($e, f); }
     ( name = string { setName(f, $name.r); } )?
-    properties[f]? ';'
+    properties[f]?
+    (
+    	'reverse'
+	    ( reverseName = string { setName(fr, $reverseName.r); } )?
+	    properties[fr]?
+    )?
+    ';'
     ;    
 
 string returns [ String r ]: s = StringLiteral { $r = unquote($s.getText()); };

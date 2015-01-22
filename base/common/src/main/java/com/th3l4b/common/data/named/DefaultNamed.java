@@ -1,10 +1,9 @@
 package com.th3l4b.common.data.named;
 
+import com.th3l4b.common.data.INamedPropertied;
 import com.th3l4b.common.data.propertied.DefaultPropertied;
-import com.th3l4b.common.data.propertied.IPropertied;
 
-public class DefaultNamed extends DefaultPropertied implements INamed,
-		IPropertied {
+public class DefaultNamed extends DefaultPropertied implements INamedPropertied {
 
 	private String _name;
 
