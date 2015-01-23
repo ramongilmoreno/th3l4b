@@ -8,7 +8,7 @@ entity "Entity1" {
     field "Field11";
     field "Field12"
     	properties { "C" = "c"; };
-    reference "Entity2";
+    reference "Entity2" "Reference" reverse "Rev";
 }
 	properties {
 		"A" = "a";
@@ -21,6 +21,6 @@ entity "Entity2" {
     		"d" = "D";
     		"E" = "e";
     	};
-    reference "Entity1";
-    reference "Entity2";
+    reference "Entity1" reverse "Sample";
+    reference "Entity2" reverse "Sample";
 };

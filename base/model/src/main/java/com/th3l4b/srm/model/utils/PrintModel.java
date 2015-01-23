@@ -57,6 +57,13 @@ public class PrintModel {
 					out.print(INDENT + "reference ");
 					String t = ref.getTarget();
 					JavaEscape.javaTextQuoted(t, out);
+					
+					if (!NullSafe.equals(n, t)) {
+						out.print(' ');
+						JavaEscape.javaTextQuoted(n, out);
+					}
+					
+					
 					boolean newLineByProperties = printProperties(f, out,
 							INDENT);
 					INamedPropertied reverse = ref.getReverse();

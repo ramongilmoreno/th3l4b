@@ -16,7 +16,11 @@ public class DefaultNamedContainer<N extends INamed> extends DefaultNamed
 	}
 
 	public void add(N named) throws Exception {
-		_delegated.add(named);
+		try {
+			_delegated.add(named);
+		} catch (Exception e) {
+			throw new Exception("Failed to add to container: " + getName(), e);
+		}
 	}
 
 	public void remove(String name) throws Exception {

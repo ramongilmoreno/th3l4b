@@ -2,10 +2,8 @@ package com.th3l4b.srm.base.parser;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -31,7 +29,7 @@ public class Parser {
 	}
 
 	public static IModel parse(InputStream is)
-			throws UnsupportedEncodingException, IOException {
+			throws Exception {
 		InputStreamReader isr = new InputStreamReader(is,
 				ITextConstants.UTF_8);
 		try {
@@ -43,6 +41,7 @@ public class Parser {
 
 			DefaultModel model = new DefaultModel();
 			parser.document(model);
+			ModelTester.test(model);
 			return model;
 
 		} finally {

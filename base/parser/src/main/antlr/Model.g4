@@ -4,48 +4,47 @@
 grammar Model;
 
 @parser::members {
-    protected String getName(com.th3l4b.common.data.named.INamed named) throws RecognitionException {
+    protected String getName(com.th3l4b.common.data.named.INamed named) {
         try {
             return named.getName();
         } catch (Exception e) {
-            throw new org.antlr.v4.runtime.InputMismatchException(this);
+            throw new RuntimeException(e);
         }
     }
 
     protected void setName(com.th3l4b.common.data.named.INamed named,
-            String name) throws RecognitionException {
+            String name) {
         try {
             named.setName(name);
         } catch (Exception e) {
-            throw new org.antlr.v4.runtime.InputMismatchException(this);
+            throw new RuntimeException(e);
         }
     }
 
    protected void setTarget(com.th3l4b.srm.model.base.IReference ref,
-            String target) throws RecognitionException {
+            String target) {
         try {
             ref.setTarget(target);
         } catch (Exception e) {
-            throw new org.antlr.v4.runtime.InputMismatchException(this);
+            throw new RuntimeException(e);
         }
     }
 
     protected <N extends com.th3l4b.common.data.named.INamed, C extends com.th3l4b.common.data.named.IContainer<? super N>> void add(
-            C container, N named) throws RecognitionException {
+            C container, N named) {
         try {
             container.add(named);
         } catch (Exception e) {
-            throw new org.antlr.v4.runtime.InputMismatchException(this);
+            throw new RuntimeException(e);
         }
     }
 
     protected java.util.Map<String, String> getProperties(
-            com.th3l4b.common.data.propertied.IPropertied propertied)
-            throws RecognitionException {
+            com.th3l4b.common.data.propertied.IPropertied propertied) {
         try {
             return propertied.getProperties();
         } catch (Exception e) {
-            throw new org.antlr.v4.runtime.InputMismatchException(this);
+            throw new RuntimeException(e);
         }
     }
 
@@ -82,8 +81,8 @@ field [com.th3l4b.srm.model.base.IEntity e]
     @init {
         com.th3l4b.srm.model.base.DefaultField f = new com.th3l4b.srm.model.base.DefaultField();
     }:
-    'field' name = string { setName(f, $name.r); add($e, f); }
-    properties[f]? ';'
+    'field' name = string { setName(f, $name.r); }
+    properties[f]? ';' { add($e, f); }
     ;    
 
 reference [com.th3l4b.srm.model.base.IEntity e]
@@ -96,7 +95,7 @@ reference [com.th3l4b.srm.model.base.IEntity e]
         	throw new RuntimeException(ex);
         }
     }:
-    'reference' target = string { setName(f, $target.r); setTarget(f, $target.r); setName(fr, getName(e)); add($e, f); }
+    'reference' target = string { setName(f, $target.r); setTarget(f, $target.r); setName(fr, getName(e)); }
     ( name = string { setName(f, $name.r); } )?
     properties[f]?
     (
@@ -104,7 +103,7 @@ reference [com.th3l4b.srm.model.base.IEntity e]
 	    ( reverseName = string { setName(fr, $reverseName.r); } )?
 	    properties[fr]?
     )?
-    ';'
+    ';' { add($e, f); }
     ;    
 
 string returns [ String r ]: s = StringLiteral { $r = unquote($s.getText()); };
