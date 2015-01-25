@@ -9,10 +9,10 @@ content:
 package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities;
 
 public interface I<%=java.name(entity)%> extends com.th3l4b.srm.model.runtime.IInstance {
-<% iterate field f %>
-    String get<%=java.name(f)%> () throws Exception;
-    void set<%=java.name(f)%> (String value) throws Exception;
-    boolean isSet<%=java.name(f)%> () throws Exception;
-    void unSet<%=java.name(f)%> () throws Exception;
+<% iterate field f %><% labeldef name java.name(f) %>
+    String get<% label name %> () throws Exception;
+    void set<% label name %> (String value) throws Exception;
+    boolean isSet<% label name %> () throws Exception;
+    void unSet<% label name %> () throws Exception;
 <% end iterate %>
 }

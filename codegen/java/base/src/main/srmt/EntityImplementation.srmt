@@ -14,16 +14,16 @@ public class Default<%=java.name(entity)%> extends com.th3l4b.srm.codegen.java.r
 	public String type() throws Exception { return "<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName())%>"; }
 
 	// Fields
-<% iterate field f %>
-	private String _field_<%=java.name(f)%>;
-	private boolean _isSet_<%=java.name(f)%>;
+<% iterate field f %><% labeldef fname java.name(f) %>
+	private String _field_<% label fname %>;
+	private boolean _isSet_<% label fname %>;
 <% end iterate %>
 
     // Accessors
-<% iterate field f %>
-    String get<%=java.name(f)%> () throws Exception { return _field_<%=java.name(f)%>; }
-    void set<%=java.name(f)%> (String value) throws Exception { _field_<%=java.name(f)%> = value; _isSet_<%=java.name(f)%> = true; }
-    boolean isSet<%=java.name(f)%> () throws Exception { return _isSet_<%=java.name(f)%>; }
-    void reset<%=java.name(f)%> () throws Exception { _isSet_<%=java.name(f)%> = false; }
+<% iterate field f %><% labeldef fname java.name(f) %>
+    String get<% label fname %> () throws Exception { return _field_<% label fname %>; }
+    void set<% label fname %> (String value) throws Exception { _field_<% label fname %> = value; _isSet_<% label fname %> = true; }
+    boolean isSet<% label fname %> () throws Exception { return _isSet_<% label fname %>; }
+    void reset<% label fname %> () throws Exception { _isSet_<% label fname %> = false; }
 <% end iterate %>
 }

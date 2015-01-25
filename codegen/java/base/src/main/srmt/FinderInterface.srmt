@@ -6,13 +6,11 @@ unit: model
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/I<%=java.name(model)%>Finder.java
 content:
-
-package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>;
+package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>;
 
 public interface I<%=java.name(model)%>Finder extends com.th3l4b.srm.model.runtime.IFinder {
-
-<% iterate entity e %>
-    java.lang.Iterable<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>> all<%=java.name(e)%> () throws Exception;
-    <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%> find<%=java.name(e)%> (java.lang.String id) throws Exception;
+<% iterate entity e %><% labeldef name java.name(e) %>
+    java.lang.Iterable<<% label pkg %>.entities.I<% label name %>> all<% label name %> () throws Exception;
+    <% label pkg %>.entities.I<% label name %> find<% label name %> (java.lang.String id) throws Exception;
 <% end iterate %>
 }

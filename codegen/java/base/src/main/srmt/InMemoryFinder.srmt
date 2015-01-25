@@ -7,19 +7,19 @@ names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryFinder.java
 content:
 
-package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.inmemory;
+package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>.inmemory;
 
-public abstract class Abstract<%=java.name(model)%>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.I<%=java.name(model)%>Finder {
+public abstract class Abstract<%=java.name(model)%>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <% label pkg %>.I<%=java.name(model)%>Finder {
 
-<% iterate entity e %>
-    public java.lang.Iterable<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>> all<%=java.name(e)%> () throws Exception {
-    	java.util.ArrayList<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>> r = new java.util.ArrayList<<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>>();
-    	all(<%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>.class, r);
+<% iterate entity e %><% labeldef name java.name(e) %>
+    public java.lang.Iterable<<% label pkg %>.entities.I<% label name %>> all<% label name %> () throws Exception {
+    	java.util.ArrayList<<% label pkg %>.entities.I<% label name %>> r = new java.util.ArrayList<<% label pkg %>.entities.I<% label name %>>();
+    	all(<% label pkg %>.entities.I<% label name %>.class, r);
     	return r;
     }
     
-    public <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%> find<%=java.name(e)%> (java.lang.String id) throws Exception {
-		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.I<%=java.name(e)%>.class);
+    public <% label pkg %>.entities.I<% label name %> find<% label name %> (java.lang.String id) throws Exception {
+		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <% label pkg %>.entities.I<% label name %>.class);
     }
 <% end iterate %>
 }

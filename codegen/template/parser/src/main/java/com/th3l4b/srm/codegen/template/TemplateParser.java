@@ -10,6 +10,8 @@ import com.th3l4b.srm.codegen.template.description.DefaultTemplate;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
 import com.th3l4b.srm.codegen.template.description.TemplateUnit;
 import com.th3l4b.srm.codegen.template.description.tree.DefaultIterationNode;
+import com.th3l4b.srm.codegen.template.description.tree.DefaultLabelDefinitionNode;
+import com.th3l4b.srm.codegen.template.description.tree.DefaultLabelNode;
 import com.th3l4b.srm.codegen.template.description.tree.DefaultSubstitutionNode;
 import com.th3l4b.srm.codegen.template.description.tree.DefaultTextNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
@@ -230,6 +232,25 @@ public class TemplateParser {
 					} else if (text.equals("end iterate")) {
 						parents.pop();
 						parseText(reader, parents);
+					} else if (text.startsWith("labeldef")) {
+						String[] pieces = text.split("[\\s]+", 3);
+						if (pieces.length != 3) {
+							throw new IllegalArgumentException(
+									"Cannot process as labeldef input string: " + text);
+						}
+						String label = pieces[1].trim();
+						String value = pieces[2].trim();
+								r = new DefaultLabelDefinitionNode(label, value);
+						parents.peek().children().add(r);
+					} else if (text.startsWith("label")) {
+						String[] pieces = text.split("[\\s]+", 2);
+						if (pieces.length != 2) {
+							throw new IllegalArgumentException(
+									"Cannot process as label input string: " + text);
+						}
+						String label = pieces[1].trim();
+								r = new DefaultLabelNode(label);
+						parents.peek().children().add(r);
 					} else {
 						throw new IllegalArgumentException(
 								"Unknown input in scape: " + sb.toString());

@@ -9,6 +9,8 @@ import com.th3l4b.srm.codegen.template.description.INamesEntry;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
 import com.th3l4b.srm.codegen.template.description.TemplateUnit;
 import com.th3l4b.srm.codegen.template.description.tree.IIterationNode;
+import com.th3l4b.srm.codegen.template.description.tree.ILabelDefinitionNode;
+import com.th3l4b.srm.codegen.template.description.tree.ILabelNode;
 import com.th3l4b.srm.codegen.template.description.tree.ISubstitutionNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITextNode;
@@ -27,6 +29,13 @@ public class TemplateGeneratorGenerator {
 			out.print("out.print(");
 			JavaEscape.javaTextQuoted(tn.getText(), out);
 			out.println(");");
+		} else if (node instanceof ILabelDefinitionNode) {
+			ILabelDefinitionNode ldn = (ILabelDefinitionNode) node;
+			out.println("String label_" + ldn.getLabel() + " = "
+					+ ldn.getContents() + ";");
+		} else if (node instanceof ILabelNode) {
+			ILabelNode ln = (ILabelNode) node;
+			out.println("out.print(label_" + ln.getLabel() + ");");
 		} else if (node instanceof ISubstitutionNode) {
 			ISubstitutionNode sn = (ISubstitutionNode) node;
 			out.print("out.print(");
