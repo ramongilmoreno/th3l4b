@@ -1,0 +1,18 @@
+#
+# SRM Template for model utils
+#
+
+unit: model
+names: com.th3l4b.srm.codegen.java.base.JavaNames java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/utils/<%=java.name(model)%>ModelUtils.java
+content:
+package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>.utils;
+
+public class <% labeldef name java.name(model) %><% label name %>ModelUtils {
+
+    <% iterate entity e %>public static final String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
+    <% end iterate %>
+	public static <% label pkg %>.I<% label name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+		return (<% label pkg %>.I<% label name %>Finder) runtime.finder(); 
+	}
+}
