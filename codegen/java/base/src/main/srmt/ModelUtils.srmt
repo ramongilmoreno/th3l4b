@@ -8,10 +8,18 @@ file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(propertie
 content:
 package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>.utils;
 
-public class <% labeldef name java.name(model) %><% label name %>ModelUtils {
+public class <% labeldef name java.name(model) %><% label name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.DefaultModelUtils {
 
     <% iterate entity e %>public static final String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
-    <% end iterate %>
+    <% end iterate %>    
+    public <% label name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
+    	super(runtime);
+    }
+
+	public <% label pkg %>.I<% label name %>Finder finder () throws java.lang.Exception {
+		return finder(getModelRuntime());
+	}
+    
 	public static <% label pkg %>.I<% label name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
 		return (<% label pkg %>.I<% label name %>Finder) runtime.finder(); 
 	}
