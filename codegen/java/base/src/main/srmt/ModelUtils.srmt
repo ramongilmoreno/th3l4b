@@ -15,7 +15,6 @@ public class <% labeldef name java.name(model) %><% label name %>ModelUtils exte
     public <% label name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
     	super(runtime);
     }
-
     <% iterate entity e %><% labeldef ename java.name(e) %>
     public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<% label ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
 		return runtime.entities().get(ENTITY_<% label ename %>);
@@ -24,13 +23,20 @@ public class <% labeldef name java.name(model) %><% label name %>ModelUtils exte
     public com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<% label ename %> () throws java.lang.Exception {
 		return entityRuntimeFor<% label ename %>(getModelRuntime());	
 	}
-    <% end iterate %>    
+	
+	public static <% label pkg %>.entities.I<% label ename %> create<% label ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+		return (<% label pkg %>.entities.I<% label ename %>) entityRuntimeFor<% label ename %>(runtime).create();
+	}
 
+	public <% label pkg %>.entities.I<% label ename %> create<% label ename %> () throws java.lang.Exception {
+		return create<% label ename %>(getModelRuntime());
+	}
+    <% end iterate %>
 	public static <% label pkg %>.I<% label name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
 		return (<% label pkg %>.I<% label name %>Finder) runtime.finder(); 
 	}
 
-	public <% label pkg %>.I<% label name %>Finder getFinder () throws java.lang.Exception {
+	public <% label pkg %>.I<% label name %>Finder finder () throws java.lang.Exception {
 		return finder(getModelRuntime());
 	}
 
