@@ -1,5 +1,8 @@
 package com.th3l4b.srm.codegen.template.description.tree;
 
+/**
+ * @deprecated
+ */
 public class DefaultIterationNode extends DefaultTemplateNode implements
 		IIterationNode {
 

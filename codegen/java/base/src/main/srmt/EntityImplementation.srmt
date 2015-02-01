@@ -4,26 +4,26 @@
 
 unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/entities/impl/Default<%=java.name(entity)%>.java
+file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/entities/impl/Default<%= java.name(entity) %>.java
 content:
 
-package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities.impl;
+package <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties) %>.entities.impl;
 
-public class Default<%=java.name(entity)%> extends com.th3l4b.srm.codegen.java.runtime.AbstractInstance {
+public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java.runtime.AbstractInstance {
 
-	public String type() throws Exception { return "<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName())%>"; }
+	public String type() throws Exception { return "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName()) %>"; }
 
 	// Fields
-<% iterate field f %><% labeldef fname java.name(f) %>
-	private String _field_<% label fname %>;
-	private boolean _isSet_<% label fname %>;
-<% end iterate %>
+<% for (com.th3l4b.srm.model.base.IField f: entity) { String fname = java.name(f); %>
+	private String _field_<%= fname %>;
+	private boolean _isSet_<%= fname %>;
+<% } %>
 
     // Accessors
-<% iterate field f %><% labeldef fname java.name(f) %>
-    String get<% label fname %> () throws Exception { return _field_<% label fname %>; }
-    void set<% label fname %> (String value) throws Exception { _field_<% label fname %> = value; _isSet_<% label fname %> = true; }
-    boolean isSet<% label fname %> () throws Exception { return _isSet_<% label fname %>; }
-    void reset<% label fname %> () throws Exception { _isSet_<% label fname %> = false; }
-<% end iterate %>
+<% for (com.th3l4b.srm.model.base.IField f: entity) { String fname = java.name(f); %>
+    String get<%= fname %> () throws Exception { return _field_<%= fname %>; }
+    void set<%= fname %> (String value) throws Exception { _field_<%= fname %> = value; _isSet_<%= fname %> = true; }
+    boolean isSet<%= fname %> () throws Exception { return _isSet_<%= fname %>; }
+    void reset<%= fname %> () throws Exception { _isSet_<%= fname %> = false; }
+<% } %>
 }

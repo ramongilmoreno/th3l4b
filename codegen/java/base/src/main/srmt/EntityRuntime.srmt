@@ -6,44 +6,43 @@ unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/entities/runtime/<%=java.name(entity)%>EntityRuntime.java
 content:
-package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties) %><% label pkg %>.entities.runtime;
-<% labeldef name java.name(entity) %>
-public class <% label name %>EntityRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractEntityRuntime {
+package <% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.entities.runtime;
+<% String name = java.name(entity); %>
+public class <%= name %>EntityRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractEntityRuntime {
 
 	@Override
 	public com.th3l4b.srm.model.runtime.IInstance create() throws Exception {
-		return new <% label pkg %>.entities.impl.Default<% label name %>();
+		return new <%= pkg %>.entities.impl.Default<%= name %>();
 	}
 
-    public <% label name %>EntityRuntime () throws java.lang.Exception {
-<% iterate field f %><% labeldef fname java.name(f) %>
+    public <%= name %>EntityRuntime () throws java.lang.Exception {
+<% for (com.th3l4b.srm.model.base.IField f: entity) { String fname = java.name(f); %>
 		add(new com.th3l4b.srm.codegen.java.runtime.AbstractFieldRuntime() {
-
 			{
-				setName("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName())%>");
+				setName("<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName()) %>");
 			}
 
 			public String get(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<% label pkg %>.entities.I<% label name %> i = (<% label pkg %>.entities.I<% label name %>) instance;
-				return i.get<% label fname %>();
+				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+				return i.get<%= fname %>();
 			}
 		
 			public void set(String value, com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<% label pkg %>.entities.I<% label name %> i = (<% label pkg %>.entities.I<% label name %>) instance;
-				i.set<% label fname %>(value);
+				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+				i.set<%= fname %>(value);
 			}
 		
 			public boolean isSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<% label pkg %>.entities.I<% label name %> i = (<% label pkg %>.entities.I<% label name %>) instance;
-				return i.isSet<% label fname %>();
+				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+				return i.isSet<%= fname %>();
 			}
 		
 			public void unSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<% label pkg %>.entities.I<% label name %> i = (<% label pkg %>.entities.I<% label name %>) instance;
-				i.unSet<% label fname %>();
+				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+				i.unSet<%= fname %>();
 			}
 		
 		});
-<% end iterate %>
+<% } %>
     }
 }

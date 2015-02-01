@@ -6,37 +6,37 @@ unit: model
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/utils/<%=java.name(model)%>ModelUtils.java
 content:
-package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>.utils;
+package <% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.utils;
+<% String name = java.name(model); %>
+public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.DefaultModelUtils {
 
-public class <% labeldef name java.name(model) %><% label name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.DefaultModelUtils {
-
-    <% iterate entity e %>public static final String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
-    <% end iterate %>    
-    public <% label name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
+    <% for (com.th3l4b.srm.model.base.IEntity e: model) { %>public static final String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
+    <% } %>    
+    public <%= name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
     	super(runtime);
     }
-    <% iterate entity e %><% labeldef ename java.name(e) %>
-    public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<% label ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
-		return runtime.entities().get(ENTITY_<% label ename %>);
+    <% for (com.th3l4b.srm.model.base.IEntity e: model) { String ename = java.name(e); %>
+    public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+		return runtime.entities().get(ENTITY_<%= ename %>);
 	}    
     
-    public com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<% label ename %> () throws java.lang.Exception {
-		return entityRuntimeFor<% label ename %>(getModelRuntime());	
+    public com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> () throws java.lang.Exception {
+		return entityRuntimeFor<%= ename %>(getModelRuntime());	
 	}
 	
-	public static <% label pkg %>.entities.I<% label ename %> create<% label ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
-		return (<% label pkg %>.entities.I<% label ename %>) entityRuntimeFor<% label ename %>(runtime).create();
+	public static <%= pkg %>.entities.I<%= ename %> create<%= ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+		return (<%= pkg %>.entities.I<%= ename %>) entityRuntimeFor<%= ename %>(runtime).create();
 	}
 
-	public <% label pkg %>.entities.I<% label ename %> create<% label ename %> () throws java.lang.Exception {
-		return create<% label ename %>(getModelRuntime());
+	public <%= pkg %>.entities.I<%= ename %> create<%= ename %> () throws java.lang.Exception {
+		return create<%= ename %>(getModelRuntime());
 	}
-    <% end iterate %>
-	public static <% label pkg %>.I<% label name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
-		return (<% label pkg %>.I<% label name %>Finder) runtime.finder(); 
+    <% } %>
+	public static <%= pkg %>.I<%= name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+		return (<%= pkg %>.I<%= name %>Finder) runtime.finder(); 
 	}
 
-	public <% label pkg %>.I<% label name %>Finder finder () throws java.lang.Exception {
+	public <%= pkg %>.I<%= name %>Finder finder () throws java.lang.Exception {
 		return finder(getModelRuntime());
 	}
 

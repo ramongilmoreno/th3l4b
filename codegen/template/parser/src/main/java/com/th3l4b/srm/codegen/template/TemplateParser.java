@@ -3,19 +3,16 @@ package com.th3l4b.srm.codegen.template;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Stack;
+import java.util.Collection;
 
 import com.th3l4b.srm.codegen.template.description.DefaultNamesEntry;
 import com.th3l4b.srm.codegen.template.description.DefaultTemplate;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
 import com.th3l4b.srm.codegen.template.description.TemplateUnit;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultIterationNode;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultLabelDefinitionNode;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultLabelNode;
+import com.th3l4b.srm.codegen.template.description.tree.DefaultCodeNode;
 import com.th3l4b.srm.codegen.template.description.tree.DefaultSubstitutionNode;
 import com.th3l4b.srm.codegen.template.description.tree.DefaultTextNode;
 import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
-import com.th3l4b.srm.codegen.template.description.tree.IterationType;
 
 public class TemplateParser {
 
@@ -115,7 +112,7 @@ public class TemplateParser {
 			case InFilename: {
 				StringReader filename = new StringReader(readUntil("content",
 						pbr, line));
-				parseSpecial(filename, r.getFileNameRoot());
+				parseSpecial(filename, r.getFileName());
 				status = Status.AwaitingContent;
 				break;
 			}
@@ -158,22 +155,20 @@ public class TemplateParser {
 				break;
 			}
 		}
-		parseSpecial(pbr, r.getContentRoot());
+		parseSpecial(pbr, r.getContent());
 
 		// Return composed result
 		return r;
 	}
 
-	private void parseSpecial(Reader reader, ITemplateNode node)
+	private void parseSpecial(Reader reader, Collection<ITemplateNode> nodes)
 			throws Exception {
 		PushbackReader pbr = new PushbackReader(reader, 1);
-		Stack<ITemplateNode> stack = new Stack<ITemplateNode>();
-		stack.push(node);
-		parseText(pbr, stack);
+		parseText(pbr, nodes);
 	}
 
-	private void parseText(PushbackReader reader, Stack<ITemplateNode> parents)
-			throws Exception {
+	private void parseText(PushbackReader reader,
+			Collection<ITemplateNode> nodes) throws Exception {
 		int c = -1;
 		StringBuilder sb = new StringBuilder();
 		while ((c = reader.read()) != -1) {
@@ -181,9 +176,9 @@ public class TemplateParser {
 				int c2 = reader.read();
 				if (c2 == '%') {
 					DefaultTextNode n = new DefaultTextNode(sb.toString());
-					parents.peek().children().add(n);
 					sb.setLength(0);
-					parseEscape(reader, parents);
+					nodes.add(n);
+					parseEscape(reader, nodes);
 					continue;
 				} else {
 					reader.unread(c2);
@@ -192,11 +187,11 @@ public class TemplateParser {
 			sb.append((char) c);
 		}
 		DefaultTextNode n = new DefaultTextNode(sb.toString());
-		parents.peek().children().add(n);
+		nodes.add(n);
 	}
 
-	private void parseEscape(PushbackReader reader, Stack<ITemplateNode> parents)
-			throws Exception {
+	private void parseEscape(PushbackReader reader,
+			Collection<ITemplateNode> nodes) throws Exception {
 		boolean isSubstitution = false;
 		int c = -1;
 		StringBuilder sb = new StringBuilder();
@@ -216,45 +211,10 @@ public class TemplateParser {
 					text = text.replaceAll("[\r\n\t ]+", " ").trim();
 					if (isSubstitution) {
 						r = new DefaultSubstitutionNode(text);
-						parents.peek().children().add(r);
-					} else if (text.startsWith("iterate")) {
-						text = text.substring("iterate".length()).trim();
-						String[] split = text.split(" ");
-						if (split.length != 2) {
-							throw new IllegalArgumentException(
-									"Cannot parse iteration: " + text);
-						}
-						r = new DefaultIterationNode(Enum.valueOf(
-								IterationType.class, split[0]), split[1]);
-						parents.peek().children().add(r);
-						parents.push(r);
-						parseText(reader, parents);
-					} else if (text.equals("end iterate")) {
-						parents.pop();
-						parseText(reader, parents);
-					} else if (text.startsWith("labeldef")) {
-						String[] pieces = text.split("[\\s]+", 3);
-						if (pieces.length != 3) {
-							throw new IllegalArgumentException(
-									"Cannot process as labeldef input string: " + text);
-						}
-						String label = pieces[1].trim();
-						String value = pieces[2].trim();
-								r = new DefaultLabelDefinitionNode(label, value);
-						parents.peek().children().add(r);
-					} else if (text.startsWith("label")) {
-						String[] pieces = text.split("[\\s]+", 2);
-						if (pieces.length != 2) {
-							throw new IllegalArgumentException(
-									"Cannot process as label input string: " + text);
-						}
-						String label = pieces[1].trim();
-								r = new DefaultLabelNode(label);
-						parents.peek().children().add(r);
 					} else {
-						throw new IllegalArgumentException(
-								"Unknown input in scape: " + sb.toString());
+						r = new DefaultCodeNode(text);
 					}
+					nodes.add(r);
 					return;
 				} else {
 					reader.unread('%');

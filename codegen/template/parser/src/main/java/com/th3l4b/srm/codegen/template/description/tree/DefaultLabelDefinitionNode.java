@@ -1,5 +1,8 @@
 package com.th3l4b.srm.codegen.template.description.tree;
 
+/**
+ * @deprecated
+ */
 public class DefaultLabelDefinitionNode extends DefaultTemplateNode implements ILabelDefinitionNode {
 
 	String _label;

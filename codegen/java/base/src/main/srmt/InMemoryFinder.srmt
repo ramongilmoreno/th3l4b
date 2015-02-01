@@ -7,19 +7,19 @@ names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryFinder.java
 content:
 
-package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>.inmemory;
+package <% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.inmemory;
+<% String name = java.name(model); %>
+public abstract class Abstract<%= name %>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <%= pkg %>.I<%= name %>Finder {
 
-public abstract class Abstract<%=java.name(model)%>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <% label pkg %>.I<%=java.name(model)%>Finder {
-
-<% iterate entity e %><% labeldef name java.name(e) %>
-    public java.lang.Iterable<<% label pkg %>.entities.I<% label name %>> all<% label name %> () throws Exception {
-    	java.util.ArrayList<<% label pkg %>.entities.I<% label name %>> r = new java.util.ArrayList<<% label pkg %>.entities.I<% label name %>>();
-    	all(<% label pkg %>.entities.I<% label name %>.class, r);
+<% for (com.th3l4b.srm.model.base.IEntity e: model) { String ename = java.name(e); %>
+    public java.lang.Iterable<<%= pkg %>.entities.I<%= ename %>> all<%= ename %> () throws Exception {
+    	java.util.ArrayList<<%= pkg %>.entities.I<%= ename %>> r = new java.util.ArrayList<<%= pkg %>.entities.I<%= ename %>>();
+    	all(<%= pkg %>.entities.I<%= ename %>.class, r);
     	return r;
     }
     
-    public <% label pkg %>.entities.I<% label name %> find<% label name %> (java.lang.String id) throws Exception {
-		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <% label pkg %>.entities.I<% label name %>.class);
+    public <%= pkg %>.entities.I<%= ename %> find<%= ename %> (java.lang.String id) throws Exception {
+		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <%= pkg %>.entities.I<%= ename %>.class);
     }
-<% end iterate %>
+<% } %>
 }

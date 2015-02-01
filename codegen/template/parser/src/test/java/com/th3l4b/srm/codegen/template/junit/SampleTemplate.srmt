@@ -11,11 +11,11 @@ package <%=java.package(model)%>.base;
 
 public interface I<%=java.entityName(entity)%> extends com.th3l4b.srm.model.runtime.IRuntimeEntity {
 
-<% iterate field f %>
+<% for (com.th3l4b.srm.model.base.IField f: entity) { %>
     String get<%=java.fieldName(f)%> () throws Exception;
     void set<%=java.fieldName(f)%> (String value) throws Exception;
     boolean isSet<%=java.fieldName(f)%> () throws Exception;
     void reset<%=java.fieldName(f)%> () throws Exception;
-<% end iterate %>
+<% } %>
 
 }

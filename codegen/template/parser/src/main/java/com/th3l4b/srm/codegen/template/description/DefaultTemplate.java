@@ -12,8 +12,8 @@ public class DefaultTemplate implements ITemplate {
 	private String _templateName;
 	private TemplateUnit _templateUnit;
 	private Collection<INamesEntry> _names = new ArrayList<INamesEntry>();
-	private ITemplateNode _fileNameRoot = new DefaultTemplateNode();
-	private ITemplateNode _contentRoot = new DefaultTemplateNode();
+	private Collection<ITemplateNode> _fileName = new ArrayList<ITemplateNode>();
+	private Collection<ITemplateNode> _content = new ArrayList<ITemplateNode>();
 
 	@Override
 	public String getTemplateName() throws Exception {
@@ -41,13 +41,13 @@ public class DefaultTemplate implements ITemplate {
 	}
 
 	@Override
-	public ITemplateNode getFileNameRoot() throws Exception {
-		return _fileNameRoot;
+	public Collection<ITemplateNode> getFileName () throws Exception {
+		return _fileName;
 	}
-
+	
 	@Override
-	public ITemplateNode getContentRoot() throws Exception {
-		return _contentRoot;
+	public Collection<ITemplateNode> getContent () throws Exception {
+		return _content;
 	}
 
 	public static void print(ITemplate template, PrintWriter out)
@@ -71,10 +71,10 @@ public class DefaultTemplate implements ITemplate {
 		out.println();
 
 		out.print("file: ");
-		DefaultTemplateNode.print(template.getFileNameRoot(), out);
+		DefaultTemplateNode.print(template.getFileName(), out);
 		out.println();
 		out.println("content:");
-		DefaultTemplateNode.print(template.getContentRoot(), out);
+		DefaultTemplateNode.print(template.getContent(), out);
 	}
 
 }

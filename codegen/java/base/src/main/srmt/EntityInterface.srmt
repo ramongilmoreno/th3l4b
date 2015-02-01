@@ -4,15 +4,15 @@
 
 unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/entities/I<%=java.name(entity)%>.java
+file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/entities/I<%= java.name(entity) %>.java
 content:
-package <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%>.entities;
+package <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties) %>.entities;
 
-public interface I<%=java.name(entity)%> extends com.th3l4b.srm.model.runtime.IInstance {
-<% iterate field f %><% labeldef name java.name(f) %>
-    String get<% label name %> () throws Exception;
-    void set<% label name %> (String value) throws Exception;
-    boolean isSet<% label name %> () throws Exception;
-    void unSet<% label name %> () throws Exception;
-<% end iterate %>
+public interface I<%= java.name(entity) %> extends com.th3l4b.srm.model.runtime.IInstance {
+<% for (com.th3l4b.srm.model.base.IField f: entity) { String fname = java.name(f); %>
+    String get<%= fname %> () throws Exception;
+    void set<%= fname %> (String value) throws Exception;
+    boolean isSet<%= fname %> () throws Exception;
+    void unSet<%= fname %> () throws Exception;
+<% } %>
 }

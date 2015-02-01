@@ -4,13 +4,13 @@
 
 unit: model
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/I<%=java.name(model)%>Finder.java
+file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/I<%= java.name(model) %>Finder.java
 content:
-package <% labeldef pkg com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties)%><% label pkg %>;
+package <% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>;
 
 public interface I<%=java.name(model)%>Finder extends com.th3l4b.srm.model.runtime.IFinder {
-<% iterate entity e %><% labeldef name java.name(e) %>
-    java.lang.Iterable<<% label pkg %>.entities.I<% label name %>> all<% label name %> () throws Exception;
-    <% label pkg %>.entities.I<% label name %> find<% label name %> (java.lang.String id) throws Exception;
-<% end iterate %>
+<% for (com.th3l4b.srm.model.base.IEntity e: model) { String ename = java.name(e);  %>
+    java.lang.Iterable<<%= pkg %>.entities.I<%= ename %>> all<%= ename %> () throws Exception;
+    <%= pkg %>.entities.I<%= ename %> find<%= ename %> (java.lang.String id) throws Exception;
+<% } %>
 }
