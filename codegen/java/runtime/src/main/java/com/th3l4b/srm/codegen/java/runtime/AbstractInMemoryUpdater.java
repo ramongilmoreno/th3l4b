@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import com.th3l4b.common.data.named.IContainer;
 import com.th3l4b.srm.model.runtime.EntityStatus;
+import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IUpdater;
 
-public abstract class AbstractInMemoryModelRuntime implements IUpdater {
+public abstract class AbstractInMemoryUpdater implements IUpdater {
 
 	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
 	
-	protected abstract IContainer<IEntityRuntime> entities () throws Exception;
+	protected abstract IEntitiesRuntime entities () throws Exception;
 	
 	protected abstract IFinder finder () throws Exception;
 
