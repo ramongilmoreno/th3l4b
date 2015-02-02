@@ -46,4 +46,10 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 			return found;
 		}
 	}
+	
+	@Override
+	public Collection<IInstance> find(IIdentifier id, String relationship)
+			throws Exception {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
 }
