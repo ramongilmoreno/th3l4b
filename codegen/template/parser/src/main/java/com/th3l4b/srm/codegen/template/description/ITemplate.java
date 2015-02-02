@@ -2,7 +2,7 @@ package com.th3l4b.srm.codegen.template.description;
 
 import java.util.Collection;
 
-import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
+import com.th3l4b.srm.codegen.template.description.nodes.ITemplateNode;
 
 public interface ITemplate {
 	String getTemplateName () throws Exception;

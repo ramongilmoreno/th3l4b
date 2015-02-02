@@ -1,4 +1,4 @@
-package com.th3l4b.srm.codegen.template.description.tree;
+package com.th3l4b.srm.codegen.template.description.nodes;
 
 import java.io.PrintWriter;
 import java.util.Collection;

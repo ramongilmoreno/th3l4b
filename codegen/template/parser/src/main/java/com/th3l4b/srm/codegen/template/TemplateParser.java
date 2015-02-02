@@ -9,10 +9,10 @@ import com.th3l4b.srm.codegen.template.description.DefaultNamesEntry;
 import com.th3l4b.srm.codegen.template.description.DefaultTemplate;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
 import com.th3l4b.srm.codegen.template.description.TemplateUnit;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultCodeNode;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultSubstitutionNode;
-import com.th3l4b.srm.codegen.template.description.tree.DefaultTextNode;
-import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
+import com.th3l4b.srm.codegen.template.description.nodes.DefaultCodeNode;
+import com.th3l4b.srm.codegen.template.description.nodes.DefaultSubstitutionNode;
+import com.th3l4b.srm.codegen.template.description.nodes.DefaultTextNode;
+import com.th3l4b.srm.codegen.template.description.nodes.ITemplateNode;
 
 public class TemplateParser {
 

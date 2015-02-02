@@ -4,8 +4,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.th3l4b.srm.codegen.template.description.tree.TemplateNodeUtils;
-import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
+import com.th3l4b.srm.codegen.template.description.nodes.ITemplateNode;
+import com.th3l4b.srm.codegen.template.description.nodes.TemplateNodeUtils;
 
 public class DefaultTemplate implements ITemplate {
 

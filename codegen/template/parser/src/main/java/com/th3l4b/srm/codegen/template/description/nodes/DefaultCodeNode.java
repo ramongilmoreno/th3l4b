@@ -1,4 +1,4 @@
-package com.th3l4b.srm.codegen.template.description.tree;
+package com.th3l4b.srm.codegen.template.description.nodes;
 
 public class DefaultCodeNode implements ICodeNode {
 
