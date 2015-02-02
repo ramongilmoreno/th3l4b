@@ -1,6 +1,6 @@
 package com.th3l4b.srm.codegen.template.description.tree;
 
-public class DefaultSubstitutionNode extends DefaultTemplateNode implements
+public class DefaultSubstitutionNode extends TemplateNodeUtils implements
 		ISubstitutionNode {
 
 	private String _substitution;

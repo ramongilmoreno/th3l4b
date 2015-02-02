@@ -1,6 +1,6 @@
 package com.th3l4b.srm.codegen.template.description.tree;
 
-public class DefaultTextNode extends DefaultTemplateNode implements ITextNode {
+public class DefaultTextNode extends TemplateNodeUtils implements ITextNode {
 
 	private String _text;
 	

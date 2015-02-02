@@ -3,7 +3,7 @@ package com.th3l4b.srm.codegen.template.description.tree;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class DefaultTemplateNode implements ITemplateNode {
+public class TemplateNodeUtils implements ITemplateNode {
 
 	public static void print(Collection<ITemplateNode> nodes, PrintWriter out)
 			throws Exception {

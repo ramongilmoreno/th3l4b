@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.th3l4b.srm.codegen.template.description.tree.DefaultTemplateNode;
+import com.th3l4b.srm.codegen.template.description.tree.TemplateNodeUtils;
 import com.th3l4b.srm.codegen.template.description.tree.ITemplateNode;
 
 public class DefaultTemplate implements ITemplate {
@@ -71,10 +71,10 @@ public class DefaultTemplate implements ITemplate {
 		out.println();
 
 		out.print("file: ");
-		DefaultTemplateNode.print(template.getFileName(), out);
+		TemplateNodeUtils.print(template.getFileName(), out);
 		out.println();
 		out.println("content:");
-		DefaultTemplateNode.print(template.getContent(), out);
+		TemplateNodeUtils.print(template.getContent(), out);
 	}
 
 }
