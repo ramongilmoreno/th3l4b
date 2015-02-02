@@ -175,9 +175,12 @@ public class TemplateParser {
 			if (c == '<') {
 				int c2 = reader.read();
 				if (c2 == '%') {
-					DefaultTextNode n = new DefaultTextNode(sb.toString());
-					sb.setLength(0);
-					nodes.add(n);
+					// Do not include unnecessary empty text nodes
+					if (sb.length() != 0) {
+						DefaultTextNode n = new DefaultTextNode(sb.toString());
+						sb.setLength(0);
+						nodes.add(n);
+					}
 					parseEscape(reader, nodes);
 					continue;
 				} else {
