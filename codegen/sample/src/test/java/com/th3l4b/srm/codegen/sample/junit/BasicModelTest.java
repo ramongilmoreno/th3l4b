@@ -59,5 +59,24 @@ public class BasicModelTest {
 				"Found object must be in saved status right after creating it",
 				EntityStatus.Saved, found.coordinates().getStatus());
 	}
+	
+	@Test
+	public void testSaveDeletedEntity() throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		IEntity1 e1 = utils.createEntity1();
+		e1.coordinates().setStatus(EntityStatus.ToDelete);
+		IIdentifier id = e1.coordinates().getIdentifier();
+		IInstance found = utils.finder().find(id);
+		Assert.assertNotNull("Could not find unknown object", found);
+		Assert.assertEquals("Unknown object is not Unknown",
+				EntityStatus.Unknown, found.coordinates().getStatus());
+		utils.getModelRuntime().updater()
+				.update(Collections.<IInstance> singleton(e1));
+		found = utils.finder().find(id);
+		Assert.assertNotNull("Not found just created object", found);
+		Assert.assertEquals(
+				"Found object must be in deleted status right after creating it",
+				EntityStatus.Deleted, found.coordinates().getStatus());
+	}
 
 }
