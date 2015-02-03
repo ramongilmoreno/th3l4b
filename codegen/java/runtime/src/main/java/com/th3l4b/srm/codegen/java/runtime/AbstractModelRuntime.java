@@ -4,6 +4,7 @@ import com.th3l4b.common.data.named.DefaultNamed;
 import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IReverse;
 import com.th3l4b.srm.model.runtime.IUpdater;
 
 public abstract class AbstractModelRuntime extends DefaultNamed implements
@@ -12,9 +13,9 @@ public abstract class AbstractModelRuntime extends DefaultNamed implements
 	protected IEntitiesRuntime _entities;
 	protected IFinder _finder;
 	protected IUpdater _updater;
+	protected IReverse _reverse;
 
-	protected abstract IEntitiesRuntime createEntities()
-			throws Exception;
+	protected abstract IEntitiesRuntime createEntities() throws Exception;
 
 	@Override
 	public IEntitiesRuntime entities() throws Exception {
@@ -43,4 +44,15 @@ public abstract class AbstractModelRuntime extends DefaultNamed implements
 		}
 		return _updater;
 	}
+
+	protected abstract IReverse createReverse() throws Exception;
+
+	@Override
+	public IReverse reverse() throws Exception {
+		if (_reverse == null) {
+			_reverse = createReverse();
+		}
+		return _reverse;
+	}
+
 }

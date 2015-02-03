@@ -7,9 +7,10 @@ names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/entities/impl/Default<%= java.name(entity) %>.java
 content:
 
-package <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties) %>.entities.impl;
+<% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %>
+package <%= pkg %>.entities.impl;
 
-public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java.runtime.AbstractInstance {
+public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java.runtime.AbstractInstance implements <%= pkg %>.entities.I<%= java.name(entity) %> {
 
 	public String type() throws Exception { return "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName()) %>"; }
 
@@ -21,9 +22,9 @@ public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java
 
     // Accessors
 <% for (com.th3l4b.srm.model.base.IField f: entity) { String fname = java.name(f); %>
-    String get<%= fname %> () throws Exception { return _field_<%= fname %>; }
-    void set<%= fname %> (String value) throws Exception { _field_<%= fname %> = value; _isSet_<%= fname %> = true; }
-    boolean isSet<%= fname %> () throws Exception { return _isSet_<%= fname %>; }
-    void reset<%= fname %> () throws Exception { _isSet_<%= fname %> = false; }
+    public String get<%= fname %> () throws Exception { return _field_<%= fname %>; }
+    public void set<%= fname %> (String value) throws Exception { _field_<%= fname %> = value; _isSet_<%= fname %> = true; }
+    public boolean isSet<%= fname %> () throws Exception { return _isSet_<%= fname %>; }
+    public void unSet<%= fname %> () throws Exception { _isSet_<%= fname %> = false; }
 <% } %>
 }
