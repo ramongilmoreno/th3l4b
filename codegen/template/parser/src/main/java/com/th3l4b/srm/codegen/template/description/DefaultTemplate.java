@@ -3,6 +3,7 @@ package com.th3l4b.srm.codegen.template.description;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.th3l4b.srm.codegen.template.description.nodes.ITemplateNode;
 import com.th3l4b.srm.codegen.template.description.nodes.TemplateNodeUtils;
@@ -12,8 +13,8 @@ public class DefaultTemplate implements ITemplate {
 	private String _templateName;
 	private TemplateUnit _templateUnit;
 	private Collection<INamesEntry> _names = new ArrayList<INamesEntry>();
-	private Collection<ITemplateNode> _fileName = new ArrayList<ITemplateNode>();
-	private Collection<ITemplateNode> _content = new ArrayList<ITemplateNode>();
+	private List<ITemplateNode> _fileName = new ArrayList<ITemplateNode>();
+	private List<ITemplateNode> _content = new ArrayList<ITemplateNode>();
 
 	@Override
 	public String getTemplateName() throws Exception {
@@ -41,12 +42,12 @@ public class DefaultTemplate implements ITemplate {
 	}
 
 	@Override
-	public Collection<ITemplateNode> getFileName () throws Exception {
+	public List<ITemplateNode> getFileName() throws Exception {
 		return _fileName;
 	}
-	
+
 	@Override
-	public Collection<ITemplateNode> getContent () throws Exception {
+	public List<ITemplateNode> getContent() throws Exception {
 		return _content;
 	}
 

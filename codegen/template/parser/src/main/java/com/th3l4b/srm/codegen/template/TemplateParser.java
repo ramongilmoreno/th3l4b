@@ -1,10 +1,14 @@
 package com.th3l4b.srm.codegen.template;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collection;
+import java.util.List;
 
+import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.codegen.template.description.DefaultNamesEntry;
 import com.th3l4b.srm.codegen.template.description.DefaultTemplate;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
@@ -161,14 +165,14 @@ public class TemplateParser {
 		return r;
 	}
 
-	private void parseSpecial(Reader reader, Collection<ITemplateNode> nodes)
+	private void parseSpecial(Reader reader, List<ITemplateNode> nodes)
 			throws Exception {
 		PushbackReader pbr = new PushbackReader(reader, 1);
 		parseText(pbr, nodes);
 	}
 
-	private void parseText(PushbackReader reader,
-			Collection<ITemplateNode> nodes) throws Exception {
+	private void parseText(PushbackReader reader, List<ITemplateNode> nodes)
+			throws Exception {
 		int c = -1;
 		StringBuilder sb = new StringBuilder();
 		while ((c = reader.read()) != -1) {
@@ -193,8 +197,8 @@ public class TemplateParser {
 		nodes.add(n);
 	}
 
-	private void parseEscape(PushbackReader reader,
-			Collection<ITemplateNode> nodes) throws Exception {
+	private void parseEscape(PushbackReader reader, List<ITemplateNode> nodes)
+			throws Exception {
 		boolean isSubstitution = false;
 		int c = -1;
 		StringBuilder sb = new StringBuilder();
@@ -228,5 +232,23 @@ public class TemplateParser {
 		}
 		throw new IllegalStateException(
 				"Unexpected end of file parsing <% ... %> contents");
+	}
+
+	public static void main(String[] args) throws Exception {
+		FileInputStream fis = new FileInputStream(args[0]);
+		try {
+			InputStreamReader isr = new InputStreamReader(fis,
+					ITextConstants.UTF_8);
+			try {
+				ITemplate template = new TemplateParser().parse("input", isr);
+				PrintWriter out = new PrintWriter(System.out, true);
+				DefaultTemplate.print(template, out);
+				out.println();
+			} finally {
+				isr.close();
+			}
+		} finally {
+			fis.close();
+		}
 	}
 }
