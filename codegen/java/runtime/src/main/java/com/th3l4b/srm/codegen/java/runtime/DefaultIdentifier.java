@@ -2,6 +2,7 @@ package com.th3l4b.srm.codegen.java.runtime;
 
 import java.util.UUID;
 
+import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 
 public class DefaultIdentifier implements IIdentifier {
@@ -13,7 +14,7 @@ public class DefaultIdentifier implements IIdentifier {
 		setType(type);
 		setKey(key);
 	}
-	
+
 	public DefaultIdentifier(String type) throws Exception {
 		setType(type);
 		setKey(UUID.randomUUID().toString());
@@ -37,6 +38,26 @@ public class DefaultIdentifier implements IIdentifier {
 	@Override
 	public void setType(String type) throws Exception {
 		_type = type;
+	}
+
+	@Override
+	public int hashCode() {
+		return NullSafe.hashCode(_type) ^ NullSafe.hashCode(_key);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IIdentifier) {
+			IIdentifier id = (IIdentifier) obj;
+			try {
+				return NullSafe.equals(getType(), id.getType())
+						&& NullSafe.equals(getKey(), id.getKey());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return false;
 	}
 
 }

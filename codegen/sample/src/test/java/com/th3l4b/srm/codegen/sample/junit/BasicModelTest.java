@@ -1,5 +1,6 @@
 package com.th3l4b.srm.codegen.sample.junit;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -40,4 +41,23 @@ public class BasicModelTest {
 		IEntity1 e1 = utils.createEntity1();
 		Assert.assertEquals(EntityStatus.ToModify, e1.coordinates().getStatus());
 	}
+
+	@Test
+	public void testSaveEntity() throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		IEntity1 e1 = utils.createEntity1();
+		IIdentifier id = e1.coordinates().getIdentifier();
+		IInstance found = utils.finder().find(id);
+		Assert.assertNotNull("Could not find unknown object", found);
+		Assert.assertEquals("Unknown object is not Unknown",
+				EntityStatus.Unknown, found.coordinates().getStatus());
+		utils.getModelRuntime().updater()
+				.update(Collections.<IInstance> singleton(e1));
+		found = utils.finder().find(id);
+		Assert.assertNotNull("Not found just created object", found);
+		Assert.assertEquals(
+				"Found object must be in saved status right after creating it",
+				EntityStatus.Saved, found.coordinates().getStatus());
+	}
+
 }
