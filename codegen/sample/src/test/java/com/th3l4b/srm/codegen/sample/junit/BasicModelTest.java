@@ -3,6 +3,7 @@ package com.th3l4b.srm.codegen.sample.junit;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -59,10 +60,15 @@ public class BasicModelTest {
 				"Found object must be in saved status right after creating it",
 				EntityStatus.Saved, found.coordinates().getStatus());
 	}
-	
+
 	@Test
 	public void testSaveDeletedEntity() throws Exception {
 		SampleModelUtils utils = createModelUtils();
+		testSaveDeletedEntity(utils);
+	}
+
+	private IIdentifier testSaveDeletedEntity(SampleModelUtils utils)
+			throws Exception {
 		IEntity1 e1 = utils.createEntity1();
 		e1.coordinates().setStatus(EntityStatus.ToDelete);
 		IIdentifier id = e1.coordinates().getIdentifier();
@@ -77,6 +83,28 @@ public class BasicModelTest {
 		Assert.assertEquals(
 				"Found object must be in deleted status right after creating it",
 				EntityStatus.Deleted, found.coordinates().getStatus());
+		return id;
+	}
+
+	@Test
+	public void testModifyDeletedEntity() throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		IIdentifier id = testSaveDeletedEntity(utils);
+
+		// Modify a value. Status untouched.
+		IEntity1 e = utils.createEntity1();
+		e.coordinates().setIdentifier(id);
+		String value = UUID.randomUUID().toString();
+		e.setField11(value);
+		utils.getModelRuntime().updater()
+				.update(Collections.<IInstance> singleton(e));
+
+		// Find result
+		IEntity1 found = utils.finder().findEntity1(id.getKey());
+		Assert.assertEquals("Modified field was not saved", value,
+				found.getField11());
+		Assert.assertEquals("Item was not left deleted", EntityStatus.Deleted,
+				found.coordinates().getStatus());
 	}
 
 }

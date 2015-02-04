@@ -15,10 +15,10 @@ import com.th3l4b.srm.model.runtime.IUpdater;
 public abstract class AbstractInMemoryUpdater implements IUpdater {
 
 	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
-	
-	protected abstract IEntitiesRuntime entities () throws Exception;
-	
-	protected abstract IFinder finder () throws Exception;
+
+	protected abstract IEntitiesRuntime entities() throws Exception;
+
+	protected abstract IFinder finder() throws Exception;
 
 	@Override
 	public Collection<IInstance> update(Collection<IInstance> entities)
@@ -50,30 +50,38 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 
 	protected IInstance internalUpdate(IInstance newEntity, IInstance oldEntity)
 			throws Exception {
-		IEntityRuntime er = entities().get(newEntity.coordinates().getIdentifier()
-				.getType());
+		// Decide result
+		EntityStatus newStatus = null;
+		EntityStatus action = newEntity.coordinates().getStatus();
+		switch (action) {
+		case ToDelete:
+			newStatus = EntityStatus.Deleted;
+			break;
+		case ToModify:
+			if ((oldEntity != null)
+					&& (oldEntity.coordinates().getStatus() == EntityStatus.Deleted)) {
+				newStatus = EntityStatus.Deleted;
+			} else {
+				newStatus = EntityStatus.Saved;
+			}
+			break;
+		default:
+			throw new IllegalStateException(
+					"Do not know how to handle status: " + action);
+		}
+		
+		// Create a copy and apply changes
+		IEntityRuntime er = entities().get(
+				newEntity.coordinates().getIdentifier().getType());
 		IInstance copy = er.create();
 		if (oldEntity != null) {
 			er.copy(oldEntity, copy);
 		}
 		er.copy(newEntity, copy);
 		er.unSetNulls(copy);
-
-		EntityStatus newStatus = null;
-		EntityStatus oldStatus = copy.coordinates().getStatus();
-		switch (oldStatus) {
-		case ToDelete:
-			newStatus = EntityStatus.Deleted;
-			break;
-		case ToModify:
-			newStatus = EntityStatus.Saved;
-			break;
-		default:
-			throw new IllegalStateException(
-					"Do not know how to handle status: " + oldStatus);
-		}
 		copy.coordinates().setStatus(newStatus);
 
+		// Persist the new value to the map
 		getMap().put(copy.coordinates().getIdentifier(), copy);
 
 		// Return a copy of the copy
