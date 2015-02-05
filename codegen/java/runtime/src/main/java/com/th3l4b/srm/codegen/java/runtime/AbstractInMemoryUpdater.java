@@ -57,7 +57,7 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 		case ToDelete:
 			newStatus = EntityStatus.Deleted;
 			break;
-		case ToModify:
+		case ToMerge:
 			if ((oldEntity != null)
 					&& (oldEntity.coordinates().getStatus() == EntityStatus.Deleted)) {
 				newStatus = EntityStatus.Deleted;

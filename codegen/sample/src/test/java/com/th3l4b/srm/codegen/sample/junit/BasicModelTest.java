@@ -40,7 +40,7 @@ public class BasicModelTest {
 	public void testCreateEntity() throws Exception {
 		SampleModelUtils utils = createModelUtils();
 		IEntity1 e1 = utils.createEntity1();
-		Assert.assertEquals(EntityStatus.ToModify, e1.coordinates().getStatus());
+		Assert.assertEquals(EntityStatus.ToMerge, e1.coordinates().getStatus());
 	}
 
 	@Test
