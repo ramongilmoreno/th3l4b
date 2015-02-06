@@ -3,6 +3,7 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 dependencies {
     compile project(':codegen:template:ant')
     compile project(':base:model')
+    compile project(':codegen:java:runtime')
 }
 
 ext {

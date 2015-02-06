@@ -48,4 +48,8 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 		    }
 	    };
 	}
+	
+	protected com.th3l4b.srm.model.runtime.IReverse createReverse() throws java.lang.Exception {
+		return new <%= pkg %>.utils.<%= name %>ModelReverse();
+	}
 }

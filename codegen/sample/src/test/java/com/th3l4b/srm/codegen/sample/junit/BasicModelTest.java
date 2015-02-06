@@ -15,7 +15,6 @@ import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
-import com.th3l4b.srm.model.runtime.IReverse;
 
 public class BasicModelTest {
 
@@ -25,11 +24,6 @@ public class BasicModelTest {
 			@Override
 			protected Map<IIdentifier, IInstance> getMap() throws Exception {
 				return data;
-			}
-
-			@Override
-			protected IReverse createReverse() throws Exception {
-				throw new UnsupportedOperationException("Not implemented yet");
 			}
 		};
 		SampleModelUtils utils = new SampleModelUtils(r);

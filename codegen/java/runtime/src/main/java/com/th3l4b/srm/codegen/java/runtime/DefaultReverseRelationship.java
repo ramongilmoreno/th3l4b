@@ -7,6 +7,13 @@ public class DefaultReverseRelationship implements IReverseRelationship {
 	private String _sourceType;
 	private String _field;
 	private String _targetType;
+	
+	public DefaultReverseRelationship(String sourceType, String field,
+			String targetType) throws Exception {
+		setSourceType(sourceType);
+		setField(field);
+		setTargetType(targetType);
+	} 
 
 	@Override
 	public String getSourceType() throws Exception {
