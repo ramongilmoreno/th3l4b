@@ -54,6 +54,9 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 		EntityStatus newStatus = null;
 		EntityStatus action = newEntity.coordinates().getStatus();
 		switch (action) {
+		case ToSave:
+			newStatus = EntityStatus.Saved;
+			break;
 		case ToDelete:
 			newStatus = EntityStatus.Deleted;
 			break;
@@ -69,7 +72,7 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 			throw new IllegalStateException(
 					"Do not know how to handle status: " + action);
 		}
-		
+
 		// Create a copy and apply changes
 		IEntityRuntime er = entities().get(
 				newEntity.coordinates().getIdentifier().getType());

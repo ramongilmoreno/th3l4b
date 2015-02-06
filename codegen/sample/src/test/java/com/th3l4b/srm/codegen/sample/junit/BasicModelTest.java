@@ -87,7 +87,7 @@ public class BasicModelTest {
 	}
 
 	@Test
-	public void testModifyDeletedEntity() throws Exception {
+	public void testMergeDeletedEntity() throws Exception {
 		SampleModelUtils utils = createModelUtils();
 		IIdentifier id = testSaveDeletedEntity(utils);
 
@@ -107,4 +107,25 @@ public class BasicModelTest {
 				found.coordinates().getStatus());
 	}
 
+	@Test
+	public void testSavePreviouslyDeletedEntity() throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		IIdentifier id = testSaveDeletedEntity(utils);
+
+		// Modify a value. Status untouched.
+		IEntity1 e = utils.createEntity1();
+		e.coordinates().setIdentifier(id);
+		e.coordinates().setStatus(EntityStatus.ToSave);
+		String value = UUID.randomUUID().toString();
+		e.setField11(value);
+		utils.getModelRuntime().updater()
+				.update(Collections.<IInstance> singleton(e));
+
+		// Find result
+		IEntity1 found = utils.finder().findEntity1(id.getKey());
+		Assert.assertEquals("Modified field was not saved", value,
+				found.getField11());
+		Assert.assertEquals("Item was not restored as saved",
+				EntityStatus.Saved, found.coordinates().getStatus());
+	}
 }

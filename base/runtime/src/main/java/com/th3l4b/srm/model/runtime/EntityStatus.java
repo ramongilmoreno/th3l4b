@@ -1,18 +1,19 @@
 package com.th3l4b.srm.model.runtime;
 
 public enum EntityStatus {
-	Saved, Deleted, Unknown, Ignore, ToMerge(true), ToDelete(true);
-	
+
+	Saved, Deleted, Unknown, Ignore, ToSave(true), ToMerge(true), ToDelete(true);
+
 	boolean _action = false;
-	
-	EntityStatus () {
+
+	EntityStatus() {
 		this(false);
 	}
-	
-	EntityStatus (boolean action) {
+
+	EntityStatus(boolean action) {
 		_action = action;
 	}
-	
+
 	public boolean isAction() {
 		return _action;
 	}
