@@ -7,13 +7,13 @@ names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryModelRuntime.java
 content:
 
-package <% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.inmemory;
-<% String name = java.name(model); %>
+package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.inmemory;
+<% java.lang.String name = java.name(model); %>
 public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractModelRuntime {
 
-	protected abstract java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws Exception;
+	protected abstract java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception;
 			
-	protected com.th3l4b.srm.model.runtime.IEntitiesRuntime createEntities() throws Exception {
+	protected com.th3l4b.srm.model.runtime.IEntitiesRuntime createEntities() throws java.lang.Exception {
 		com.th3l4b.srm.codegen.java.runtime.DefaultEntitiesRuntime r = new com.th3l4b.srm.codegen.java.runtime.DefaultEntitiesRuntime();
 <% for (com.th3l4b.srm.model.base.IEntity e: model) { %>
 		r.add(new <%= pkg %>.entities.runtime.<%= java.name(e) %>EntityRuntime());
@@ -21,29 +21,29 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 		return r;
 	}
 	
-	protected com.th3l4b.srm.model.runtime.IFinder createFinder() throws Exception {
+	protected com.th3l4b.srm.model.runtime.IFinder createFinder() throws java.lang.Exception {
 		return new <%= pkg %>.inmemory.Abstract<%= name %>InMemoryFinder() {
-			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws Exception {
+			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.entities();
 			}
 
-			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws Exception {
+			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.getMap();
 			}
 		};
 	}
 	
-	protected com.th3l4b.srm.model.runtime.IUpdater createUpdater() throws Exception {
+	protected com.th3l4b.srm.model.runtime.IUpdater createUpdater() throws java.lang.Exception {
 		return new com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryUpdater() {
-			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws Exception {
+			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.entities();
 			}
 
-			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws Exception {
+			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.getMap();
 			}
 	
-			protected com.th3l4b.srm.model.runtime.IFinder finder () throws Exception {
+			protected com.th3l4b.srm.model.runtime.IFinder finder () throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.finder();
 		    }
 	    };
