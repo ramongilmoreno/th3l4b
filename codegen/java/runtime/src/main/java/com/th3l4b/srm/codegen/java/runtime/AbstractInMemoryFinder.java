@@ -1,8 +1,10 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
@@ -15,6 +17,18 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 	protected abstract IEntitiesRuntime entities() throws Exception;
 
 	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
+
+	@Override
+	public Collection<IInstance> all(String type) throws Exception {
+		ArrayList<IInstance> r = new ArrayList<IInstance>();
+		for (IInstance i : getMap().values()) {
+			if (NullSafe
+					.equals(i.coordinates().getIdentifier().getType(), type)) {
+				r.add(i);
+			}
+		}
+		return r;
+	}
 
 	@SuppressWarnings("unchecked")
 	protected <T> void all(Class<T> clazz, Collection<T> r) throws Exception {
@@ -46,7 +60,7 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 			return found;
 		}
 	}
-	
+
 	@Override
 	public Collection<IInstance> find(IIdentifier id, String relationship)
 			throws Exception {

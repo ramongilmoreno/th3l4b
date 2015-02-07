@@ -19,7 +19,7 @@ public abstract class Abstract<%= name %>InMemoryFinder extends com.th3l4b.srm.c
     }
     
     public <%= pkg %>.entities.I<%= ename %> find<%= ename %> (java.lang.String id) throws java.lang.Exception {
-		return find("<%=com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName())%>", id, <%= pkg %>.entities.I<%= ename %>.class);
+		return find(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= ename %>, id, <%= pkg %>.entities.I<%= ename %>.class);
     }
 <% } %>
 }
