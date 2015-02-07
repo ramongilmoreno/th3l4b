@@ -1,0 +1,8 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+apply plugin: "war"
+
+dependencies {
+    compile project(':codegen:java:runtime')
+    providedCompile "javax.servlet:servlet-api:2.5"
+}
+
