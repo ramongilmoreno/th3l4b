@@ -8,9 +8,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.th3l4b.srm.codegen.sample.generated.entities.IEntity1;
-import com.th3l4b.srm.codegen.sample.generated.inmemory.AbstractSampleInMemoryModelRuntime;
-import com.th3l4b.srm.codegen.sample.generated.utils.SampleModelUtils;
+import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
+import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryModelRuntime;
+import com.th3l4b.srm.sample.base.generated.utils.SampleModelUtils;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;

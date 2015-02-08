@@ -1,7 +1,7 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
 
 ext {
-    codegenJavaPackage = "com.th3l4b.srm.codegen.sample.generated"
+    codegenJavaPackage = "com.th3l4b.srm.sample.base.generated"
 }
 
 apply from: rootProject.file('buildtools/gradle/codegenJava.gradle')
