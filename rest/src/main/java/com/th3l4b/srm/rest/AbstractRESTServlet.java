@@ -51,17 +51,16 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 				if (er == null) {
 					throw new IllegalArgumentException("Unknown entity: "
 							+ type);
-
 				}
 
 				if (split.length == 1) {
 					r = runtime.finder().all(type);
 				} else {
-					String key = URLDecoder.decode(split[1], ITextConstants.UTF_8);
+					String key = URLDecoder.decode(split[1],
+							ITextConstants.UTF_8);
 					DefaultIdentifier id = new DefaultIdentifier(type, key);
 					if (split.length == 2) {
-						r = runtime.finder().find(
-								id);
+						r = runtime.finder().find(id);
 					} else {
 						// Find a reverse relationship
 						String reverseRelationship = split[2];
@@ -84,7 +83,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 				@SuppressWarnings("unchecked")
 				Collection<IInstance> col = (Collection<IInstance>) r;
 				generator.writeStartArray();
-				for (IInstance instance: col) {
+				for (IInstance instance : col) {
 					serialize(instance, runtime, generator);
 				}
 				generator.writeEndArray();
@@ -93,23 +92,31 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 				IInstance instance = (IInstance) r;
 				serialize(instance, runtime, generator);
 			}
+			generator.close();
 
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private void serialize(IInstance instance, IModelRuntime runtime, JsonGenerator generator) throws Exception {
+	private void serialize(IInstance instance, IModelRuntime runtime,
+			JsonGenerator generator) throws Exception {
 		generator.writeStartObject();
+		generator.writeFieldName("_Type");
+		generator.writeString(instance.type());
+		generator.writeFieldName("_Id");
+		generator.writeString(instance.coordinates().getIdentifier().getKey());
+		generator.writeFieldName("_Status");
+		generator.writeString(instance.coordinates().getStatus().toString());
 		IEntityRuntime er = runtime.entities().get(instance.type());
-		for (IFieldRuntime fr: er) {
+		for (IFieldRuntime fr : er) {
 			if (fr.isSet(instance)) {
 				String value = fr.get(instance);
 				generator.writeFieldName(fr.getName());
 				generator.writeString(value);
 			}
 		}
-		
+
 		generator.writeEndObject();
 	}
 

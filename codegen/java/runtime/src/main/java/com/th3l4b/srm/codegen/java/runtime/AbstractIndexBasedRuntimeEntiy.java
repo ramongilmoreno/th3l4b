@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 
+@SuppressWarnings("serial")
 @Deprecated
 public abstract class AbstractIndexBasedRuntimeEntiy extends
 		AbstractInstance {

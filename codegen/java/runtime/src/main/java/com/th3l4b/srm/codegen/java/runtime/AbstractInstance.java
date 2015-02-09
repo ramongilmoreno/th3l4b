@@ -1,10 +1,13 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
+import java.io.Serializable;
+
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IInstance;
 
-public abstract class AbstractInstance implements IInstance {
+@SuppressWarnings("serial")
+public abstract class AbstractInstance implements IInstance, Serializable {
 
 	private ICoordinates _coordinates;
 

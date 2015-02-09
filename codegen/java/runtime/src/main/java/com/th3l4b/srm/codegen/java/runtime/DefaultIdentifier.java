@@ -1,11 +1,13 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 
-public class DefaultIdentifier implements IIdentifier {
+@SuppressWarnings("serial")
+public class DefaultIdentifier implements IIdentifier, Serializable {
 
 	private String _key;
 	private String _type;

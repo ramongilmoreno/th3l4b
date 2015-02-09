@@ -1,0 +1,13 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+dependencies {
+    compile project(':sample:base')
+    compile project(':rest')
+}
+
+// http://stackoverflow.com/questions/6767732/setting-httpport-for-jetty-grails-plugin
+jettyRun {
+    httpPort = 8081
+}
