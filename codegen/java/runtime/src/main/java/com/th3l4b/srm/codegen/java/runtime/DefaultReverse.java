@@ -1,24 +1,24 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.th3l4b.common.data.named.DefaultContainer;
+import com.th3l4b.common.data.named.IContainer;
 import com.th3l4b.srm.model.runtime.IReverse;
 import com.th3l4b.srm.model.runtime.IReverseRelationship;
 
 public class DefaultReverse implements IReverse {
 
-	Map<String, Collection<IReverseRelationship>> _contents = new HashMap<String, Collection<IReverseRelationship>>();
+	Map<String, IContainer<IReverseRelationship>> _contents = new HashMap<String, IContainer<IReverseRelationship>>();
+	IContainer<IReverseRelationship> _empty = new DefaultContainer<IReverseRelationship>();
 
-	protected Collection<IReverseRelationship> create(String name, boolean force) {
+	protected IContainer<IReverseRelationship> create(String name, boolean force) {
 		if (_contents.containsKey(name)) {
 			return _contents.get(name);
 		} else {
 			if (force) {
-				ArrayList<IReverseRelationship> r = new ArrayList<IReverseRelationship>();
+				DefaultContainer<IReverseRelationship> r = new DefaultContainer<IReverseRelationship>();
 				_contents.put(name, r);
 				return r;
 			} else {
@@ -36,22 +36,22 @@ public class DefaultReverse implements IReverse {
 	@Override
 	public void remove(IReverseRelationship reverseRelationship)
 			throws Exception {
-		Collection<IReverseRelationship> c = create(
+		IContainer<IReverseRelationship> c = create(
 				reverseRelationship.getTargetType(), false);
 		if (c != null) {
-			c.remove(reverseRelationship);
+			c.remove(reverseRelationship.getName());
 		}
 
 	}
 
 	@Override
-	public Collection<IReverseRelationship> get(String targetType)
+	public IContainer<IReverseRelationship> get(String targetType)
 			throws Exception {
-		Collection<IReverseRelationship> c = create(targetType, false);
+		IContainer<IReverseRelationship> c = create(targetType, false);
 		if (c != null) {
 			return c;
 		} else {
-			return Collections.<IReverseRelationship> emptyList();
+			return _empty;
 		}
 	}
 }

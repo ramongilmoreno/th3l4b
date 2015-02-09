@@ -8,10 +8,12 @@ import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
+import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IReverse;
+import com.th3l4b.srm.model.runtime.IReverseRelationship;
 
 public abstract class AbstractInMemoryFinder implements IFinder {
 
@@ -67,10 +69,18 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 	@Override
 	public Collection<IInstance> references(IIdentifier id, String relationship)
 			throws Exception {
-		
-		reverse().get(id.getType());
-		
-		
-		throw new UnsupportedOperationException("Not yet implemented");
+		IReverseRelationship rr = reverse().get(id.getType()).get(relationship);
+		String type = rr.getSourceType();
+		IFieldRuntime fr = entities().get(type).get(rr.getField());
+		String key = id.getKey();
+		ArrayList<IInstance> r = new ArrayList<IInstance>();
+		for (IInstance e: getMap().values()) {
+			if (NullSafe.equals(e.type(), type)) {
+				if (NullSafe.equals(key, fr.get(e))) {
+					r.add(e);
+				}
+			}
+		}
+		return r;
 	}
 }

@@ -12,11 +12,15 @@ public class SampleData {
 	public void fill(IModelRuntime runtime) throws Exception {
 		SampleModelUtils sample = new SampleModelUtils(runtime);
 		ArrayList<IInstance> updates = new ArrayList<IInstance>();
+		IEntity2 forReverse = sample.createEntity2();
+		updates.add(forReverse);
 		for (int i = 0; i < 10; i++) {
 			{
 				IEntity1 e = sample.createEntity1();
 				e.setField11("Sample field 1 of entity 1 #" + i);
 				e.setField12("Sample field 2 of entity 1 #" + i);
+				e.setReference(forReverse.coordinates().getIdentifier()
+						.getKey());
 				updates.add(e);
 			}
 			{
