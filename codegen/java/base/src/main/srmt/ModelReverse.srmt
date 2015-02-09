@@ -15,7 +15,8 @@ public class <%= name %>ModelReverse extends com.th3l4b.srm.codegen.java.runtime
 	    add(new com.th3l4b.srm.codegen.java.runtime.DefaultReverseRelationship(
 	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getSourceType()) %>",
 	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getField()) %>",
-	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getTargetType()) %>"
+	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getTargetType()) %>",
+	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getName()) %>"
 	    	));
 	    <% } %>    
 	}

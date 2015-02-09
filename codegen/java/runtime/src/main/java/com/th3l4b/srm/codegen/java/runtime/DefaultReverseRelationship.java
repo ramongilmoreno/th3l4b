@@ -1,18 +1,20 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
+import com.th3l4b.common.data.named.DefaultNamed;
 import com.th3l4b.srm.model.runtime.IReverseRelationship;
 
-public class DefaultReverseRelationship implements IReverseRelationship {
+public class DefaultReverseRelationship extends DefaultNamed implements IReverseRelationship {
 
 	private String _sourceType;
 	private String _field;
 	private String _targetType;
 	
 	public DefaultReverseRelationship(String sourceType, String field,
-			String targetType) throws Exception {
+			String targetType, String name) throws Exception {
 		setSourceType(sourceType);
 		setField(field);
 		setTargetType(targetType);
+		setName(name);
 	} 
 
 	@Override

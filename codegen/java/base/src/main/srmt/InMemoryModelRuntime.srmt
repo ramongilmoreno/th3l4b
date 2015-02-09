@@ -30,6 +30,10 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.getMap();
 			}
+			
+			protected com.th3l4b.srm.model.runtime.IReverse reverse () throws java.lang.Exception {
+				return Abstract<%= name %>InMemoryModelRuntime.this.reverse();
+			}
 		};
 	}
 	

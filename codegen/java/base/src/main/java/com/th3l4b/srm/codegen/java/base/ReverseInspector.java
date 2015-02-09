@@ -17,8 +17,9 @@ public class ReverseInspector {
 		for (IEntity source : model) {
 			for (IField f : source) {
 				if (f instanceof IReference) {
+					IReference ref = (IReference) f;
 					r.add(new DefaultReverseRelationship(source.getName(), f
-							.getName(), ((IReference) f).getTarget()));
+							.getName(), ref.getTarget(), ref.getReverse().getName()));
 				}
 			}
 		}

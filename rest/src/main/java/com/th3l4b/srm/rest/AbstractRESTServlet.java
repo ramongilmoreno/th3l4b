@@ -64,7 +64,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 					} else {
 						// Find a reverse relationship
 						String reverseRelationship = split[2];
-						r = runtime.finder().find(id, reverseRelationship);
+						r = runtime.finder().references(id, reverseRelationship);
 					}
 
 				}

@@ -11,10 +11,13 @@ import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
+import com.th3l4b.srm.model.runtime.IReverse;
 
 public abstract class AbstractInMemoryFinder implements IFinder {
 
 	protected abstract IEntitiesRuntime entities() throws Exception;
+	
+	protected abstract IReverse reverse () throws Exception;
 
 	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
 
@@ -62,8 +65,12 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 	}
 
 	@Override
-	public Collection<IInstance> find(IIdentifier id, String relationship)
+	public Collection<IInstance> references(IIdentifier id, String relationship)
 			throws Exception {
+		
+		reverse().get(id.getType());
+		
+		
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 }
