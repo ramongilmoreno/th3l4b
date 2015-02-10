@@ -141,7 +141,8 @@ public class BasicModelTest {
 		updates.add(e2);
 		utils.getModelRuntime().updater().update(updates);
 		Collection<IInstance> refs = utils.finder().references(
-				e2.coordinates().getIdentifier(), "Reverse");
+				e2.coordinates().getIdentifier(),
+				SampleModelUtils.REVERSE_Entity2_Reverse);
 		boolean e1aFound = false;
 		boolean e1bFound = false;
 		for (IInstance ref : refs) {

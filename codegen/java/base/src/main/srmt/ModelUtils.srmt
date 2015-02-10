@@ -10,8 +10,22 @@ package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.Codege
 <% java.lang.String name = java.name(model); %>
 public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.DefaultModelUtils {
 
-    <% for (com.th3l4b.srm.model.base.IEntity e: model) { %>public static final java.lang.String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
+	// Entities and fields constants
+    <% for (com.th3l4b.srm.model.base.IEntity e: model) { %>
+	public static final java.lang.String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
+    	<% for (com.th3l4b.srm.model.base.IField f: e) { %>	
+	public static final java.lang.String FIELD_<%= java.name(e) %>_<%= java.name(f) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName()) %>";
+	    <% } %>
+    <% } %>
+    
+    // Reverse relationships constants
+    <%
+    for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
+    	com.th3l4b.srm.model.base.IEntity e = model.get(rr.getTargetType());
+   	%>
+	public static final java.lang.String REVERSE_<%= java.name(e) %>_<%= java.name(rr) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getName()) %>";
     <% } %>    
+    
     public <%= name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
     	super(runtime);
     }
