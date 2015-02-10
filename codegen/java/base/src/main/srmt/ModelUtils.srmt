@@ -10,6 +10,9 @@ package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.Codege
 <% java.lang.String name = java.name(model); %>
 public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.DefaultModelUtils {
 
+	// Model name
+	public static final java.lang.String MODEL = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(model.getName()) %>";
+
 	// Entities and fields constants
     <% for (com.th3l4b.srm.model.base.IEntity e: model) { %>
 	public static final java.lang.String ENTITY_<%= java.name(e) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(e.getName()) %>";
