@@ -19,8 +19,7 @@ public class SampleData {
 				IEntity1 e = sample.createEntity1();
 				e.setField11("Sample field 1 of entity 1 #" + i);
 				e.setField12("Sample field 2 of entity 1 #" + i);
-				e.setReference(forReverse.coordinates().getIdentifier()
-						.getKey());
+				e.setReference(forReverse);
 				updates.add(e);
 			}
 			{

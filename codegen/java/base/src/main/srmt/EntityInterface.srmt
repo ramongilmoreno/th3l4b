@@ -6,12 +6,20 @@ unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
 file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/entities/I<%= java.name(entity) %>.java
 content:
-package <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties) %>.entities;
+<% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %> 
+package <%= pkg %>.entities;
 
 public interface I<%= java.name(entity) %> extends com.th3l4b.srm.model.runtime.IInstance {
 <% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
     java.lang.String get<%= fname %> () throws java.lang.Exception;
     void set<%= fname %> (java.lang.String value) throws java.lang.Exception;
+    <%
+    if (f instanceof com.th3l4b.srm.model.base.IReference) {
+    	com.th3l4b.srm.model.base.IReference ref = (com.th3l4b.srm.model.base.IReference) f;
+    	com.th3l4b.srm.model.base.IEntity target = model.get(ref.getTarget());
+    %>
+    void set<%= fname %> (<%= pkg %>.entities.I<%= java.name(target) %> value) throws java.lang.Exception;
+	<% } %>    
     boolean isSet<%= fname %> () throws java.lang.Exception;
     void unSet<%= fname %> () throws java.lang.Exception;
 <% } %>

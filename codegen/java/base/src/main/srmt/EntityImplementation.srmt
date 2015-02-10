@@ -25,6 +25,15 @@ public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java
 <% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
     public java.lang.String get<%= fname %> () throws java.lang.Exception { return _field_<%= fname %>; }
     public void set<%= fname %> (java.lang.String value) throws java.lang.Exception { _field_<%= fname %> = value; _isSet_<%= fname %> = true; }
+    <%
+    if (f instanceof com.th3l4b.srm.model.base.IReference) {
+    	com.th3l4b.srm.model.base.IReference ref = (com.th3l4b.srm.model.base.IReference) f;
+    	com.th3l4b.srm.model.base.IEntity target = model.get(ref.getTarget());
+    %>
+    public void set<%= fname %> (<%= pkg %>.entities.I<%= java.name(target) %> value) throws java.lang.Exception {
+        set<%= fname %>((String) (value == null ? null : value.coordinates().getIdentifier().getKey()));
+    }
+	<% } %>
     public boolean isSet<%= fname %> () throws java.lang.Exception { return _isSet_<%= fname %>; }
     public void unSet<%= fname %> () throws java.lang.Exception { _isSet_<%= fname %> = false; }
 <% } %>

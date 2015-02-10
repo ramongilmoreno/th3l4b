@@ -133,8 +133,8 @@ public class BasicModelTest {
 		IEntity1 e1a = utils.createEntity1();
 		IEntity1 e1b = utils.createEntity1();
 		IEntity2 e2 = utils.createEntity2();
-		e1a.setReference(e2.coordinates().getIdentifier().getKey());
-		e1b.setReference(e2.coordinates().getIdentifier().getKey());
+		e1a.setReference(e2);
+		e1b.setReference(e2);
 		ArrayList<IInstance> updates = new ArrayList<IInstance>();
 		updates.add(e1a);
 		updates.add(e1b);
