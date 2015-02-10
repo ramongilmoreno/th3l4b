@@ -11,12 +11,19 @@ package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.Codege
 public class <%= name %>ModelReverse extends com.th3l4b.srm.codegen.java.runtime.DefaultReverse {
 
 	public <%= name %>ModelReverse () throws java.lang.Exception {
-	    <% for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) { %>
+		<%
+		String cnstnts = pkg + ".utils." + java.name(model) + "ModelUtils";
+	    for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
+	    	com.th3l4b.srm.model.base.IEntity e = model.get(rr.getSourceType());
+	    	com.th3l4b.srm.model.base.IField f = e.get(rr.getField());
+	    	com.th3l4b.srm.model.base.IEntity t = model.get(rr.getTargetType());
+	    	
+	    %>
 	    add(new com.th3l4b.srm.codegen.java.runtime.DefaultReverseRelationship(
-	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getSourceType()) %>",
-	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getField()) %>",
-	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getTargetType()) %>",
-	    		"<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getName()) %>"
+	    		<%= cnstnts %>.ENTITY_<%= java.name(e) %>,
+	    		<%= cnstnts %>.FIELD_<%= java.name(e) %>_<%= java.name(f) %>,
+	    		<%= cnstnts %>.ENTITY_<%= java.name(t) %>,
+	    		<%= cnstnts %>.REVERSE_<%= java.name(t) %>_<%= java.name(rr) %>
 	    	));
 	    <% } %>    
 	}

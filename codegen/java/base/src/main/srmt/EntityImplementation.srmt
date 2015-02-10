@@ -13,7 +13,7 @@ package <%= pkg %>.entities.impl;
 @SuppressWarnings("serial")
 public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java.runtime.AbstractInstance implements <%= pkg %>.entities.I<%= java.name(entity) %> {
 
-	public java.lang.String type() throws java.lang.Exception { return "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName()) %>"; }
+	public java.lang.String type() throws java.lang.Exception { return <%= pkg %>.utils.<%= java.name(model) %>ModelUtils.ENTITY_<%= java.name(entity) %>; }
 
 	// Fields
 <% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>

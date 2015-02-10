@@ -16,11 +16,11 @@ public class <%= name %>EntityRuntime extends com.th3l4b.srm.codegen.java.runtim
 	}
 
     public <%= name %>EntityRuntime () throws java.lang.Exception {
-        setName("<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(entity.getName()) %>");
+        setName(<%= pkg %>.utils.<%= java.name(model) %>ModelUtils.ENTITY_<%= java.name(entity) %>);
 <% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
 		add(new com.th3l4b.srm.codegen.java.runtime.AbstractFieldRuntime() {
 			{
-				setName("<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(f.getName()) %>");
+				setName(<%= pkg %>.utils.<%= java.name(model) %>ModelUtils.FIELD_<%= java.name(entity) %>_<%= java.name(f) %>);
 			}
 
 			public java.lang.String get(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
