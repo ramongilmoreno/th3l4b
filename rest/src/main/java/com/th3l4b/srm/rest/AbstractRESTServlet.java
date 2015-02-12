@@ -102,12 +102,14 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 	private void serialize(IInstance instance, IModelRuntime runtime,
 			JsonGenerator generator) throws Exception {
 		generator.writeStartObject();
-		generator.writeFieldName("_Type");
+		generator.writeFieldName("type");
 		generator.writeString(instance.type());
-		generator.writeFieldName("_Id");
+		generator.writeFieldName("id");
 		generator.writeString(instance.coordinates().getIdentifier().getKey());
-		generator.writeFieldName("_Status");
+		generator.writeFieldName("status");
 		generator.writeString(instance.coordinates().getStatus().toString());
+		generator.writeFieldName("fields");
+		generator.writeStartObject();
 		IEntityRuntime er = runtime.entities().get(instance.type());
 		for (IFieldRuntime fr : er) {
 			if (fr.isSet(instance)) {
@@ -116,7 +118,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 				generator.writeString(value);
 			}
 		}
-
+		generator.writeEndObject();
 		generator.writeEndObject();
 	}
 
