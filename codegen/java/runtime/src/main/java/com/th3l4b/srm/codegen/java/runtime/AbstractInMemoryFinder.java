@@ -83,4 +83,19 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 		}
 		return r;
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> void references(IIdentifier id, String relationship, Collection<T> r) throws Exception {
+		IReverseRelationship rr = reverse().get(id.getType()).get(relationship);
+		String type = rr.getSourceType();
+		IFieldRuntime fr = entities().get(type).get(rr.getField());
+		String key = id.getKey();
+		for (IInstance e: getMap().values()) {
+			if (NullSafe.equals(e.type(), type)) {
+				if (NullSafe.equals(key, fr.get(e))) {
+					r.add((T) e);
+				}
+			}
+		}
+	}
 }

@@ -22,4 +22,20 @@ public abstract class Abstract<%= name %>InMemoryFinder extends com.th3l4b.srm.c
 		return find(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= ename %>, id, <%= pkg %>.entities.I<%= ename %>.class);
     }
 <% } %>
+<% for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
+	java.lang.String rrname = java.name(rr);
+	com.th3l4b.srm.model.base.IEntity t = model.get(rr.getTargetType());
+	java.lang.String tname = java.name(t);
+	com.th3l4b.srm.model.base.IEntity s = model.get(rr.getSourceType());
+	java.lang.String sname = java.name(s);
+	java.lang.String returnName = pkg + ".entities.I" + sname; 
+%>
+	public java.util.Collection<<%= returnName %>> reverseTo<%= tname %>_<%= rrname %> (java.lang.String id) throws java.lang.Exception {
+		java.util.Collection<<%= returnName %>> r = new java.util.ArrayList<<%= returnName %>>();
+		references(new com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= tname %>, id),
+				<%= pkg %>.utils.<%= name %>ModelUtils.REVERSE_<%= tname %>_<%= rrname %>,
+				r);
+	    return r;
+	}
+<% } %>
 }

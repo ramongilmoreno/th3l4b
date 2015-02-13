@@ -13,4 +13,9 @@ public interface I<%=java.name(model)%>Finder extends com.th3l4b.srm.model.runti
     java.lang.Iterable<<%= pkg %>.entities.I<%= ename %>> all<%= ename %> () throws java.lang.Exception;
     <%= pkg %>.entities.I<%= ename %> find<%= ename %> (java.lang.String id) throws java.lang.Exception;
 <% } %>
+<% for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
+	com.th3l4b.srm.model.base.IEntity t = model.get(rr.getTargetType());
+	com.th3l4b.srm.model.base.IEntity s = model.get(rr.getSourceType()); %>
+	java.util.Collection<<%= pkg %>.entities.I<%= java.name(s) %>> reverseTo<%= java.name(t) %>_<%= java.name(rr) %> (java.lang.String id) throws java.lang.Exception;
+<% } %>    
 }

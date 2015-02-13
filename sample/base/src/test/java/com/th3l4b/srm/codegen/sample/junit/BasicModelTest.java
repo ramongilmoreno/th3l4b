@@ -140,9 +140,8 @@ public class BasicModelTest {
 		updates.add(e1b);
 		updates.add(e2);
 		utils.getModelRuntime().updater().update(updates);
-		Collection<IInstance> refs = utils.finder().references(
-				e2.coordinates().getIdentifier(),
-				SampleModelUtils.REVERSE_Entity2_Reverse);
+		Collection<IEntity1> refs = utils.finder().reverseToEntity2_Reverse(
+				e2.coordinates().getIdentifier().getKey());
 		boolean e1aFound = false;
 		boolean e1bFound = false;
 		for (IInstance ref : refs) {
