@@ -37,4 +37,19 @@ public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java
     public boolean isSet<%= fname %> () throws java.lang.Exception { return _isSet_<%= fname %>; }
     public void unSet<%= fname %> () throws java.lang.Exception { _isSet_<%= fname %> = false; }
 <% } %>
+
+	public java.lang.String toString () {
+		try {
+			java.lang.StringBuilder sb = new java.lang.StringBuilder(super.toString());
+<% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
+			if (isSet<%= fname %>()) {
+			    sb.append(", ");
+				sb.append(get<%= fname %>());
+			}
+<% } %>
+			return sb.toString();
+		} catch (java.lang.Exception e) {
+			throw new java.lang.RuntimeException(e);
+		}
+	}
 }

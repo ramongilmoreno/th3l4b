@@ -2,6 +2,7 @@ package com.th3l4b.srm.codegen.java.runtime;
 
 import java.io.Serializable;
 
+import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IInstance;
@@ -24,5 +25,14 @@ public abstract class AbstractInstance implements IInstance, Serializable {
 			_coordinates = createCoordinates();
 		}
 		return _coordinates;
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return NullSafe.toString(coordinates());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -62,4 +62,8 @@ public class DefaultIdentifier implements IIdentifier, Serializable {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "[" + _type + ", " + _key + "]";
+	}
 }

@@ -19,4 +19,12 @@ public class NullSafe {
 			return o.hashCode();
 		}
 	}
+	
+	public static String toString (Object o) {
+		if (o == null) {
+			return "" + null;
+		} else {
+			return o.toString();
+		}
+	}
 }

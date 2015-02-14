@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.th3l4b.common.data.NullSafe;
+import com.th3l4b.srm.sample.base.SampleData;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
 import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryModelRuntime;
@@ -20,7 +21,7 @@ import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
 
-public class BasicModelTest {
+public class SampleModelTest {
 
 	SampleModelUtils createModelUtils() throws Exception {
 		final Map<IIdentifier, IInstance> data = new LinkedHashMap<IIdentifier, IInstance>();
@@ -161,5 +162,18 @@ public class BasicModelTest {
 		}
 		Assert.assertTrue("One of the entities was not found", e1aFound
 				&& e1bFound);
+	}
+	
+	@Test
+	public void testToString () throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		new SampleData().fill(utils.getModelRuntime());
+		for (IEntity1 e: utils.finder().allEntity1()) {
+			System.out.println(e);
+		}
+		for (IEntity2 e2: utils.finder().allEntity2()) {
+			System.out.println(e2);
+		}
+		
 	}
 }

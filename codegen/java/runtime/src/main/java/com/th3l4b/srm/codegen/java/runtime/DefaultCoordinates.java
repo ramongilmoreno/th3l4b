@@ -29,4 +29,8 @@ public class DefaultCoordinates implements ICoordinates {
 		_identifier = identifier;
 	}
 
+	@Override
+	public String toString() {
+		return "" + _identifier + " - " + _status;
+	}
 }
