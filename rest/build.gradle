@@ -2,8 +2,7 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 apply plugin: "war"
 
 dependencies {
-    compile project(':codegen:java:runtime')
-    compile 'com.fasterxml.jackson.core:jackson-core:2.5.0'
+    compile project(':json')
     compile 'javax.servlet:servlet-api:2.5'
 }
 

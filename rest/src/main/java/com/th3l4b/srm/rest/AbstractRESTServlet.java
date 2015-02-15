@@ -9,12 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier;
+import com.th3l4b.srm.json.Generator;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
-import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
 
@@ -73,53 +71,21 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 			if (r == null) {
 				throw new IllegalArgumentException("Not a valid REST request");
 			}
-
-			// http://www.studytrails.com/java/json/java-jackson-json-streaming.jsp
-			JsonFactory factory = new JsonFactory();
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding(ITextConstants.UTF_8);
-			JsonGenerator generator = factory.createGenerator(resp.getWriter());
+			Generator g = new Generator(runtime, resp.getWriter());
 			if (r instanceof Collection<?>) {
 				@SuppressWarnings("unchecked")
 				Collection<IInstance> col = (Collection<IInstance>) r;
-				generator.writeStartArray();
-				for (IInstance instance : col) {
-					serialize(instance, runtime, generator);
-				}
-				generator.writeEndArray();
-
+				g.write(col);
 			} else {
 				IInstance instance = (IInstance) r;
-				serialize(instance, runtime, generator);
+				g.write(instance);
 			}
-			generator.close();
+			g.close();
 
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
-
-	private void serialize(IInstance instance, IModelRuntime runtime,
-			JsonGenerator generator) throws Exception {
-		generator.writeStartObject();
-		generator.writeFieldName("type");
-		generator.writeString(instance.type());
-		generator.writeFieldName("id");
-		generator.writeString(instance.coordinates().getIdentifier().getKey());
-		generator.writeFieldName("status");
-		generator.writeString(instance.coordinates().getStatus().toString());
-		generator.writeFieldName("fields");
-		generator.writeStartObject();
-		IEntityRuntime er = runtime.entities().get(instance.type());
-		for (IFieldRuntime fr : er) {
-			if (fr.isSet(instance)) {
-				String value = fr.get(instance);
-				generator.writeFieldName(fr.getName());
-				generator.writeString(value);
-			}
-		}
-		generator.writeEndObject();
-		generator.writeEndObject();
-	}
-
 }

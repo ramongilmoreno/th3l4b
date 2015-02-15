@@ -1,0 +1,7 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':codegen:java:runtime')
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.0'
+}
+
