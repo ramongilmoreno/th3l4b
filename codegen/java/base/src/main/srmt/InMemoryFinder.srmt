@@ -11,16 +11,22 @@ package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.Codege
 <% java.lang.String name = java.name(model); %>
 public abstract class Abstract<%= name %>InMemoryFinder extends com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder implements <%= pkg %>.I<%= name %>Finder {
 
-<% for (com.th3l4b.srm.model.base.IEntity e: model) { java.lang.String ename = java.name(e); %>
-    public java.lang.Iterable<<%= pkg %>.entities.I<%= ename %>> all<%= ename %> () throws java.lang.Exception {
-    	java.util.ArrayList<<%= pkg %>.entities.I<%= ename %>> r = new java.util.ArrayList<<%= pkg %>.entities.I<%= ename %>>();
-    	all(<%= pkg %>.entities.I<%= ename %>.class, r);
-    	return r;
+<% for (com.th3l4b.srm.model.base.IEntity e: model) {
+	java.lang.String ename = java.name(e);
+	java.lang.String fqn = pkg + ".entities.I" + ename;
+	java.lang.String collection = java.util.Collection.class.getName() + "<" + fqn + ">"; %>
+	@SuppressWarnings("unchecked")
+    public <%= collection %> all<%= ename %> () throws java.lang.Exception {
+    	return (<%= collection %>) (java.util.Collection<?>) all(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= ename %>);
     }
     
-    public <%= pkg %>.entities.I<%= ename %> find<%= ename %> (java.lang.String id) throws java.lang.Exception {
-		return find(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= ename %>, id, <%= pkg %>.entities.I<%= ename %>.class);
+    public <%= fqn %> find<%= ename %> (java.lang.String id) throws java.lang.Exception {
+		return find<%= ename %>(new com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= ename %>, id));
     }
+
+    public <%= fqn %> find<%= ename %> (com.th3l4b.srm.model.runtime.IIdentifier id) throws java.lang.Exception {
+		return (<%= fqn %>) find(id);
+    }    
 <% } %>
 <% for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
 	java.lang.String rrname = java.name(rr);
@@ -30,12 +36,11 @@ public abstract class Abstract<%= name %>InMemoryFinder extends com.th3l4b.srm.c
 	java.lang.String sname = java.name(s);
 	java.lang.String returnName = pkg + ".entities.I" + sname; 
 %>
-	public java.util.Collection<<%= returnName %>> reverseTo<%= tname %>_<%= rrname %> (java.lang.String id) throws java.lang.Exception {
-		java.util.Collection<<%= returnName %>> r = new java.util.ArrayList<<%= returnName %>>();
-		references(new com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= tname %>, id),
-				<%= pkg %>.utils.<%= name %>ModelUtils.REVERSE_<%= tname %>_<%= rrname %>,
-				r);
-	    return r;
+	@SuppressWarnings("unchecked")
+	public java.util.Collection<<%= returnName %>> references<%= tname %>_<%= rrname %> (java.lang.String id) throws java.lang.Exception {
+		return (java.util.Collection<<%= returnName %>>) (java.util.Collection<?>) references(
+				new com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier(<%= pkg %>.utils.<%= name %>ModelUtils.ENTITY_<%= tname %>, id),
+				<%= pkg %>.utils.<%= name %>ModelUtils.REVERSE_<%= tname %>_<%= rrname %>);
 	}
 <% } %>
 }

@@ -141,7 +141,7 @@ public class SampleModelTest {
 		updates.add(e1b);
 		updates.add(e2);
 		utils.getModelRuntime().updater().update(updates);
-		Collection<IEntity1> refs = utils.finder().reverseToEntity2_Reverse(
+		Collection<IEntity1> refs = utils.finder().referencesEntity2_Reverse(
 				e2.coordinates().getIdentifier().getKey());
 		boolean e1aFound = false;
 		boolean e1bFound = false;
@@ -163,17 +163,17 @@ public class SampleModelTest {
 		Assert.assertTrue("One of the entities was not found", e1aFound
 				&& e1bFound);
 	}
-	
+
 	@Test
-	public void testToString () throws Exception {
+	public void testToString() throws Exception {
 		SampleModelUtils utils = createModelUtils();
 		new SampleData().fill(utils.getModelRuntime());
-		for (IEntity1 e: utils.finder().allEntity1()) {
+		for (IEntity1 e : utils.finder().allEntity1()) {
 			System.out.println(e);
 		}
-		for (IEntity2 e2: utils.finder().allEntity2()) {
+		for (IEntity2 e2 : utils.finder().allEntity2()) {
 			System.out.println(e2);
 		}
-		
+
 	}
 }
