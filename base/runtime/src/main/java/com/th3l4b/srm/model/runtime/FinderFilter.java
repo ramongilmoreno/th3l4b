@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public class FinderFilter implements IFinder {
 
-	IFinder _delegated;
+	protected IFinder _delegated;
 
 	public FinderFilter() {
 	}

@@ -22,7 +22,7 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 	}
 	
 	protected com.th3l4b.srm.model.runtime.IFinder createFinder() throws java.lang.Exception {
-		return new <%= pkg %>.inmemory.Abstract<%= name %>InMemoryFinder() {
+		return new com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder() {
 			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws java.lang.Exception {
 				return Abstract<%= name %>InMemoryModelRuntime.this.entities();
 			}
@@ -54,6 +54,6 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 	}
 	
 	protected com.th3l4b.srm.model.runtime.IReverse createReverse() throws java.lang.Exception {
-		return new <%= pkg %>.utils.<%= name %>ModelReverse();
+		return new <%= pkg %>.<%= name %>ModelReverse();
 	}
 }

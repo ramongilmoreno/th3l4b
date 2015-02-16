@@ -4,15 +4,15 @@
 
 unit: model
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/utils/<%=java.name(model)%>ModelReverse.java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/<%=java.name(model)%>ModelReverse.java
 content:
-package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.utils;
+package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>;
 <% java.lang.String name = java.name(model); %>
 public class <%= name %>ModelReverse extends com.th3l4b.srm.codegen.java.runtime.DefaultReverse {
 
 	public <%= name %>ModelReverse () throws java.lang.Exception {
 		<%
-		String cnstnts = pkg + ".utils." + java.name(model) + "ModelUtils";
+		String cnstnts = pkg + "." + java.name(model) + "ModelUtils";
 	    for (com.th3l4b.srm.model.runtime.IReverseRelationship rr: com.th3l4b.srm.codegen.java.base.ReverseInspector.reverse(model)) {
 	    	com.th3l4b.srm.model.base.IEntity e = model.get(rr.getSourceType());
 	    	com.th3l4b.srm.model.base.IField f = e.get(rr.getField());

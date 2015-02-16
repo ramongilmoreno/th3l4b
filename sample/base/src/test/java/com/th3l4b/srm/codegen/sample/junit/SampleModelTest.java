@@ -12,10 +12,10 @@ import org.junit.Test;
 
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.sample.base.SampleData;
+import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
 import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryModelRuntime;
-import com.th3l4b.srm.sample.base.generated.utils.SampleModelUtils;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
