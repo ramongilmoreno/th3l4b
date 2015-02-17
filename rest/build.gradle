@@ -1,8 +1,7 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
-apply plugin: "war"
 
 dependencies {
     compile project(':json')
-    compile 'javax.servlet:servlet-api:2.5'
+    provided 'javax.servlet:servlet-api:2.5'
 }
 

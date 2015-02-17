@@ -1,10 +1,16 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 //projectsourceCompatibility = 1.6
 
 repositories {
     mavenCentral()
+}
+
+configurations {
+    // http://stackoverflow.com/questions/18738888/how-to-use-provided-scope-for-jar-file-in-gradle-build
+    provided
 }
 
 sourceSets {
@@ -24,6 +30,11 @@ sourceSets {
             srcDir 'src/test/java' 
         }
     }
+
+    // http://stackoverflow.com/questions/18738888/how-to-use-provided-scope-for-jar-file-in-gradle-build
+    main.compileClasspath += configurations.provided
+    test.compileClasspath += configurations.provided
+    test.runtimeClasspath += configurations.provided
 }
 
 dependencies {
@@ -38,9 +49,21 @@ def fqn (p) {
     }
 }
 
-eclipse.project { p -> name = fqn(project) }
 
-eclipse.classpath.defaultOutputDir = file('build/classes')
+group = fqn(project.parent)
+version = "1.0-SNAPSHOT"
+
+jar.archiveName = fqn(project) + "-${version}.${jar.extension}"
+
+eclipse.project.name = fqn(project)
+
+eclipse.classpath {
+    defaultOutputDir = file('build/classes')
+
+    // http://blog.codeaholics.org/2012/emulating-mavens-provided-scope-in-gradle/
+    // http://forums.gradle.org/gradle/topics/gradle-2-0-error-you-cant-change-configuration-provided-because-it-is-already-resolved
+    plusConfigurations += [configurations.provided]
+}
 
 task b (dependsOn: ['build', 'eclipse']) {}
 task c (dependsOn: ['clean', 'cleanEclipse']) {}

@@ -5,6 +5,7 @@ apply plugin: 'jetty'
 dependencies {
     compile project(':sample:base')
     compile project(':rest')
+    providedCompile 'javax.servlet:servlet-api:2.5'
 }
 
 // http://stackoverflow.com/questions/6767732/setting-httpport-for-jetty-grails-plugin
