@@ -1,11 +1,11 @@
-package com.th3l4b.srm.codegen.java.base;
+package com.th3l4b.srm.mongo;
 
 import com.th3l4b.common.data.INamedPropertied;
 import com.th3l4b.srm.model.runtime.ModelNames;
 
-public class JavaNames extends ModelNames {
-
-	private static final String PREFIX = JavaNames.class.getPackage().getName()
+public class MongoNames extends ModelNames {
+	
+	private static final String PREFIX = MongoNames.class.getPackage().getName()
 			+ ".names";
 	public static final String PROPERTY_IDENTIFIER = PREFIX + ".identifier";
 
@@ -14,9 +14,8 @@ public class JavaNames extends ModelNames {
 				new StringGetter() {
 					@Override
 					public String get() throws Exception {
-						return JavaNames.super.name(item);
+						return MongoNames.super.name(item);
 					}
 				});
 	}
-
 }

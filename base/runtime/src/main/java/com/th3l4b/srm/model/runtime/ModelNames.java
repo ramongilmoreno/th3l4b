@@ -1,16 +1,16 @@
-package com.th3l4b.srm.codegen.template.runtime;
+package com.th3l4b.srm.model.runtime;
 
 import com.th3l4b.common.data.INamedPropertied;
 import com.th3l4b.common.data.propertied.IPropertied;
 import com.th3l4b.common.text.codegen.TextUtils;
 
-public class CodegenNames {
+public class ModelNames {
 
 	public interface StringGetter {
 		String get() throws Exception;
 	}
 
-	private static final String PREFIX = CodegenNames.class.getPackage()
+	private static final String PREFIX = ModelNames.class.getPackage()
 			.getName() + ".names";
 	public static final String PROPERTY_IDENTIFIER = PREFIX + ".identifier";
 
