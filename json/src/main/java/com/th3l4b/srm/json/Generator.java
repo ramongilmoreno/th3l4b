@@ -57,7 +57,7 @@ public class Generator {
 		generator.writeString(instance.coordinates().getStatus().toString());
 		generator.writeFieldName(FIELD_FIELDS);
 		generator.writeStartObject();
-		IEntityRuntime er = getRuntime().entities().get(instance.type());
+		IEntityRuntime er = getRuntime().model().get(instance.type());
 		for (IFieldRuntime fr : er) {
 			if (fr.isSet(instance)) {
 				String value = fr.get(instance);

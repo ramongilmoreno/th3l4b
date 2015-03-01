@@ -1,7 +1,7 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
 import com.th3l4b.common.data.named.DefaultNamed;
-import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
+import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.model.runtime.IReverse;
@@ -9,17 +9,17 @@ import com.th3l4b.srm.model.runtime.IUpdater;
 
 public abstract class AbstractRuntime extends DefaultNamed implements IRuntime {
 
-	protected IEntitiesRuntime _entities;
+	protected IModelRuntime _entities;
 	protected IFinder _finder;
 	protected IUpdater _updater;
 	protected IReverse _reverse;
 
-	protected abstract IEntitiesRuntime createEntities() throws Exception;
+	protected abstract IModelRuntime createModel() throws Exception;
 
 	@Override
-	public IEntitiesRuntime entities() throws Exception {
+	public IModelRuntime model() throws Exception {
 		if (_entities == null) {
-			_entities = createEntities();
+			_entities = createModel();
 		}
 		return _entities;
 	}

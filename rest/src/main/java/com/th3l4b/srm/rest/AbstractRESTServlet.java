@@ -45,7 +45,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 			Object r = null;
 			if (split.length > 0) {
 				String type = URLDecoder.decode(split[0], ITextConstants.UTF_8);
-				IEntityRuntime er = runtime.entities().get(type);
+				IEntityRuntime er = runtime.model().get(type);
 				if (er == null) {
 					throw new IllegalArgumentException("Unknown entity: "
 							+ type);

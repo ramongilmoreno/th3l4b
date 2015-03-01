@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.EntityStatus;
-import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
+import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
@@ -17,7 +17,7 @@ import com.th3l4b.srm.model.runtime.IReverseRelationship;
 
 public abstract class AbstractInMemoryFinder implements IFinder {
 
-	protected abstract IEntitiesRuntime entities() throws Exception;
+	protected abstract IModelRuntime model() throws Exception;
 
 	protected abstract IReverse reverse() throws Exception;
 
@@ -39,7 +39,7 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 	public IInstance find(IIdentifier id) throws Exception {
 		Map<IIdentifier, IInstance> map = getMap();
 		if (!map.containsKey(id)) {
-			IEntityRuntime er = entities().get(id.getType());
+			IEntityRuntime er = model().get(id.getType());
 			IInstance r = er.create();
 			r.coordinates().setIdentifier(id);
 			r.coordinates().setStatus(EntityStatus.Unknown);
@@ -56,7 +56,7 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 		ArrayList<IInstance> r = new ArrayList<IInstance>();
 		IReverseRelationship rr = reverse().get(id.getType()).get(relationship);
 		String type = rr.getSourceType();
-		IFieldRuntime fr = entities().get(type).get(rr.getField());
+		IFieldRuntime fr = model().get(type).get(rr.getField());
 		String key = id.getKey();
 		for (IInstance e : getMap().values()) {
 			if (NullSafe.equals(e.type(), type)) {

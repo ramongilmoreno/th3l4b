@@ -34,7 +34,7 @@ public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.D
     }
     <% for (com.th3l4b.srm.model.base.IEntity e: model) { java.lang.String ename = java.name(e); %>
     public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> (com.th3l4b.srm.model.runtime.IRuntime runtime) throws java.lang.Exception {
-		return runtime.entities().get(ENTITY_<%= ename %>);
+		return runtime.model().get(ENTITY_<%= ename %>);
 	}    
     
     public com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> () throws java.lang.Exception {

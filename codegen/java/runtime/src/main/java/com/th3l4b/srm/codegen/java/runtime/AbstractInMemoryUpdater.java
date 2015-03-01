@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.th3l4b.srm.model.runtime.EntityStatus;
-import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
+import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IIdentifier;
@@ -16,7 +16,7 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 
 	protected abstract Map<IIdentifier, IInstance> getMap() throws Exception;
 
-	protected abstract IEntitiesRuntime entities() throws Exception;
+	protected abstract IModelRuntime model() throws Exception;
 
 	protected abstract IFinder finder() throws Exception;
 
@@ -74,7 +74,7 @@ public abstract class AbstractInMemoryUpdater implements IUpdater {
 		}
 
 		// Create a copy and apply changes
-		IEntityRuntime er = entities().get(
+		IEntityRuntime er = model().get(
 				newEntity.coordinates().getIdentifier().getType());
 		IInstance copy = er.create();
 		if (oldEntity != null) {

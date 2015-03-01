@@ -27,7 +27,7 @@ public class MongoUtils {
 	public static IMongoModelRuntime create(IRuntime runtime)
 			throws Exception {
 		DefaultMongoModelRuntime mmr = new DefaultMongoModelRuntime(runtime);
-		for (IEntityRuntime er : runtime.entities()) {
+		for (IEntityRuntime er : runtime.model()) {
 			DefaultMongoEntityRuntime mer = new DefaultMongoEntityRuntime(er);
 			for (IFieldRuntime fr : er) {
 				DefaultMongoFieldRuntime mfr = new DefaultMongoFieldRuntime(fr);
