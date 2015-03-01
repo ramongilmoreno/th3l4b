@@ -9,26 +9,27 @@ import javax.servlet.http.HttpSession;
 
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.rest.AbstractRESTServlet;
 import com.th3l4b.srm.sample.base.SampleData;
-import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryModelRuntime;
+import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryRuntime;
 
 @SuppressWarnings("serial")
 public class SampleRESTServlet extends AbstractRESTServlet {
 
 	@Override
-	protected IModelRuntime getRuntimeModel(HttpServletRequest req,
+	protected IRuntime getRuntimeModel(HttpServletRequest req,
 			HttpServletResponse resp) throws Exception {
 		HttpSession session = req.getSession(true);
 		String attributeName = getClass().getName();
 		@SuppressWarnings("unchecked")
-		Map<IIdentifier, IInstance> data = (Map<IIdentifier, IInstance>) session.getAttribute(attributeName);
+		Map<IIdentifier, IInstance> data = (Map<IIdentifier, IInstance>) session
+				.getAttribute(attributeName);
 		if (data == null) {
 			// Create data and populate of sample data
 			data = new LinkedHashMap<IIdentifier, IInstance>();
 			final Map<IIdentifier, IInstance> fdata = data;
-			AbstractSampleInMemoryModelRuntime tofill = new AbstractSampleInMemoryModelRuntime() {
+			AbstractSampleInMemoryRuntime tofill = new AbstractSampleInMemoryRuntime() {
 				@Override
 				protected Map<IIdentifier, IInstance> getMap() throws Exception {
 					return fdata;
@@ -39,7 +40,7 @@ public class SampleRESTServlet extends AbstractRESTServlet {
 		}
 		final Map<IIdentifier, IInstance> fdata = data;
 
-		return new AbstractSampleInMemoryModelRuntime() {
+		return new AbstractSampleInMemoryRuntime() {
 			@Override
 			protected Map<IIdentifier, IInstance> getMap() throws Exception {
 				return fdata;

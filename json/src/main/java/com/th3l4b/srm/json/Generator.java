@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 
 public class Generator {
 
@@ -17,9 +17,9 @@ public class Generator {
 	private static final String FIELD_ID = "id";
 	private static final String FIELD_TYPE = "type";
 	private JsonGenerator _jackson;
-	private IModelRuntime _runtime;
+	private IRuntime _runtime;
 
-	public Generator(IModelRuntime runtime, Writer out) throws Exception {
+	public Generator(IRuntime runtime, Writer out) throws Exception {
 		_jackson = new JsonFactory().createGenerator(out);
 		_runtime = runtime;
 	}
@@ -28,7 +28,7 @@ public class Generator {
 		return _jackson;
 	}
 	
-	public IModelRuntime getRuntime() {
+	public IRuntime getRuntime() {
 		return _runtime;
 	}
 	

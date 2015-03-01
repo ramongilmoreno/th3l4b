@@ -4,12 +4,12 @@
 
 unit: model
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryModelRuntime.java
+file: <%=com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties)%>/inmemory/Abstract<%=java.name(model)%>InMemoryRuntime.java
 content:
 
 package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %><%= pkg %>.inmemory;
 <% java.lang.String name = java.name(model); %>
-public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractModelRuntime {
+public abstract class Abstract<%= name %>InMemoryRuntime extends com.th3l4b.srm.codegen.java.runtime.AbstractRuntime {
 
 	protected abstract java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception;
 			
@@ -24,15 +24,15 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 	protected com.th3l4b.srm.model.runtime.IFinder createFinder() throws java.lang.Exception {
 		return new com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryFinder() {
 			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.entities();
+				return Abstract<%= name %>InMemoryRuntime.this.entities();
 			}
 
 			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.getMap();
+				return Abstract<%= name %>InMemoryRuntime.this.getMap();
 			}
 			
 			protected com.th3l4b.srm.model.runtime.IReverse reverse () throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.reverse();
+				return Abstract<%= name %>InMemoryRuntime.this.reverse();
 			}
 		};
 	}
@@ -40,15 +40,15 @@ public abstract class Abstract<%= name %>InMemoryModelRuntime extends com.th3l4b
 	protected com.th3l4b.srm.model.runtime.IUpdater createUpdater() throws java.lang.Exception {
 		return new com.th3l4b.srm.codegen.java.runtime.AbstractInMemoryUpdater() {
 			protected com.th3l4b.srm.model.runtime.IEntitiesRuntime entities() throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.entities();
+				return Abstract<%= name %>InMemoryRuntime.this.entities();
 			}
 
 			protected java.util.Map<com.th3l4b.srm.model.runtime.IIdentifier, com.th3l4b.srm.model.runtime.IInstance> getMap() throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.getMap();
+				return Abstract<%= name %>InMemoryRuntime.this.getMap();
 			}
 	
 			protected com.th3l4b.srm.model.runtime.IFinder finder () throws java.lang.Exception {
-				return Abstract<%= name %>InMemoryModelRuntime.this.finder();
+				return Abstract<%= name %>InMemoryRuntime.this.finder();
 		    }
 	    };
 	}

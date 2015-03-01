@@ -1,24 +1,24 @@
 package com.th3l4b.srm.codegen.java.runtime;
 
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 
 public class DefaultModelUtils {
 	
-	IModelRuntime _modelRuntime;
+	IRuntime _runtime;
 	
 	public DefaultModelUtils () {
 	}
 	
-	public DefaultModelUtils (IModelRuntime modelRuntime) {
-		_modelRuntime = modelRuntime;
+	public DefaultModelUtils (IRuntime modelRuntime) {
+		_runtime = modelRuntime;
 	}
 	
-	public IModelRuntime getModelRuntime() {
-		return _modelRuntime;
+	public IRuntime getRuntime() {
+		return _runtime;
 	}
 	
-	public void setModelRuntime(IModelRuntime modelRuntime) {
-		_modelRuntime = modelRuntime;
+	public void setRuntime(IRuntime runtime) {
+		_runtime = runtime;
 	}
 
 }

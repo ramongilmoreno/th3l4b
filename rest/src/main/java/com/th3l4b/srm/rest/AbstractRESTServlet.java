@@ -14,12 +14,12 @@ import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier;
 import com.th3l4b.srm.json.Generator;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 
 @SuppressWarnings("serial")
 public abstract class AbstractRESTServlet extends HttpServlet {
 
-	protected abstract IModelRuntime getRuntimeModel(HttpServletRequest req,
+	protected abstract IRuntime getRuntimeModel(HttpServletRequest req,
 			HttpServletResponse resp) throws Exception;
 
 	private String[] split(HttpServletRequest request) throws Exception {
@@ -40,7 +40,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try {
-			IModelRuntime runtime = getRuntimeModel(req, resp);
+			IRuntime runtime = getRuntimeModel(req, resp);
 			String[] split = split(req);
 			Object r = null;
 			if (split.length > 0) {

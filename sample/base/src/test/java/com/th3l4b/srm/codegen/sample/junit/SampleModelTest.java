@@ -11,21 +11,21 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.th3l4b.common.data.NullSafe;
+import com.th3l4b.srm.model.runtime.EntityStatus;
+import com.th3l4b.srm.model.runtime.IIdentifier;
+import com.th3l4b.srm.model.runtime.IInstance;
+import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.sample.base.SampleData;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
-import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryModelRuntime;
-import com.th3l4b.srm.model.runtime.EntityStatus;
-import com.th3l4b.srm.model.runtime.IIdentifier;
-import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryRuntime;
 
 public class SampleModelTest {
 
 	SampleModelUtils createModelUtils() throws Exception {
 		final Map<IIdentifier, IInstance> data = new LinkedHashMap<IIdentifier, IInstance>();
-		IModelRuntime r = new AbstractSampleInMemoryModelRuntime() {
+		IRuntime r = new AbstractSampleInMemoryRuntime() {
 			@Override
 			protected Map<IIdentifier, IInstance> getMap() throws Exception {
 				return data;
@@ -51,7 +51,7 @@ public class SampleModelTest {
 		Assert.assertNotNull("Could not find unknown object", found);
 		Assert.assertEquals("Unknown object is not Unknown",
 				EntityStatus.Unknown, found.coordinates().getStatus());
-		utils.getModelRuntime().updater()
+		utils.getRuntime().updater()
 				.update(Collections.<IInstance> singleton(e1));
 		found = utils.finder().find(id);
 		Assert.assertNotNull("Not found just created object", found);
@@ -75,7 +75,7 @@ public class SampleModelTest {
 		Assert.assertNotNull("Could not find unknown object", found);
 		Assert.assertEquals("Unknown object is not Unknown",
 				EntityStatus.Unknown, found.coordinates().getStatus());
-		utils.getModelRuntime().updater()
+		utils.getRuntime().updater()
 				.update(Collections.<IInstance> singleton(e1));
 		found = utils.finder().find(id);
 		Assert.assertNotNull("Not found just created object", found);
@@ -95,7 +95,7 @@ public class SampleModelTest {
 		e.coordinates().setIdentifier(id);
 		String value = UUID.randomUUID().toString();
 		e.setField11(value);
-		utils.getModelRuntime().updater()
+		utils.getRuntime().updater()
 				.update(Collections.<IInstance> singleton(e));
 
 		// Find result
@@ -117,7 +117,7 @@ public class SampleModelTest {
 		e.coordinates().setStatus(EntityStatus.ToSave);
 		String value = UUID.randomUUID().toString();
 		e.setField11(value);
-		utils.getModelRuntime().updater()
+		utils.getRuntime().updater()
 				.update(Collections.<IInstance> singleton(e));
 
 		// Find result
@@ -140,7 +140,7 @@ public class SampleModelTest {
 		updates.add(e1a);
 		updates.add(e1b);
 		updates.add(e2);
-		utils.getModelRuntime().updater().update(updates);
+		utils.getRuntime().updater().update(updates);
 		Collection<IEntity1> refs = utils.finder().referencesEntity2_Reverse(
 				e2.coordinates().getIdentifier().getKey());
 		boolean e1aFound = false;
@@ -167,7 +167,7 @@ public class SampleModelTest {
 	@Test
 	public void testToString() throws Exception {
 		SampleModelUtils utils = createModelUtils();
-		new SampleData().fill(utils.getModelRuntime());
+		new SampleData().fill(utils.getRuntime());
 		for (IEntity1 e : utils.finder().allEntity1()) {
 			System.out.println(e);
 		}

@@ -3,12 +3,11 @@ package com.th3l4b.srm.codegen.java.runtime;
 import com.th3l4b.common.data.named.DefaultNamed;
 import com.th3l4b.srm.model.runtime.IEntitiesRuntime;
 import com.th3l4b.srm.model.runtime.IFinder;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.model.runtime.IReverse;
 import com.th3l4b.srm.model.runtime.IUpdater;
 
-public abstract class AbstractModelRuntime extends DefaultNamed implements
-		IModelRuntime {
+public abstract class AbstractRuntime extends DefaultNamed implements IRuntime {
 
 	protected IEntitiesRuntime _entities;
 	protected IFinder _finder;

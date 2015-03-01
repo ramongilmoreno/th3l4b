@@ -4,7 +4,7 @@ import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifierFieldRuntime;
 import com.th3l4b.srm.codegen.java.runtime.DefaultStatusFieldRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 
 public class MongoUtils {
 
@@ -24,7 +24,7 @@ public class MongoUtils {
 		}
 	}
 
-	public static IMongoModelRuntime create(IModelRuntime runtime)
+	public static IMongoModelRuntime create(IRuntime runtime)
 			throws Exception {
 		DefaultMongoModelRuntime mmr = new DefaultMongoModelRuntime(runtime);
 		for (IEntityRuntime er : runtime.entities()) {

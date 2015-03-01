@@ -29,32 +29,32 @@ public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.D
 	public static final java.lang.String REVERSE_<%= java.name(e) %>_<%= java.name(rr) %> = "<%= com.th3l4b.common.text.codegen.JavaEscape.javaText(rr.getName()) %>";
     <% } %>    
     
-    public <%= name %>ModelUtils (com.th3l4b.srm.model.runtime.IModelRuntime runtime) {
+    public <%= name %>ModelUtils (com.th3l4b.srm.model.runtime.IRuntime runtime) {
     	super(runtime);
     }
     <% for (com.th3l4b.srm.model.base.IEntity e: model) { java.lang.String ename = java.name(e); %>
-    public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+    public static com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> (com.th3l4b.srm.model.runtime.IRuntime runtime) throws java.lang.Exception {
 		return runtime.entities().get(ENTITY_<%= ename %>);
 	}    
     
     public com.th3l4b.srm.model.runtime.IEntityRuntime entityRuntimeFor<%= ename %> () throws java.lang.Exception {
-		return entityRuntimeFor<%= ename %>(getModelRuntime());	
+		return entityRuntimeFor<%= ename %>(getRuntime());	
 	}
 	
-	public static <%= pkg %>.entities.I<%= ename %> create<%= ename %> (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+	public static <%= pkg %>.entities.I<%= ename %> create<%= ename %> (com.th3l4b.srm.model.runtime.IRuntime runtime) throws java.lang.Exception {
 		return (<%= pkg %>.entities.I<%= ename %>) entityRuntimeFor<%= ename %>(runtime).create();
 	}
 
 	public <%= pkg %>.entities.I<%= ename %> create<%= ename %> () throws java.lang.Exception {
-		return create<%= ename %>(getModelRuntime());
+		return create<%= ename %>(getRuntime());
 	}
     <% } %>
-	public static <%= pkg %>.I<%= name %>Finder finder (com.th3l4b.srm.model.runtime.IModelRuntime runtime) throws java.lang.Exception {
+	public static <%= pkg %>.I<%= name %>Finder finder (com.th3l4b.srm.model.runtime.IRuntime runtime) throws java.lang.Exception {
 		return new <%= pkg %>.<%= name %>FinderFilter(runtime.finder()); 
 	}
 
 	public <%= pkg %>.I<%= name %>Finder finder () throws java.lang.Exception {
-		return finder(getModelRuntime());
+		return finder(getRuntime());
 	}
 
 }
