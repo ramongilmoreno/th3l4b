@@ -12,5 +12,6 @@ include "json"
 include "mongo"
 include "rest"
 include "sample:base"
+include "sample:mongo"
 include "sample:war"
 

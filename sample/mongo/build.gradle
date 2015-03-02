@@ -1,0 +1,14 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+// http://vladmihalcea.com/2014/10/11/integration-testing-done-right-with-embedded-mongodb/
+// "When using MongoDB we can choose the embedded mongo plugin"
+// https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo
+// https://github.com/sourcemuse/GradleMongoPlugin
+
+dependencies {
+    compile project(':sample:base')
+    compile project(':mongo')
+    testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "1.46.4"
+}
+
+

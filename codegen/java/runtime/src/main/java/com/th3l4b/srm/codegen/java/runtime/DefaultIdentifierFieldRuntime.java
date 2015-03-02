@@ -25,7 +25,7 @@ public class DefaultIdentifierFieldRuntime extends AbstractFieldRuntime {
 
 	@Override
 	public boolean isSet(IInstance instance) throws Exception {
-		return false;
+		return true;
 	}
 
 	@Override

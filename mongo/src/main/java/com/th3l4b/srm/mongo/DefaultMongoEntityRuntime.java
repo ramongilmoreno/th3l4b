@@ -14,6 +14,7 @@ public class DefaultMongoEntityRuntime extends
 	private String _collection;
 
 	public DefaultMongoEntityRuntime(IEntityRuntime runtime) throws Exception {
+		setName(runtime.getName());
 		_runtime = runtime;
 		_collection = MongoUtils.NAMES.name(runtime);
 	}
@@ -46,7 +47,7 @@ public class DefaultMongoEntityRuntime extends
 		// Apply subfields
 		BasicDBObject o2 = new BasicDBObject();
 		for (IMongoFieldRuntime f : this) {
-			f.apply(instance, o);
+			f.apply(instance, o2);
 		}
 		if (!o2.isEmpty()) {
 			o.put(IMongoConstants.FIELD_FIELDS, o2);

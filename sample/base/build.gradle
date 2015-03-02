@@ -1,5 +1,9 @@
 apply from: rootProject.file('buildtools/gradle/java.gradle')
 
+dependencies {
+    compile group: 'junit', name: 'junit', version: '4.11'
+}
+
 ext {
     codegenJavaPackage = "com.th3l4b.srm.sample.base.generated"
 }

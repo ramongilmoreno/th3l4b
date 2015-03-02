@@ -15,10 +15,16 @@ public class MongoUtils {
 
 	static {
 		try {
-			FIELD_RUNTIME_ID = new DefaultMongoFieldRuntime(
-					new DefaultIdentifierFieldRuntime(IMongoConstants.FIELD_ID));
-			FIELD_RUNTIME_STATUS = new DefaultMongoFieldRuntime(
-					new DefaultStatusFieldRuntime(IMongoConstants.FIELD_STATUS));
+			DefaultIdentifierFieldRuntime idr = new DefaultIdentifierFieldRuntime(
+					IMongoConstants.FIELD_ID);
+			idr.getProperties().put(MongoNames.PROPERTY_IDENTIFIER,
+					IMongoConstants.FIELD_ID);
+			FIELD_RUNTIME_ID = new DefaultMongoFieldRuntime(idr);
+			DefaultStatusFieldRuntime statusr = new DefaultStatusFieldRuntime(
+					IMongoConstants.FIELD_STATUS);
+			statusr.getProperties().put(MongoNames.PROPERTY_IDENTIFIER,
+					IMongoConstants.FIELD_STATUS);
+			FIELD_RUNTIME_STATUS = new DefaultMongoFieldRuntime(statusr);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

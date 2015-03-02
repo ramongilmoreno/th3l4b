@@ -12,8 +12,17 @@ public class DefaultMongoFieldRuntime extends
 	private String _field;
 
 	public DefaultMongoFieldRuntime(IFieldRuntime runtime) throws Exception {
+		setName(runtime.getName());
 		_runtime = runtime;
 		_field = MongoUtils.NAMES.name(runtime);
+	}
+	
+	public String getField() {
+		return _field;
+	}
+	
+	public void setField(String field) {
+		_field = field;
 	}
 
 	@Override

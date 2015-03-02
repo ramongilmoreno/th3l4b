@@ -9,7 +9,7 @@ import com.th3l4b.srm.model.runtime.IUpdater;
 
 public abstract class AbstractRuntime extends DefaultNamed implements IRuntime {
 
-	protected IModelRuntime _entities;
+	protected IModelRuntime _model;
 	protected IFinder _finder;
 	protected IUpdater _updater;
 	protected IReverse _reverse;
@@ -18,10 +18,10 @@ public abstract class AbstractRuntime extends DefaultNamed implements IRuntime {
 
 	@Override
 	public IModelRuntime model() throws Exception {
-		if (_entities == null) {
-			_entities = createModel();
+		if (_model == null) {
+			_model = createModel();
 		}
-		return _entities;
+		return _model;
 	}
 
 	protected abstract IFinder createFinder() throws Exception;

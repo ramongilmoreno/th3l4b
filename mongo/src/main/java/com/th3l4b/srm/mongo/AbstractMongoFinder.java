@@ -19,7 +19,7 @@ import com.th3l4b.srm.model.runtime.IReverseRelationship;
 
 public abstract class AbstractMongoFinder implements IFinder {
 
-	protected abstract IMongoModelRuntime model() throws Exception;
+	protected abstract IMongoModelRuntime mongoModel() throws Exception;
 
 	protected abstract IReverse reverse() throws Exception;
 
@@ -27,7 +27,7 @@ public abstract class AbstractMongoFinder implements IFinder {
 
 	@Override
 	public Collection<IInstance> all(String type) throws Exception {
-		IMongoEntityRuntime mer = model().get(type);
+		IMongoEntityRuntime mer = mongoModel().get(type);
 		IEntityRuntime er = mer.runtime();
 		DBCollection collection = getDB().getCollection(mer.collection());
 		BasicDBObject bo = new BasicDBObject(IMongoConstants.FIELD_STATUS,
@@ -49,12 +49,12 @@ public abstract class AbstractMongoFinder implements IFinder {
 
 	@Override
 	public IInstance find(IIdentifier id) throws Exception {
-		IMongoEntityRuntime mer = model().get(id.getType());
+		IMongoEntityRuntime mer = mongoModel().get(id.getType());
 		DBCollection collection = getDB().getCollection(mer.collection());
 		DBObject found = collection.findOne(new BasicDBObject(
 				IMongoConstants.FIELD_ID, id.getKey()));
 		IInstance r = mer.runtime().create();
-		if (found == null) {
+		if (found != null) {
 			mer.apply(found, r);
 		} else {
 			ICoordinates c = r.coordinates();
@@ -68,7 +68,7 @@ public abstract class AbstractMongoFinder implements IFinder {
 	public Collection<IInstance> references(IIdentifier id, String relationship)
 			throws Exception {
 		IReverseRelationship rr = reverse().get(id.getType()).get(relationship);
-		IMongoEntityRuntime mer = model().get(rr.getSourceType());
+		IMongoEntityRuntime mer = mongoModel().get(rr.getSourceType());
 		BasicDBObject of = new BasicDBObject(mer.get(rr.getField()).field(),
 				id.getKey());
 		BasicDBObject o = new BasicDBObject(IMongoConstants.FIELD_FIELDS, of);
