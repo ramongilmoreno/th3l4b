@@ -43,4 +43,9 @@ public class DefaultContainer<N extends INamed> extends DefaultPropertied
 		return _map.containsKey(name);
 	}
 
+	@Override
+	public int size() throws Exception {
+		return _map.size();
+	}
+
 }

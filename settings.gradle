@@ -1,3 +1,4 @@
+include "android:sqlite"
 include "base:common"
 include "base:model"
 include "base:runtime"

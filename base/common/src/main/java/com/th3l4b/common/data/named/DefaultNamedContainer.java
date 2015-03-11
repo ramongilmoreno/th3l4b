@@ -30,4 +30,8 @@ public class DefaultNamedContainer<N extends INamed> extends DefaultNamed
 	public boolean contains(String name) throws Exception {
 		return _delegated.contains(name);
 	}
+
+	public int size() throws Exception {
+		return _delegated.size();
+	}
 }

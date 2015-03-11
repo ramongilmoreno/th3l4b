@@ -1,0 +1,31 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':codegen:java:runtime')
+    compile "com.google.android:android:4.1.1.4"
+}
+
+
+
+/*
+Former Android SDK approach. Unnecessary complication.
+
+// apply from: rootProject.file('buildtools/gradle/androidLib.gradle')
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.+'
+    }
+}
+
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 19 
+    buildToolsVersion '21.1.2'
+}
+*/
+

@@ -1,12 +1,12 @@
 package com.th3l4b.srm.mongo;
 
 import com.mongodb.DBObject;
-import com.th3l4b.common.data.named.DefaultNamedContainer;
+import com.th3l4b.common.data.named.DefaultNamed;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
 
 public class DefaultMongoFieldRuntime extends
-		DefaultNamedContainer<IMongoFieldRuntime> implements IMongoFieldRuntime {
+		DefaultNamed implements IMongoFieldRuntime {
 
 	private IFieldRuntime _runtime;
 	private String _field;
