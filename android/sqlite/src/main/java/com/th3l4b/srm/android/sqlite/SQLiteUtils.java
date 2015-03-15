@@ -37,13 +37,40 @@ public class SQLiteUtils {
 			DefaultSQLiteEntityRuntime mer = new DefaultSQLiteEntityRuntime(er);
 			int i = 2; // Make room for id and status columns
 			for (IFieldRuntime fr : er) {
-				DefaultSQLiteFieldRuntime mfr = new DefaultSQLiteFieldRuntime(fr, i++);
+				DefaultSQLiteFieldRuntime mfr = new DefaultSQLiteFieldRuntime(
+						fr, i++);
 				mer.add(mfr);
 			}
 			mmr.add(mer);
 		}
 
 		return mmr;
+	}
+
+	public static String[] createSQL(IModelRuntime model) throws Exception {
+		String[] r = new String[model.size()];
+		StringBuilder sb = new StringBuilder();
+		SQLiteNames names = new SQLiteNames();
+		int i = 0;
+		for (IEntityRuntime er : model) {
+			sb.setLength(0);
+			sb.append("CREATE TABLE ");
+			sb.append(names.name(er));
+			sb.append(" ( ");
+			sb.append(ISQLiteConstants.FIELD_ID);
+			sb.append(" TEXT NOT NULL PRIMARY KEY, ");
+			sb.append(ISQLiteConstants.FIELD_STATUS);
+			sb.append(" TEXT NOT NULL");
+			for (IFieldRuntime fr : er) {
+				sb.append(", ");
+				sb.append(ISQLiteConstants.PREFIX_FIELDS);
+				sb.append(names.name(fr));
+				sb.append(" TEXT");
+			}
+			sb.append(" )");
+			r[i++] = sb.toString();
+		}
+		return r;
 	}
 
 }
