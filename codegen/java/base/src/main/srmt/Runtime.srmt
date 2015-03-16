@@ -12,14 +12,10 @@ package <% java.lang.String pkg = com.th3l4b.srm.codegen.template.runtime.Codege
 public abstract class Abstract<%= name %>Runtime extends com.th3l4b.srm.codegen.java.runtime.AbstractRuntime {
 
 	protected com.th3l4b.srm.model.runtime.IModelRuntime createModel() throws java.lang.Exception {
-		com.th3l4b.srm.codegen.java.runtime.DefaultModelRuntime r = new com.th3l4b.srm.codegen.java.runtime.DefaultModelRuntime();
-<% for (com.th3l4b.srm.model.base.IEntity e: model) { %>
-		r.add(new <%= pkg %>.entities.runtime.<%= java.name(e) %>EntityRuntime());
-<% } %>	
-		return r;
+	    return <%= pkg %>.<%= name %>ModelUtils.RUNTIME;
 	}
 	
 	protected com.th3l4b.srm.model.runtime.IReverse createReverse() throws java.lang.Exception {
-		return new <%= pkg %>.<%= name %>ModelReverse();
+	    return <%= pkg %>.<%= name %>ModelUtils.REVERSE;
 	}
 }
