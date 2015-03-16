@@ -20,20 +20,18 @@ public abstract class SQLiteRuntime extends RuntimeFilter {
 
 	protected abstract SQLiteDatabase getDatabase() throws Exception;
 
-	protected abstract ISQLiteModelRuntime sqliteModel() throws Exception;
-
-	ISQLiteModelRuntime _mongoRuntime;
+	ISQLiteModelRuntime _sqliteRuntime;
 	private IFinder _finder;
 	private IUpdater _updater;
 
-	protected ISQLiteModelRuntime getSQLiteModel() throws Exception {
-		if (_mongoRuntime == null) {
-			_mongoRuntime = createSQLiteModel();
+	protected ISQLiteModelRuntime sqliteModel() throws Exception {
+		if (_sqliteRuntime == null) {
+			_sqliteRuntime = createSqliteModel();
 		}
-		return _mongoRuntime;
+		return _sqliteRuntime;
 	}
 
-	private ISQLiteModelRuntime createSQLiteModel() throws Exception {
+	private ISQLiteModelRuntime createSqliteModel() throws Exception {
 		return SQLiteUtils.create(model());
 	}
 
