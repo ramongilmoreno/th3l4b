@@ -1,8 +1,8 @@
-package com.th3l4b.srm.codegen.template.runtime;
+package com.th3l4b.srm.model.runtime.codegen;
 
 import java.util.Map;
 
-public class CodegenUtils implements ITemplateConstants {
+public class CodegenUtils implements ICodegenConstants {
 	public static String pkg(Map<String, String> properties) {
 		return properties.get(PACKAGE_NAME);
 	}

@@ -13,8 +13,8 @@ import org.apache.tools.ant.types.FileSet;
 
 import com.th3l4b.srm.base.parser.Parser;
 import com.th3l4b.srm.codegen.java.generated.All;
-import com.th3l4b.srm.codegen.template.runtime.CodegenUtils;
 import com.th3l4b.srm.model.base.IModel;
+import com.th3l4b.srm.model.runtime.codegen.CodegenUtils;
 
 public class JavaTask extends Task {
 

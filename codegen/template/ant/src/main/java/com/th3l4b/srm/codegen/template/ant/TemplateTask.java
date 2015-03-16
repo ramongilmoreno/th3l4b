@@ -20,7 +20,7 @@ import com.th3l4b.srm.codegen.template.CompositeTemplateGeneratorGenerator;
 import com.th3l4b.srm.codegen.template.TemplateGeneratorGenerator;
 import com.th3l4b.srm.codegen.template.TemplateParser;
 import com.th3l4b.srm.codegen.template.description.ITemplate;
-import com.th3l4b.srm.codegen.template.runtime.CodegenUtils;
+import com.th3l4b.srm.model.runtime.codegen.CodegenUtils;
 
 public class TemplateTask extends Task {
 

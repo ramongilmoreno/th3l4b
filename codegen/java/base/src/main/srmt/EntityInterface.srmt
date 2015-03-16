@@ -4,9 +4,9 @@
 
 unit: entity
 names: com.th3l4b.srm.codegen.java.base.JavaNames java
-file: <%= com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkgToDir(properties) %>/entities/I<%= java.name(entity) %>.java
+file: <%= com.th3l4b.srm.model.runtime.codegen.CodegenUtils.pkgToDir(properties) %>/entities/I<%= java.name(entity) %>.java
 content:
-<% String pkg = com.th3l4b.srm.codegen.template.runtime.CodegenUtils.pkg(properties); %> 
+<% String pkg = com.th3l4b.srm.model.runtime.codegen.CodegenUtils.pkg(properties); %> 
 package <%= pkg %>.entities;
 
 public interface I<%= java.name(entity) %> extends com.th3l4b.srm.model.runtime.IInstance {
