@@ -33,10 +33,12 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 			return _columns.get(n);
 		} else {
 			// Compose list of columns
-			String[] r = new String[mer.size()];
-			int i = 0;
+			String[] r = new String[mer.size() + 2];
+            int i = 0;
+            r[i++] = ISQLiteConstants.FIELD_ID;
+            r[i++] = ISQLiteConstants.FIELD_STATUS;
 			for (ISQLiteFieldRuntime fr : mer) {
-				r[i++] = ISQLiteConstants.PREFIX_FIELDS + fr.columnName();
+				r[i++] = fr.columnName();
 			}
 			_columns.put(n, r);
 			return r;
@@ -52,9 +54,10 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 		Cursor cursor = getDatabase().query(
 				mer.table(),
 				columns(mer),
-				ISQLiteConstants.FIELD_STATUS + " = ?",
-				new String[] { SQLiteUtils.FIELD_RUNTIME_STATUS.runtime().get(
-						instance) }, null, null, null);
+                ISQLiteConstants.FIELD_STATUS + " = ?",
+                new String[] {
+                        SQLiteUtils.FIELD_RUNTIME_STATUS.runtime()
+                                .get(instance) }, null, null, null);
 		cursor.moveToFirst();
 		try {
 			ArrayList<IInstance> r = new ArrayList<IInstance>();
@@ -75,17 +78,13 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 		IEntityRuntime er = mer.runtime();
 		IInstance instance = er.create();
 		ICoordinates coordinates = instance.coordinates();
-		coordinates.setStatus(EntityStatus.Saved);
 		coordinates.setIdentifier(id);
 		Cursor cursor = getDatabase().query(
 				mer.table(),
 				columns(mer),
-				ISQLiteConstants.FIELD_ID + " = ? and"
-						+ ISQLiteConstants.FIELD_STATUS + " = ?",
-				new String[] {
-						SQLiteUtils.FIELD_RUNTIME_ID.runtime().get(instance),
-						SQLiteUtils.FIELD_RUNTIME_STATUS.runtime()
-								.get(instance) }, null, null, null);
+				ISQLiteConstants.FIELD_ID + " = ?",
+				new String[] { SQLiteUtils.FIELD_RUNTIME_ID.runtime().get(instance) },
+                null, null, null);
 		cursor.moveToFirst();
 		try {
 			while (!cursor.isAfterLast()) {
@@ -113,9 +112,10 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 		Cursor cursor = getDatabase().query(
 				mer.table(),
 				columns(mer),
-				columnName + " = ? and" + ISQLiteConstants.FIELD_STATUS
+				columnName + " = ? and " + ISQLiteConstants.FIELD_STATUS
 						+ " = ?",
 				new String[] {
+                        // Get id key instead of using runtime, as this id is not of the right type.
 						id.getKey(),
 						SQLiteUtils.FIELD_RUNTIME_STATUS.runtime()
 								.get(instance) }, null, null, null);
