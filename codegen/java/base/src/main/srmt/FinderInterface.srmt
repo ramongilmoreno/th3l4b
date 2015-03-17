@@ -21,5 +21,7 @@ public interface I<%=java.name(model)%>Finder extends com.th3l4b.srm.model.runti
 	com.th3l4b.srm.model.base.IEntity t = model.get(rr.getTargetType());
 	com.th3l4b.srm.model.base.IEntity s = model.get(rr.getSourceType()); %>
 	java.util.Collection<<%= pkg %>.entities.I<%= java.name(s) %>> references<%= java.name(t) %>_<%= java.name(rr) %> (java.lang.String id) throws java.lang.Exception;
+	java.util.Collection<<%= pkg %>.entities.I<%= java.name(s) %>> references<%= java.name(t) %>_<%= java.name(rr) %> (com.th3l4b.srm.model.runtime.IIdentifier id) throws java.lang.Exception;
+	java.util.Collection<<%= pkg %>.entities.I<%= java.name(s) %>> references<%= java.name(t) %>_<%= java.name(rr) %> (<%= pkg %>.entities.I<%= java.name(t) %> target) throws java.lang.Exception;
 <% } %>    
 }

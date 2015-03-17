@@ -50,5 +50,14 @@ public class <%= name %>FinderFilter extends com.th3l4b.srm.model.runtime.Finder
 				new com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier(<%= pkg %>.<%= name %>ModelUtils.ENTITY_<%= tname %>, id),
 				<%= pkg %>.<%= name %>ModelUtils.REVERSE_<%= tname %>_<%= rrname %>);
 	}
+	
+	public java.util.Collection<<%= returnName %>> references<%= tname %>_<%= rrname %> (com.th3l4b.srm.model.runtime.IIdentifier id) throws java.lang.Exception {
+	    return id == null ? java.util.Collections.<<%= returnName %>>emptyList() : references<%= tname %>_<%= rrname %>(id.getKey());
+    }
+    
+	public java.util.Collection<<%= returnName %>> references<%= tname %>_<%= rrname %> (<%= pkg %>.entities.I<%= java.name(t) %> target) throws java.lang.Exception {
+	    return target == null ? java.util.Collections.<<%= returnName %>>emptyList() : references<%= tname %>_<%= rrname %>(target.coordinates().getIdentifier());
+	}
+	
 <% } %>
 }

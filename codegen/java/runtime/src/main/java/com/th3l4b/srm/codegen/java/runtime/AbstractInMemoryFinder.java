@@ -61,7 +61,10 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 		for (IInstance e : getMap().values()) {
 			if (NullSafe.equals(e.type(), type)) {
 				if (NullSafe.equals(key, fr.get(e))) {
-					r.add(e);
+					if (NullSafe.equals(e.coordinates().getStatus(),
+							EntityStatus.Saved)) {
+						r.add(e);
+					}
 				}
 			}
 		}

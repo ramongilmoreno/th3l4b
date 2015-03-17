@@ -20,6 +20,7 @@ import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
 public abstract class AbstractModelTest {
 
 	protected abstract SampleModelUtils createModelUtils() throws Exception;
+
 	@Test
 	public void testCreateEntity() throws Exception {
 		SampleModelUtils utils = createModelUtils();
@@ -119,12 +120,16 @@ public abstract class AbstractModelTest {
 		SampleModelUtils utils = createModelUtils();
 		IEntity1 e1a = utils.createEntity1();
 		IEntity1 e1b = utils.createEntity1();
+		IEntity1 e1c = utils.createEntity1();
 		IEntity2 e2 = utils.createEntity2();
 		e1a.setReference(e2);
 		e1b.setReference(e2);
+		e1c.setReference(e2);
+		e1c.coordinates().setStatus(EntityStatus.ToDelete);
 		ArrayList<IInstance> updates = new ArrayList<IInstance>();
 		updates.add(e1a);
 		updates.add(e1b);
+		updates.add(e1c);
 		updates.add(e2);
 		utils.getRuntime().updater().update(updates);
 		Collection<IEntity1> refs = utils.finder().referencesEntity2_Reverse(
@@ -145,9 +150,23 @@ public abstract class AbstractModelTest {
 				}
 				e1bFound = true;
 			}
+			if (NullSafe.equals(id, e1c.coordinates().getIdentifier())) {
+				Assert.fail("Instance e1c was saved deleted. Should not be returned by the reverse relationship");
+			}
 		}
-		Assert.assertTrue("One of the entities was not found", e1aFound
+		Assert.assertTrue("Only one of the entities was not found", e1aFound
 				&& e1bFound);
+
+		// Assert deleted item was inserted properly and returned as deleted
+		IEntity1 e1cDeleted = utils.finder().findEntity1(
+				e1c.coordinates().getIdentifier());
+		Assert.assertEquals(
+				"Item inserted as deleted in the reverse relationship was not correctly saved as deleted",
+				EntityStatus.Deleted, e1cDeleted.coordinates().getStatus());
+		Assert.assertEquals(
+				"Item inserted as deleted in the reverse relationship does not point to the source object",
+				e2.coordinates().getIdentifier().getKey(),
+				e1cDeleted.getReference());
 	}
 
 	@Test
@@ -160,6 +179,5 @@ public abstract class AbstractModelTest {
 		for (IEntity2 e2 : utils.finder().allEntity2()) {
 			System.out.println(e2);
 		}
-
 	}
 }

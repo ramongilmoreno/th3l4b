@@ -72,6 +72,7 @@ public abstract class AbstractMongoFinder implements IFinder {
 		BasicDBObject of = new BasicDBObject(mer.get(rr.getField()).field(),
 				id.getKey());
 		BasicDBObject o = new BasicDBObject(IMongoConstants.FIELD_FIELDS, of);
+		o.put(IMongoConstants.FIELD_STATUS, EntityStatus.Saved.name());
 		DBCursor find = getDB().getCollection(mer.collection()).find(o);
 		IEntityRuntime er = mer.runtime();
 		ArrayList<IInstance> r = new ArrayList<IInstance>();
