@@ -65,6 +65,7 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 				IInstance i = er.create();
 				mer.apply(cursor, instance);
 				r.add(i);
+                cursor.moveToNext();
 			}
 			return r;
 		} finally {
@@ -124,9 +125,10 @@ public abstract class AbstractSQLiteFinder implements IFinder {
 			ArrayList<IInstance> r = new ArrayList<IInstance>();
 			while (!cursor.isAfterLast()) {
 				IInstance i = er.create();
-				mer.apply(cursor, instance);
+				mer.apply(cursor, i);
 				r.add(i);
-			}
+                cursor.moveToNext();
+            }
 			return r;
 		} finally {
 			cursor.close();
