@@ -66,6 +66,6 @@ eclipse.classpath {
     plusConfigurations += [configurations.provided]
 }
 
-task b (dependsOn: ['build', 'eclipse']) {}
+task b (dependsOn: ['build', 'install', 'eclipse']) {}
 task c (dependsOn: ['clean', 'cleanEclipse']) {}
 
