@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.th3l4b.common.text.ITextConstants;
 import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifier;
 import com.th3l4b.srm.json.Generator;
+import com.th3l4b.srm.json.IJsonModelRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IRuntime;
@@ -19,9 +20,12 @@ import com.th3l4b.srm.model.runtime.IRuntime;
 @SuppressWarnings("serial")
 public abstract class AbstractRESTServlet extends HttpServlet {
 
-	protected abstract IRuntime getRuntimeModel(HttpServletRequest req,
+	protected abstract IRuntime getRuntime (HttpServletRequest req,
 			HttpServletResponse resp) throws Exception;
 
+	protected abstract IJsonModelRuntime getJsonRuntime (HttpServletRequest req,
+			HttpServletResponse resp) throws Exception;
+	
 	private String[] split(HttpServletRequest request) throws Exception {
 		// Returns up to 3 strings with this format:
 		// http://stackoverflow.com/questions/4278083/how-to-get-request-uri-without-context-path
@@ -40,7 +44,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try {
-			IRuntime runtime = getRuntimeModel(req, resp);
+			IRuntime runtime = getRuntime(req, resp);
 			String[] split = split(req);
 			Object r = null;
 			if (split.length > 0) {
@@ -73,7 +77,7 @@ public abstract class AbstractRESTServlet extends HttpServlet {
 			}
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding(ITextConstants.UTF_8);
-			Generator g = new Generator(runtime, resp.getWriter());
+			Generator g = new Generator(getJsonRuntime(req, resp), resp.getWriter());
 			if (r instanceof Collection<?>) {
 				@SuppressWarnings("unchecked")
 				Collection<IInstance> col = (Collection<IInstance>) r;

@@ -5,21 +5,15 @@ import java.util.Collection;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IRuntime;
 
-public class Generator {
+public class Generator implements IJsonConstants {
 
-	private static final String FIELD_FIELDS = "fields";
-	private static final String FIELD_STATUS = "status";
-	private static final String FIELD_ID = "id";
-	private static final String FIELD_TYPE = "type";
 	private JsonGenerator _jackson;
-	private IRuntime _runtime;
+	private IJsonModelRuntime _runtime;
 
-	public Generator(IRuntime runtime, Writer out) throws Exception {
+	public Generator(IJsonModelRuntime runtime, Writer out) throws Exception {
 		_jackson = new JsonFactory().createGenerator(out);
 		_runtime = runtime;
 	}
@@ -28,7 +22,7 @@ public class Generator {
 		return _jackson;
 	}
 	
-	public IRuntime getRuntime() {
+	public IJsonModelRuntime getRuntime() {
 		return _runtime;
 	}
 	
@@ -57,11 +51,12 @@ public class Generator {
 		generator.writeString(instance.coordinates().getStatus().toString());
 		generator.writeFieldName(FIELD_FIELDS);
 		generator.writeStartObject();
-		IEntityRuntime er = getRuntime().model().get(instance.type());
-		for (IFieldRuntime fr : er) {
+		IJsonEntityRuntime jer = getRuntime().get(instance.type());
+		for (IJsonFieldRuntime jfr : jer) {
+			IFieldRuntime fr = jfr.runtime();
 			if (fr.isSet(instance)) {
 				String value = fr.get(instance);
-				generator.writeFieldName(fr.getName());
+				generator.writeFieldName(jfr.field());
 				generator.writeString(value);
 			}
 		}
