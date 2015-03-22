@@ -69,6 +69,30 @@ public class <%= name %>ModelUtils extends com.th3l4b.srm.codegen.java.runtime.D
 		return create<%= ename %>(getRuntime());
 	}
     <% } %>
+    <% for (com.th3l4b.srm.model.base.IEntity e: model) { java.lang.String ename = java.name(e); %>
+	public static boolean compare<%= ename %> (<%= pkg %>.entities.I<%= ename %> a, <%= pkg %>.entities.I<%= ename %> b) throws java.lang.Exception {
+		if (a == b) {
+			return true;
+		} else if ((a == null) || (b == null)) {
+			return false;
+		} else {
+			com.th3l4b.srm.model.runtime.ICoordinates ca = a.coordinates();
+			com.th3l4b.srm.model.runtime.ICoordinates cb = b.coordinates();
+			if (!com.th3l4b.common.data.NullSafe.equals(ca.getIdentifier(), cb.getIdentifier())) {
+				return false;
+			} else if (ca.getStatus() != cb.getStatus()) {
+				return false;
+			}
+			// Compare fields
+		    <% for (com.th3l4b.srm.model.base.IField f: e) { java.lang.String fname = java.name(f); %>
+		    else if ((a.isSet<%= fname %>() != b.isSet<%= fname %>()) || (!com.th3l4b.common.data.NullSafe.equals(a.get<%= fname %>(), b.get<%= fname %>()))) {
+		    	return false;
+		    }
+	    	<% } %>
+			return true;		
+		}
+	}
+    <% } %>
 	public static <%= pkg %>.I<%= name %>Finder finder (com.th3l4b.srm.model.runtime.IRuntime runtime) throws java.lang.Exception {
 		return new <%= pkg %>.<%= name %>FinderFilter(runtime.finder()); 
 	}
