@@ -21,7 +21,7 @@ public class DefaultJsonFieldRuntime extends DefaultNamed implements
 	}
 
 	@Override
-	public String field() throws Exception {
+	public String json() throws Exception {
 		return _field;
 	}
 

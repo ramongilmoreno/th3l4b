@@ -56,7 +56,7 @@ public class Generator implements IJsonConstants {
 			IFieldRuntime fr = jfr.runtime();
 			if (fr.isSet(instance)) {
 				String value = fr.get(instance);
-				generator.writeFieldName(jfr.field());
+				generator.writeFieldName(jfr.json());
 				generator.writeString(value);
 			}
 		}

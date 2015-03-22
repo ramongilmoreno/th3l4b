@@ -12,6 +12,8 @@ public class ModelNames {
 
 	private static final String PREFIX = ModelNames.class.getPackage()
 			.getName() + ".names";
+
+	public static final String PROPERTY_ALIAS = PREFIX + ".alias";
 	public static final String PROPERTY_IDENTIFIER = PREFIX + ".identifier";
 
 	protected String getPropertyOrDefaultValue(String property,
@@ -23,12 +25,29 @@ public class ModelNames {
 		}
 	}
 
-	public String name (final INamedPropertied named) throws Exception {
+	public String name(final INamedPropertied named) throws Exception {
+		return getPropertyOrDefaultValue(PROPERTY_ALIAS, named,
+				new StringGetter() {
+					@Override
+					public String get() throws Exception {
+						return named.getName();
+					}
+				});
+	}
+
+	public String identifier(final INamedPropertied named) throws Exception {
 		return getPropertyOrDefaultValue(PROPERTY_IDENTIFIER, named,
 				new StringGetter() {
 					@Override
 					public String get() throws Exception {
-						return TextUtils.cIdentifier(named.getName());
+						return getPropertyOrDefaultValue(PROPERTY_ALIAS, named,
+								new StringGetter() {
+									@Override
+									public String get() throws Exception {
+										return TextUtils.cIdentifier(named
+												.getName());
+									}
+								});
 					}
 				});
 	}

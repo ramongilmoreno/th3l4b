@@ -24,3 +24,8 @@ entity "Entity2" {
     reference "Entity1" reverse "Sample";
     reference "Entity2" reverse "Sample";
 };
+
+entity "JSON Test" {
+    field "Field 1";
+    field "Field 2";
+};
