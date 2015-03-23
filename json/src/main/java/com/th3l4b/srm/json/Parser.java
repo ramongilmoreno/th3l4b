@@ -38,6 +38,11 @@ public class Parser {
 	}
 
 	public Result parse(boolean acceptOne, boolean acceptMany) throws Exception {
+		return parse(acceptOne, acceptMany, null, null);
+	}
+
+	public Result parse(boolean acceptOne, boolean acceptMany,
+			String defaultType, String defaultId) throws Exception {
 		Result r = new Result();
 		ArrayList<IInstance> many = new ArrayList<IInstance>();
 		if (acceptMany) {
@@ -59,7 +64,7 @@ public class Parser {
 				}
 				while ((token = parser.nextToken()) != null) {
 					if (JsonToken.START_OBJECT.equals(token)) {
-						many.add(parseObject(map));
+						many.add(parseObject(map, defaultType, defaultId));
 					} else if (JsonToken.END_ARRAY.equals(token)) {
 						parser.close();
 						break;
@@ -73,7 +78,7 @@ public class Parser {
 					throw new IllegalArgumentException(
 							"JSON Object input was not expected");
 				}
-				r._one = parseObject(map);
+				r._one = parseObject(map, defaultType, defaultId);
 				parser.close();
 			} else {
 				throw new IllegalArgumentException("Unexpected JSON token: "
@@ -83,11 +88,12 @@ public class Parser {
 		return r;
 	}
 
-	private IInstance parseObject(Map<String, String> map) throws Exception {
+	private IInstance parseObject(Map<String, String> map, String defaultType,
+			String defaultId) throws Exception {
 		map.clear();
 		JsonParser parser = getJackson();
-		String id = null;
-		String type = null;
+		String id = defaultId;
+		String type = defaultType;
 		EntityStatus status = null;
 		try {
 			while (true) {
@@ -140,8 +146,6 @@ public class Parser {
 				}
 				IInstance r = jer.runtime().create();
 				ICoordinates coordinates = r.coordinates();
-				coordinates.getIdentifier().setKey(null);
-				coordinates.setStatus(null);
 				coordinates.getIdentifier().setKey(id);
 				coordinates.setStatus(status);
 
@@ -176,9 +180,9 @@ public class Parser {
 			} else if (JsonToken.FIELD_NAME.equals(token)) {
 				String f = parser.getText();
 				token = parser.nextToken();
-				
+
 				if (JsonToken.VALUE_STRING.equals(token)
-							|| JsonToken.VALUE_NULL.equals(token)) {
+						|| JsonToken.VALUE_NULL.equals(token)) {
 					String v = parser.getText();
 					map.put(f, v);
 				} else {

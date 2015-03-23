@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<?xml 
+<html>
+<title>JSON test</title>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+var v1 = {
+    "type": "Entity1",
+    "id": "a",
+    "status": "ToMerge",
+    "fields": {
+        "Field11": "Value a 11",
+        "Field12": "Value a 12"
+    }
+};
+
+var v2 = [
+    {
+        "type": "Entity1",
+        "id": "b",
+        "status": "ToDelete",
+        "fields": {
+            "Field11": "Value b 11",
+            "Field12": "Value b 12"
+        }
+    },
+    {
+        "type": "Entity2",
+        "id": "c",
+        "status": "ToMerge",
+        "fields": {
+            "Field21": "Value c 21",
+            "Entity1": "b"
+        }
+    }
+];
+
+// http://stackoverflow.com/questions/11456771/using-json-post-request
+var restTest = function(arg) {
+    $.ajax({
+        url: "SampleRESTServlet",
+        type: "POST",
+        // http://stackoverflow.com/questions/4162749/convert-js-object-to-json-string
+        data: JSON.stringify(arg),
+        dataType: "json",
+        success: function (result) {
+            console.log(result);
+            var loge = document.createElement("pre");
+            var logetext = document.createTextNode(JSON.stringify(result));
+            loge.appendChild(logetext);
+            document.getElementById("result").appendChild(loge);
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+};
+
+</script>
+</head>
+<body>
+
+<h1>JSON test</h1>
+
+<p><a href="SampleRESTServlet/Entity1">Entity1</a></p>
+<p><a href="javascript:restTest(v1)">POST Entity 1, id a</a></p>
+<p><a href="SampleRESTServlet/Entity1/a">Entity1, id a</a></p>
+<p><a href="SampleRESTServlet/Entity2">Entity2</a></p>
+<p><a href="javascript:restTest(v2)">POST Entities 1 and 2, ids b and c</a></p>
+<p><a href="SampleRESTServlet/Entity1/b">Entity1, id b</a></p>
+<p><a href="SampleRESTServlet/Entity2/c">Entity2, id c</a></p>
+<p><a href="SampleRESTServlet/Entity1/b/Sample">References to Entity1, id b</a></p>
+
+<div id="result"></div>
+
+</body>
+</html> 
