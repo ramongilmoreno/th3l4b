@@ -11,6 +11,7 @@ import com.mongodb.MongoClient;
 import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.mongo.MongoRuntime;
+import com.th3l4b.srm.mongo.MongoUtils;
 import com.th3l4b.srm.sample.base.AbstractModelTest;
 import com.th3l4b.srm.sample.base.generated.AbstractSampleRuntime;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
@@ -74,6 +75,11 @@ public class MongoTest extends AbstractModelTest {
 				return db;
 			}
 		};
+		
+		// Apply indexes
+		MongoUtils.ensureIndexes(mongoRuntime.getMongoModel(), db);
+		
+		// Return result
 		return new SampleModelUtils(mongoRuntime);
 	}
 }

@@ -1,10 +1,14 @@
 package com.th3l4b.srm.mongo;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifierFieldRuntime;
 import com.th3l4b.srm.codegen.java.runtime.DefaultStatusFieldRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IReferenceRuntime;
 
 public class MongoUtils {
 
@@ -43,6 +47,32 @@ public class MongoUtils {
 		}
 
 		return mmr;
+	}
+
+	public static void ensureIndexes(IMongoModelRuntime mmr, DB db)
+			throws Exception {
+		for (IMongoEntityRuntime mer : mmr) {
+			DBCollection c = db.getCollection(mer.collection());
+
+			{
+				// Create index on id and status
+				BasicDBObject bdbo = new BasicDBObject();
+				bdbo.put(FIELD_RUNTIME_ID.field(), 1);
+				bdbo.put(FIELD_RUNTIME_STATUS.field(), 1);
+				c.ensureIndex(bdbo);
+			}
+			for (IMongoFieldRuntime mfr : mer) {
+				IFieldRuntime fr = mfr.runtime();
+				if (fr instanceof IReferenceRuntime) {
+					BasicDBObject bdbo = new BasicDBObject();
+					bdbo.put(IMongoConstants.FIELD_FIELDS + "." + mfr.field(),
+							1);
+					bdbo.put(FIELD_RUNTIME_STATUS.field(), 1);
+					c.ensureIndex(bdbo);
+				}
+			}
+		}
+
 	}
 
 }

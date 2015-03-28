@@ -23,7 +23,7 @@ public abstract class MongoRuntime extends RuntimeFilter {
 	private IFinder _finder;
 	private IUpdater _updater;
 
-	protected IMongoModelRuntime getMongoModel() throws Exception {
+	public IMongoModelRuntime getMongoModel() throws Exception {
 		if (_mongoRuntime == null) {
 			_mongoRuntime = createMongoModel();
 		}
