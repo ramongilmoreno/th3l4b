@@ -59,7 +59,7 @@ public abstract class AbstractUpdater implements IUpdater {
 			if (found != null) {
 				er.copy(found, copy);
 			}
-			er.copy(e, copy);
+			er.apply(e, copy);
 			er.unSetNulls(copy);
 			copy.coordinates().setStatus(newStatus);
 

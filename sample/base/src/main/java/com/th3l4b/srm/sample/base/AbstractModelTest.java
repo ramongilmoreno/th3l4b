@@ -13,6 +13,7 @@ import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
+import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
@@ -44,6 +45,31 @@ public abstract class AbstractModelTest {
 		Assert.assertEquals(
 				"Found object must be in saved status right after creating it",
 				EntityStatus.Saved, found.coordinates().getStatus());
+	}
+
+	@Test
+	public void testUpdateEntity() throws Exception {
+		SampleModelUtils utils = createModelUtils();
+		
+		// Persist entity with one field set
+		IEntity1 e1 = utils.createEntity1();
+		IIdentifier id = e1.coordinates().getIdentifier();
+		String v1 = "hello";
+		e1.setField11(v1);
+		IUpdater updater = utils.getRuntime().updater();
+		updater.update(Collections.<IInstance> singleton(e1));
+
+		// Persist entity setting the second field
+		e1 = utils.createEntity1();
+		e1.coordinates().setIdentifier(id);
+		String v2 = "bye";
+		e1.setField12(v2);
+		updater.update(Collections.<IInstance> singleton(e1));
+		
+		// Check result keeps both values
+		e1 = utils.finder().findEntity1(id);
+		Assert.assertEquals(v1, e1.getField11());
+		Assert.assertEquals(v2, e1.getField12());
 	}
 
 	@Test

@@ -9,14 +9,27 @@ import com.th3l4b.srm.model.runtime.IInstance;
 
 public abstract class AbstractEntityRuntime extends
 		DefaultNamedContainer<IFieldRuntime> implements IEntityRuntime {
+
 	@Override
 	public void copy(IInstance source, IInstance target) throws Exception {
+		internalCopy(source, target, true);
+	}
+
+	@Override
+	public void apply(IInstance source, IInstance target) throws Exception {
+		internalCopy(source, target, false);
+	}
+
+	private void internalCopy(IInstance source, IInstance target, boolean copy)
+			throws Exception {
 		for (IFieldRuntime fr : this) {
 			if (fr.isSet(source)) {
 				fr.set(fr.get(source), target);
 			} else {
-				fr.set(null, target);
-				fr.unSet(target);
+				if (copy) {
+					fr.set(null, target);
+					fr.unSet(target);
+				}
 			}
 		}
 		ICoordinates sc = source.coordinates();
