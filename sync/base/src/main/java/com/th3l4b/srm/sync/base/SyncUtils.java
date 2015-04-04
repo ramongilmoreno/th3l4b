@@ -1,4 +1,4 @@
-package com.th3l4b.srm.sync;
+package com.th3l4b.srm.sync.base;
 
 import java.util.Collection;
 import java.util.HashMap;
