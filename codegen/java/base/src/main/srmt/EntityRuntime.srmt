@@ -17,33 +17,46 @@ public class <%= name %>EntityRuntime extends com.th3l4b.srm.codegen.java.runtim
 
     public <%= name %>EntityRuntime () throws java.lang.Exception {
         setName(<%= pkg %>.<%= java.name(model) %>ModelUtils.ENTITY_<%= java.name(entity) %>);
-<% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
-		add(new com.th3l4b.srm.codegen.java.runtime.AbstractFieldRuntime() {
-			{
-				setName(<%= pkg %>.<%= java.name(model) %>ModelUtils.FIELD_<%= java.name(entity) %>_<%= java.name(f) %>);
-			}
-
-			public java.lang.String get(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
-				return i.get<%= fname %>();
-			}
-		
-			public void set(java.lang.String value, com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
-				i.set<%= fname %>(value);
-			}
-		
-			public boolean isSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
-				return i.isSet<%= fname %>();
-			}
-		
-			public void unSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
-				<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
-				i.unSet<%= fname %>();
-			}
-		
-		});
-<% } %>
+        <%
+        for (com.th3l4b.srm.model.base.IField f: entity) {
+        	java.lang.String fname = java.name(f);
+        	boolean isRef = f instanceof com.th3l4b.srm.model.base.IReference;
+        	com.th3l4b.srm.model.base.IReference ref = isRef ? ((com.th3l4b.srm.model.base.IReference) f) : null;
+        	java.lang.String clazz = isRef ?
+    			"com.th3l4b.srm.codegen.java.runtime.AbstractReferenceRuntime" :  
+	        		"com.th3l4b.srm.codegen.java.runtime.AbstractFieldRuntime";
+       	%>
+       	{
+       		<%= clazz %> f = new <%= clazz %>() {
+				{
+					setName(<%= pkg %>.<%= java.name(model) %>ModelUtils.FIELD_<%= java.name(entity) %>_<%= java.name(f) %>);
+				}
+	
+				public java.lang.String get(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+					<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+					return i.get<%= fname %>();
+				}
+			
+				public void set(java.lang.String value, com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+					<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+					i.set<%= fname %>(value);
+				}
+			
+				public boolean isSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+					<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+					return i.isSet<%= fname %>();
+				}
+			
+				public void unSet(com.th3l4b.srm.model.runtime.IInstance instance) throws java.lang.Exception {
+					<%= pkg %>.entities.I<%= name %> i = (<%= pkg %>.entities.I<%= name %>) instance;
+					i.unSet<%= fname %>();
+				}
+			};
+			<% if (isRef) { %>
+			f.setTargetType(<%= pkg %>.<%= java.name(model) %>ModelUtils.ENTITY_<%= java.name(model.get(ref.getTarget())) %>);
+			<% } %>
+			add(f);
+		}
+		<% } %>
     }
 }
