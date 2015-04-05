@@ -2,5 +2,14 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 
 dependencies {
     compile project(':codegen:java:runtime')
+    compile project(':json')
 }
+
+ext {
+    codegenJavaPackage = "com.th3l4b.srm.sync.base.generated"
+}
+
+apply from: rootProject.file('buildtools/gradle/codegenJava.gradle')
+
+
 

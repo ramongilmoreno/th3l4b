@@ -1,0 +1,11 @@
+
+model "Sync";
+
+entity "Update" {
+    field "Entity";
+    reference "Commit";
+};
+
+entity "Commit" {
+};
+

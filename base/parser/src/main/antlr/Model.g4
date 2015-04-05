@@ -73,7 +73,7 @@ entity [com.th3l4b.srm.model.base.IModel m]
         com.th3l4b.srm.model.base.DefaultEntity e = new com.th3l4b.srm.model.base.DefaultEntity();
     }:
     'entity' id = string { setName(e, $id.r); add($m, e); }
-    '{' (field[e] | reference[e])+ '}'
+    '{' (field[e] | reference[e])* '}'
     properties[e]? ';'
     ;
 
