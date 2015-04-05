@@ -107,4 +107,40 @@ public class SampleSyncTest {
 		Assert.assertEquals(EntityStatus.Deleted, found.coordinates()
 				.getStatus());
 	}
+
+	@Test
+	public void testMissingUpdates2() throws Exception {
+		SampleModelUtils smu = createModelUtils();
+
+		IEntity1 e1 = smu.createEntity1();
+		e1.setField12("Overwritten value");
+		ICoordinates coordinates = e1.coordinates();
+		coordinates.setStatus(EntityStatus.ToMerge);
+		IIdentifier id = coordinates.getIdentifier();
+
+		IEntity1 e2 = smu.createEntity1();
+		ICoordinates coordinates2 = e2.coordinates();
+		coordinates2.setIdentifier(id);
+		coordinates2.setStatus(EntityStatus.ToDelete);
+		String v2 = "Value 2";
+		e2.setField12(v2);
+
+		// Apply second step
+		List<IInstance> step2 = Collections.<IInstance> singletonList(e2);
+		IUpdater updater = smu.getRuntime().updater();
+		updater.update(step2);
+
+		// Compute delta of first step
+		List<IInstance> step1 = Collections.<IInstance> singletonList(e1);
+		Collection<IInstance> missing = SyncUtils.missingUpdates(step1, step2,
+				SampleModelUtils.RUNTIME);
+
+		// Check this time updates are empty (everything was updated by the
+		// second step updates, no need of any update from the step 1).
+		Assert.assertEquals(0, missing.size());
+		IEntity1 found = smu.finder().findEntity1(id);
+		Assert.assertEquals(v2, found.getField12());
+		Assert.assertEquals(EntityStatus.Deleted, found.coordinates()
+				.getStatus());
+	}
 }
