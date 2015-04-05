@@ -38,6 +38,15 @@ public class Default<%= java.name(entity) %> extends com.th3l4b.srm.codegen.java
     public void unSet<%= fname %> () throws java.lang.Exception { _isSet_<%= fname %> = false; }
 <% } %>
 
+	public boolean empty () throws java.lang.Exception {
+		return false
+<% for (com.th3l4b.srm.model.base.IField f: entity) { java.lang.String fname = java.name(f); %>
+			|| (!isSet<%= fname %>())
+<% } %>
+		;
+    }
+
+
 	public java.lang.String toString () {
 		try {
 			java.lang.StringBuilder sb = new java.lang.StringBuilder(super.toString());

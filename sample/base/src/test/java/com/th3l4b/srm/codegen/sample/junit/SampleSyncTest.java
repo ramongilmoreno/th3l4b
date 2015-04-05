@@ -2,7 +2,9 @@ package com.th3l4b.srm.codegen.sample.junit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -13,6 +15,7 @@ import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IRuntime;
+import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryRuntime;
@@ -60,6 +63,44 @@ public class SampleSyncTest {
 
 		// Check update was correct
 		smu.getRuntime().updater().update(grouped);
+		IEntity1 found = smu.finder().findEntity1(id);
+		Assert.assertEquals(v1, found.getField11());
+		Assert.assertEquals(v2, found.getField12());
+		Assert.assertEquals(EntityStatus.Deleted, found.coordinates()
+				.getStatus());
+	}
+
+	@Test
+	public void testMissingUpdates() throws Exception {
+		SampleModelUtils smu = createModelUtils();
+
+		IEntity1 e1 = smu.createEntity1();
+		String v1 = "Value 1";
+		e1.setField11(v1);
+		e1.setField12("Overwritten value");
+		ICoordinates coordinates = e1.coordinates();
+		coordinates.setStatus(EntityStatus.ToDelete);
+		IIdentifier id = coordinates.getIdentifier();
+
+		IEntity1 e2 = smu.createEntity1();
+		ICoordinates coordinates2 = e2.coordinates();
+		coordinates2.setIdentifier(id);
+		coordinates2.setStatus(EntityStatus.ToMerge);
+		String v2 = "Value 2";
+		e2.setField12(v2);
+
+		// Apply second step
+		List<IInstance> step2 = Collections.<IInstance> singletonList(e2);
+		IUpdater updater = smu.getRuntime().updater();
+		updater.update(step2);
+
+		// Compute delta of first step
+		List<IInstance> step1 = Collections.<IInstance> singletonList(e1);
+		Collection<IInstance> missing = SyncUtils.missingUpdates(step1, step2,
+				SampleModelUtils.RUNTIME);
+
+		Assert.assertNotEquals(0, missing.size());
+		updater.update(missing);
 		IEntity1 found = smu.finder().findEntity1(id);
 		Assert.assertEquals(v1, found.getField11());
 		Assert.assertEquals(v2, found.getField12());

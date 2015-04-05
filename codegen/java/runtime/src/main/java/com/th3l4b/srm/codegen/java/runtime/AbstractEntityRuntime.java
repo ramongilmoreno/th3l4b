@@ -41,6 +41,15 @@ public abstract class AbstractEntityRuntime extends
 		ti.setType(si.getType());
 		ti.setKey(si.getKey());
 	}
+	
+	@Override
+	public void substract(IInstance from, IInstance fields) throws Exception {
+		for (IFieldRuntime fr : this) {
+			if (fr.isSet(fields)) {
+				fr.unSet(from);
+			}
+		}
+	}
 
 	@Override
 	public void unSetNulls(IInstance entity) throws Exception {
