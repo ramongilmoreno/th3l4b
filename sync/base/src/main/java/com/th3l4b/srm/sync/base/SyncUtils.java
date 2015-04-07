@@ -125,8 +125,6 @@ public class SyncUtils {
 
 				// Replace with the copy
 				r.put(id, copy);
-			} else {
-				r.put(id, i);
 			}
 		}
 

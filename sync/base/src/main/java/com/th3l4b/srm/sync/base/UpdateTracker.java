@@ -10,7 +10,6 @@ import com.th3l4b.srm.json.JsonUtils;
 import com.th3l4b.srm.json.Parser;
 import com.th3l4b.srm.model.runtime.EntityStatus;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.model.runtime.RuntimeFilter;
@@ -83,6 +82,12 @@ public class UpdateTracker {
 		smu.getRuntime().updater().update(u);
 	}
 
+	public class PendingUpdates {
+		public Collection<IInstance> _changes = new ArrayList<IInstance>();
+		public Collection<ICommit> _commits = new ArrayList<ICommit>();
+		public Collection<IUpdate> _updates = new ArrayList<IUpdate>();
+	}
+
 	/**
 	 * Synces the given updates with those from the repository.
 	 * 
@@ -91,50 +96,54 @@ public class UpdateTracker {
 	public Collection<IInstance> sync(Collection<IInstance> remote)
 			throws Exception {
 		// Group initial updates
-		IModelRuntime mr = getTracked().model();
-		remote = SyncUtils.groupUpdates(remote, mr);
+		remote = SyncUtils.groupUpdates(remote, getTracked().model());
 
-		// Find all tracked changes
-		SyncModelUtils smu = new SyncModelUtils(getRepository());
-		Collection<IInstance> local = new ArrayList<IInstance>();
-		ArrayList<ICommit> commits = new ArrayList<ICommit>();
-		ArrayList<IUpdate> updates = new ArrayList<IUpdate>();
-		for (ICommit c : smu.finder().allCommit()) {
-			commits.add(c);
-			for (IUpdate u : smu.finder().referencesCommit_Update(c)) {
-				updates.add(u);
-				String contents = u.getEntity();
-				if (contents != null) {
-					StringReader sr = new StringReader(contents);
-					Parser parser = new Parser(JsonUtils.runtime(mr), sr);
-					for (IInstance i : parser.parse(false, true)._many) {
-						local.add(i);
-					}
-				}
-			}
-		}
-		local = SyncUtils.groupUpdates(local, mr);
+		PendingUpdates pu = pendingUpdates();
 
 		// Compute difference
-		Collection<IInstance> missing = SyncUtils.missingUpdates(remote, local,
-				mr);
+		Collection<IInstance> missing = SyncUtils.missingUpdates(remote,
+				pu._changes, getTracked().model());
 
 		// Apply changes
 		_originalTrackedUpdater.update(missing);
 
 		// Delete all updates
 		ArrayList<IInstance> discarded = new ArrayList<IInstance>();
-		for (ICommit c : commits) {
+		for (ICommit c : pu._commits) {
 			c.coordinates().setStatus(EntityStatus.ToDelete);
 			discarded.add(c);
 		}
-		for (IUpdate u : updates) {
+		for (IUpdate u : pu._updates) {
 			u.coordinates().setStatus(EntityStatus.ToDelete);
 			discarded.add(u);
 		}
 		getRepository().updater().update(discarded);
 
 		// Return local changes
-		return local;
+		return pu._changes;
+	}
+
+	public PendingUpdates pendingUpdates() throws Exception {
+		// Find all tracked changes
+		SyncModelUtils smu = new SyncModelUtils(getRepository());
+
+		PendingUpdates pu = new PendingUpdates();
+		for (ICommit c : smu.finder().allCommit()) {
+			pu._commits.add(c);
+			for (IUpdate u : smu.finder().referencesCommit_Update(c)) {
+				pu._updates.add(u);
+				String contents = u.getEntity();
+				if (contents != null) {
+					StringReader sr = new StringReader(contents);
+					Parser parser = new Parser(JsonUtils.runtime(getTracked()
+							.model()), sr);
+					for (IInstance i : parser.parse(false, true)._many) {
+						pu._changes.add(i);
+					}
+				}
+			}
+		}
+		pu._changes = SyncUtils.groupUpdates(pu._changes, getTracked().model());
+		return pu;
 	}
 }
