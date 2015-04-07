@@ -23,7 +23,7 @@ import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
 import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryRuntime;
 import com.th3l4b.srm.sync.base.SyncUtils;
-import com.th3l4b.srm.sync.base.UpdateTracker;
+import com.th3l4b.srm.sync.base.ClientUpdateTracker;
 import com.th3l4b.srm.sync.base.generated.inmemory.AbstractSyncInMemoryRuntime;
 
 public class SampleSyncTest {
@@ -156,7 +156,7 @@ public class SampleSyncTest {
 	class TrackedEnvironment {
 		IRuntime _tracked;
 		IRuntime _repository;
-		UpdateTracker _updateTracker;
+		ClientUpdateTracker _updateTracker;
 		SampleModelUtils _sampleModelUtils;
 
 		public TrackedEnvironment() throws Exception {
@@ -169,7 +169,7 @@ public class SampleSyncTest {
 					return _map;
 				}
 			};
-			_updateTracker = new UpdateTracker(_tracked, _repository);
+			_updateTracker = new ClientUpdateTracker(_tracked, _repository);
 			_sampleModelUtils = new SampleModelUtils(
 					_updateTracker.getTracked());
 		}
@@ -185,7 +185,7 @@ public class SampleSyncTest {
 		e1.setField11(v1);
 		te1._sampleModelUtils.getRuntime().updater()
 				.update(Collections.<IInstance> singletonList(e1));
-		UpdateTracker.PendingUpdates pu1 = te1._updateTracker.pendingUpdates();
+		ClientUpdateTracker.PendingUpdates pu1 = te1._updateTracker.pendingUpdates();
 		Assert.assertEquals(1, pu1._changes.size());
 
 		String v2 = "Bye";
@@ -201,7 +201,7 @@ public class SampleSyncTest {
 				.update(Collections.<IInstance> singletonList(e3));
 
 		// Sync first environment with the changes from the second
-		UpdateTracker.PendingUpdates pu2 = te2._updateTracker.pendingUpdates();
+		ClientUpdateTracker.PendingUpdates pu2 = te2._updateTracker.pendingUpdates();
 		Collection<IInstance> mu = SyncUtils.missingUpdates(pu2._changes,
 				pu1._changes, SampleModelUtils.RUNTIME);
 		Assert.assertEquals(2, mu.size());

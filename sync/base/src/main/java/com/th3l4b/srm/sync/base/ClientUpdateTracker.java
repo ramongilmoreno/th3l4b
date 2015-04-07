@@ -14,27 +14,28 @@ import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.model.runtime.RuntimeFilter;
 import com.th3l4b.srm.sync.base.generated.SyncModelUtils;
-import com.th3l4b.srm.sync.base.generated.entities.ICommit;
-import com.th3l4b.srm.sync.base.generated.entities.IUpdate;
+import com.th3l4b.srm.sync.base.generated.entities.IClientUpdate;
 
 /**
  * Facade to track changes on a tracked environment. The updates are logged into
  * a repository environment.
  */
-public class UpdateTracker {
+public class ClientUpdateTracker {
 
 	private IUpdater _originalTrackedUpdater;
 	private IRuntime _tracked;
 	private IRuntime _repository;
+	private IRuntime _original;
 
-	public UpdateTracker(final IRuntime tracked, IRuntime repository)
+	public ClientUpdateTracker(final IRuntime tracked, IRuntime repository)
 			throws Exception {
+		_original = tracked;
 		_originalTrackedUpdater = tracked.updater();
 		final IUpdater updater = new IUpdater() {
 			@Override
 			public Collection<IInstance> update(Collection<IInstance> entities)
 					throws Exception {
-				UpdateTracker.this.track(entities);
+				ClientUpdateTracker.this.track(entities);
 				return _originalTrackedUpdater.update(entities);
 			}
 		};
@@ -46,6 +47,10 @@ public class UpdateTracker {
 			}
 		};
 		_repository = repository;
+	}
+
+	public IRuntime getOriginal() {
+		return _original;
 	}
 
 	public IRuntime getTracked() {
@@ -65,27 +70,17 @@ public class UpdateTracker {
 		generator.close();
 
 		SyncModelUtils smu = new SyncModelUtils(getRepository());
-		ICommit commit = null;
 		ArrayList<IInstance> u = new ArrayList<IInstance>();
-		Collection<ICommit> commits = smu.finder().allCommit();
-		if (commits.size() > 0) {
-			commit = commits.iterator().next();
-		} else {
-			commit = smu.createCommit();
-			u.add(commit);
-		}
 
-		IUpdate update = smu.createUpdate();
-		update.setCommit(commit);
-		update.setEntity(sw.getBuffer().toString());
+		IClientUpdate update = smu.createClientUpdate();
+		update.setContents(sw.getBuffer().toString());
 		u.add(update);
 		smu.getRuntime().updater().update(u);
 	}
 
 	public class PendingUpdates {
 		public Collection<IInstance> _changes = new ArrayList<IInstance>();
-		public Collection<ICommit> _commits = new ArrayList<ICommit>();
-		public Collection<IUpdate> _updates = new ArrayList<IUpdate>();
+		public Collection<IClientUpdate> _updates = new ArrayList<IClientUpdate>();
 	}
 
 	/**
@@ -109,11 +104,7 @@ public class UpdateTracker {
 
 		// Delete all updates
 		ArrayList<IInstance> discarded = new ArrayList<IInstance>();
-		for (ICommit c : pu._commits) {
-			c.coordinates().setStatus(EntityStatus.ToDelete);
-			discarded.add(c);
-		}
-		for (IUpdate u : pu._updates) {
+		for (IClientUpdate u : pu._updates) {
 			u.coordinates().setStatus(EntityStatus.ToDelete);
 			discarded.add(u);
 		}
@@ -128,18 +119,15 @@ public class UpdateTracker {
 		SyncModelUtils smu = new SyncModelUtils(getRepository());
 
 		PendingUpdates pu = new PendingUpdates();
-		for (ICommit c : smu.finder().allCommit()) {
-			pu._commits.add(c);
-			for (IUpdate u : smu.finder().referencesCommit_Update(c)) {
-				pu._updates.add(u);
-				String contents = u.getEntity();
-				if (contents != null) {
-					StringReader sr = new StringReader(contents);
-					Parser parser = new Parser(JsonUtils.runtime(getTracked()
-							.model()), sr);
-					for (IInstance i : parser.parse(false, true)._many) {
-						pu._changes.add(i);
-					}
+		for (IClientUpdate u : smu.finder().allClientUpdate()) {
+			pu._updates.add(u);
+			String contents = u.getContents();
+			if (contents != null) {
+				StringReader sr = new StringReader(contents);
+				Parser parser = new Parser(JsonUtils.runtime(getTracked()
+						.model()), sr);
+				for (IInstance i : parser.parse(false, true)._many) {
+					pu._changes.add(i);
 				}
 			}
 		}
