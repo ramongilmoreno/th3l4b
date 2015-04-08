@@ -38,6 +38,12 @@ var v2 = [
     }
 ];
 
+var v3 = {
+    "type": "Entity1",
+    "id": "d",
+    "status": "ToMerge"
+};
+
 // http://stackoverflow.com/questions/11456771/using-json-post-request
 var restTest = function(arg) {
     $.ajax({
@@ -75,6 +81,8 @@ var restTest = function(arg) {
 <p><a href="SampleRESTServlet/Entity1/b">Entity1, id b</a></p>
 <p><a href="SampleRESTServlet/Entity2/c">Entity2, id c</a></p>
 <p><a href="SampleRESTServlet/Entity1/b/Sample">References to Entity1, id b</a></p>
+<p><a href="javascript:restTest(v3)">POST empty Entity 1, id d</a></p>
+<p><a href="SampleRESTServlet/Entity1/d">Entity1, id d</a></p>
 
 <div id="result"></div>
 

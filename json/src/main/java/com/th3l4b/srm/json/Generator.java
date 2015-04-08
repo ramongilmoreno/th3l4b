@@ -17,31 +17,32 @@ public class Generator implements IJsonConstants {
 		_jackson = new JsonFactory().createGenerator(out);
 		_runtime = runtime;
 	}
-	
+
 	public JsonGenerator getJackson() {
 		return _jackson;
 	}
-	
+
 	public IJsonModelRuntime getRuntime() {
 		return _runtime;
 	}
-	
-	public void write (Collection<IInstance> instances) throws Exception {
+
+	public void write(Collection<IInstance> instances) throws Exception {
 		// http://www.studytrails.com/java/json/java-jackson-json-streaming.jsp
-	    JsonGenerator jackson = getJackson();
+		JsonGenerator jackson = getJackson();
 		jackson.writeStartArray();
-		for (IInstance i: instances) {
+		for (IInstance i : instances) {
 			write(i);
 		}
 		jackson.writeEndArray();
 	}
-	
+
 	/**
-	 * @param instance Not null
+	 * @param instance
+	 *            Not null
 	 */
-	public void write (IInstance instance) throws Exception {
+	public void write(IInstance instance) throws Exception {
 		// http://www.studytrails.com/java/json/java-jackson-json-streaming.jsp
-	    JsonGenerator generator = getJackson();
+		JsonGenerator generator = getJackson();
 		generator.writeStartObject();
 		generator.writeFieldName(FIELD_TYPE);
 		generator.writeString(instance.type());
@@ -49,21 +50,24 @@ public class Generator implements IJsonConstants {
 		generator.writeString(instance.coordinates().getIdentifier().getKey());
 		generator.writeFieldName(FIELD_STATUS);
 		generator.writeString(instance.coordinates().getStatus().toString());
-		generator.writeFieldName(FIELD_FIELDS);
-		generator.writeStartObject();
-		IJsonEntityRuntime jer = getRuntime().get(instance.type());
-		for (IJsonFieldRuntime jfr : jer) {
-			IFieldRuntime fr = jfr.runtime();
-			if (fr.isSet(instance)) {
-				String value = fr.get(instance);
-				generator.writeFieldName(jfr.json());
-				generator.writeString(value);
+
+		if (!instance.empty()) {
+			generator.writeFieldName(FIELD_FIELDS);
+			generator.writeStartObject();
+			IJsonEntityRuntime jer = getRuntime().get(instance.type());
+			for (IJsonFieldRuntime jfr : jer) {
+				IFieldRuntime fr = jfr.runtime();
+				if (fr.isSet(instance)) {
+					String value = fr.get(instance);
+					generator.writeFieldName(jfr.json());
+					generator.writeString(value);
+				}
 			}
+			generator.writeEndObject();
 		}
 		generator.writeEndObject();
-		generator.writeEndObject();
 	}
-	
+
 	public void close() throws Exception {
 		_jackson.close();
 		_jackson = null;
