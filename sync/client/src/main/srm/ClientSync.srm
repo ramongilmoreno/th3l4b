@@ -1,0 +1,7 @@
+
+model "Client sync";
+
+entity "Update" {
+    field "Contents";
+};
+

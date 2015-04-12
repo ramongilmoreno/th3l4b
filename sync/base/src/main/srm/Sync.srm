@@ -1,7 +1,0 @@
-
-model "Sync";
-
-entity "ClientUpdate" {
-    field "Contents";
-};
-

@@ -1,4 +1,4 @@
-package com.th3l4b.srm.sync.base;
+package com.th3l4b.srm.sync.client;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -13,8 +13,9 @@ import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.model.runtime.RuntimeFilter;
-import com.th3l4b.srm.sync.base.generated.SyncModelUtils;
-import com.th3l4b.srm.sync.base.generated.entities.IClientUpdate;
+import com.th3l4b.srm.sync.base.SyncUtils;
+import com.th3l4b.srm.sync.client.generated.ClientSyncModelUtils;
+import com.th3l4b.srm.sync.client.generated.entities.IUpdate;
 
 /**
  * Facade to track changes on a tracked environment. The updates are logged into
@@ -69,18 +70,18 @@ public class ClientUpdateTracker {
 		generator.write(entities);
 		generator.close();
 
-		SyncModelUtils smu = new SyncModelUtils(getRepository());
+		ClientSyncModelUtils csmu = new ClientSyncModelUtils(getRepository());
 		ArrayList<IInstance> u = new ArrayList<IInstance>();
 
-		IClientUpdate update = smu.createClientUpdate();
+		IUpdate update = csmu.createUpdate();
 		update.setContents(sw.getBuffer().toString());
 		u.add(update);
-		smu.getRuntime().updater().update(u);
+		csmu.getRuntime().updater().update(u);
 	}
 
 	public class PendingUpdates {
 		public Collection<IInstance> _changes = new ArrayList<IInstance>();
-		public Collection<IClientUpdate> _updates = new ArrayList<IClientUpdate>();
+		public Collection<IUpdate> _updates = new ArrayList<IUpdate>();
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class ClientUpdateTracker {
 
 		// Delete all updates
 		ArrayList<IInstance> discarded = new ArrayList<IInstance>();
-		for (IClientUpdate u : pu._updates) {
+		for (IUpdate u : pu._updates) {
 			u.coordinates().setStatus(EntityStatus.ToDelete);
 			discarded.add(u);
 		}
@@ -116,10 +117,9 @@ public class ClientUpdateTracker {
 
 	public PendingUpdates pendingUpdates() throws Exception {
 		// Find all tracked changes
-		SyncModelUtils smu = new SyncModelUtils(getRepository());
-
+		ClientSyncModelUtils csmu = new ClientSyncModelUtils(getRepository());
 		PendingUpdates pu = new PendingUpdates();
-		for (IClientUpdate u : smu.finder().allClientUpdate()) {
+		for (IUpdate u : csmu.finder().allUpdate()) {
 			pu._updates.add(u);
 			String contents = u.getContents();
 			if (contents != null) {

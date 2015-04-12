@@ -1,0 +1,14 @@
+apply from: rootProject.file('buildtools/gradle/java.gradle')
+
+dependencies {
+    compile project(':sync:base')
+}
+
+ext {
+    codegenJavaPackage = "com.th3l4b.srm.sync.client.generated"
+}
+
+apply from: rootProject.file('buildtools/gradle/codegenJava.gradle')
+
+
+

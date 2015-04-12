@@ -23,8 +23,8 @@ import com.th3l4b.srm.sample.base.generated.entities.IEntity1;
 import com.th3l4b.srm.sample.base.generated.entities.IEntity2;
 import com.th3l4b.srm.sample.base.generated.inmemory.AbstractSampleInMemoryRuntime;
 import com.th3l4b.srm.sync.base.SyncUtils;
-import com.th3l4b.srm.sync.base.ClientUpdateTracker;
-import com.th3l4b.srm.sync.base.generated.inmemory.AbstractSyncInMemoryRuntime;
+import com.th3l4b.srm.sync.client.ClientUpdateTracker;
+import com.th3l4b.srm.sync.client.generated.inmemory.AbstractClientSyncInMemoryRuntime;
 
 public class SampleSyncTest {
 
@@ -161,7 +161,7 @@ public class SampleSyncTest {
 
 		public TrackedEnvironment() throws Exception {
 			_tracked = createSampleRuntime();
-			_repository = new AbstractSyncInMemoryRuntime() {
+			_repository = new AbstractClientSyncInMemoryRuntime() {
 				Map<IIdentifier, IInstance> _map = new HashMap<IIdentifier, IInstance>();
 
 				@Override
