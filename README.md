@@ -9,4 +9,5 @@ Making things simpler:
 * Support for target platforms (databases or programming languages) will include text-based and native variants.
 * Types needs simplification (actually, types will be removed from base implementation. Only strings used)
 * Now with Gradle as build engine.
+* Syncing fully implemented
 
