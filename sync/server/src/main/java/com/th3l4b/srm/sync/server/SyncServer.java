@@ -1,10 +1,14 @@
 package com.th3l4b.srm.sync.server;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
 
 import com.th3l4b.common.data.NullSafe;
+import com.th3l4b.srm.json.Generator;
 import com.th3l4b.srm.json.IJsonModelRuntime;
 import com.th3l4b.srm.json.JsonUtils;
 import com.th3l4b.srm.json.Parser;
@@ -20,10 +24,41 @@ import com.th3l4b.srm.sync.server.generated.entities.IClient;
 import com.th3l4b.srm.sync.server.generated.entities.IMerge;
 import com.th3l4b.srm.sync.server.generated.entities.IStatus;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinder;
+import com.th3l4b.srm.sync.server.graph.DirectedGraphUtils;
 import com.th3l4b.srm.sync.server.graph.Tarjan1976;
 import com.th3l4b.srm.sync.server.graph.TrackLeadsDirectedGraph;
 
 public class SyncServer {
+
+	public static final boolean LOG = false;
+
+	public void log(String msg) {
+		if (LOG) {
+			System.out.println(msg);
+		}
+	}
+
+	public <T> void log(String msg, Collection<T> c) {
+		if (LOG) {
+			log(msg);
+			TreeSet<T> ts = new TreeSet<T>(c);
+			for (T i : ts) {
+				System.out.println("    * " + i);
+			}
+		}
+	}
+
+	public <T> void logList(String msg, List<T> l) {
+		if (LOG) {
+			log(msg);
+			int j = 0;
+			for (T i : l) {
+				System.out
+						.println("    " + (j < 10 ? "0" : "") + j + " - " + i);
+				j++;
+			}
+		}
+	}
 
 	private IRuntime _repository;
 
@@ -38,6 +73,7 @@ public class SyncServer {
 	public class SyncResult {
 		public String _status;
 		public Collection<String> _missingStatuses = new ArrayList<String>();
+		public Collection<IInstance> _updates;
 
 		public SyncResult(String status) {
 			_status = status;
@@ -53,22 +89,16 @@ public class SyncServer {
 	 * @return The ID of the {@link IStatus} of the discovered status for the
 	 *         customer and the list of updates.
 	 */
-	public SyncResult discover(String clientId) throws Exception {
+	public SyncResult discover(String clientId, Collection<IInstance> updates,
+			IModelRuntime runtime) throws Exception {
 		ServerSyncModelUtils utils = new ServerSyncModelUtils(_repository);
 		ArrayList<IInstance> changes = new ArrayList<IInstance>();
 
 		// Locate the client
 		IServerSyncFinder finder = utils.finder();
 		IClient client = finder.findClient(clientId);
-		boolean clientAdded = false;
-		if (client.coordinates().getStatus() == EntityStatus.Unknown) {
-			client = utils.createClient();
-			client.coordinates().getIdentifier().setKey(clientId);
-			changes.add(client);
-			clientAdded = true;
-		}
 
-		// Find all active statuses
+		// Find all active statuses from clients
 		ArrayList<String> statuses = new ArrayList<String>();
 		for (IStatus s : finder.allStatus()) {
 			statuses.add(s.coordinates().getIdentifier().getKey());
@@ -76,29 +106,45 @@ public class SyncServer {
 
 		// If only the start status is found, do nothing.
 		String start = client.getStatus();
-		if ((start != null) && (statuses.size() == 1)
-				&& NullSafe.equals(start, statuses.iterator().next())) {
+		if ((statuses.size() == 1)
+				&& NullSafe.equals(start, statuses.iterator().next())
+				&& ((updates == null) || (updates.size() == 0))) {
 			return new SyncResult(start);
 		} else {
 			// Need to create new status
-			IStatus discoveredStatus = utils.createStatus();
-			changes.add(discoveredStatus);
+			IStatus newStatus = utils.createStatus();
+			// Place updates on it
+			if ((updates != null) && (updates.size() > 0)) {
+				StringWriter sw = new StringWriter();
+				IJsonModelRuntime jr = JsonUtils.runtime(runtime);
+				Generator generator = new Generator(jr, sw);
+				try {
+					generator.write(updates);
+				} finally {
+					generator.close();
+				}
+				newStatus.setContents(sw.getBuffer().toString());
+				log("Changes at: " + newStatus);
+			}
+			changes.add(newStatus);
 
-			Collection<String> missing = parentsStatuses(finder,
-					discoveredStatus.coordinates().getIdentifier().getKey(),
-					statuses, client.getStatus());
+			// Delete parent status if no yet deleted
+			IStatus originalStatus = utils.createStatus();
+			originalStatus.coordinates().getIdentifier().setKey(start);
+			originalStatus.coordinates().setStatus(EntityStatus.ToDelete);
+			changes.add(originalStatus);
 
 			// Update client
-			if (!clientAdded) {
-				changes.add(client);
-				clientAdded = true;
-			}
-			client.setStatus(discoveredStatus);
+			client.setStatus(newStatus);
+			client.coordinates().setStatus(EntityStatus.ToMerge);
+			changes.add(client);
 
 			// Merge from missing statuses
-			for (String parent : missing) {
+			Collection<String> missing = parentsStatuses(finder, newStatus
+					.coordinates().getIdentifier().getKey(), statuses, start);
+			for (String parent : statuses) {
 				IMerge merge = utils.createMerge();
-				merge.setTo(discoveredStatus);
+				merge.setTo(newStatus);
 				merge.setFrom(parent);
 				changes.add(merge);
 
@@ -111,26 +157,36 @@ public class SyncServer {
 			utils.getRuntime().updater().update(changes);
 
 			// Return
-			SyncResult r = new SyncResult(discoveredStatus.coordinates()
+			SyncResult r = new SyncResult(newStatus.coordinates()
 					.getIdentifier().getKey());
 			r._missingStatuses.addAll(missing);
-
+			r._updates = updates(missing, start, runtime);
 			return r;
 		}
 
 	}
 
-	public Collection<IInstance> updates(Collection<String> statuses,
-			IModelRuntime runtime) throws Exception {
+	private Collection<IInstance> updates(Collection<String> statuses,
+			String start, IModelRuntime runtime) throws Exception {
 		ArrayList<IInstance> r = new ArrayList<IInstance>();
 		IJsonModelRuntime jr = JsonUtils.runtime(runtime);
 		ServerSyncModelUtils utils = new ServerSyncModelUtils(getRepository());
 		IServerSyncFinder finder = utils.finder();
 		for (String s : statuses) {
+			if (NullSafe.equals(start, s)) {
+				// Do not apply changes from the start status. They are already
+				// applied.
+				continue;
+			}
 			String contents = finder.findStatus(s).getContents();
 			if (contents != null) {
 				StringReader input = new StringReader(contents);
-				r.addAll(new Parser(jr, input).parse(false, true)._many);
+				Parser parser = new Parser(jr, input);
+				try {
+					r.addAll(parser.parse(false, true)._many);
+				} finally {
+					parser.close();
+				}
 			}
 		}
 
@@ -148,7 +204,12 @@ public class SyncServer {
 		DirectedGraphFromFinder data = new DirectedGraphFromFinder(start,
 				found, finder);
 		TrackLeadsDirectedGraph builder = new TrackLeadsDirectedGraph(data);
-		builder.ignore(stop);
+		builder.addLead(start);
+
+		// Ignore all leading to the stop
+		for (IMerge m : finder.referencesStatus_ComesFrom(stop)) {
+			builder.ignore(m.getFrom());
+		}
 
 		// Follow leads until nothing is left
 		while (!builder.leads().isEmpty()) {
@@ -158,8 +219,19 @@ public class SyncServer {
 				builder.addLead(lead);
 			}
 		}
-
+		log("Found statuses", builder.visited());
+		log("Found tree");
+		if (LOG) {
+			DirectedGraphUtils.print(builder, start, System.out);
+		}
 		// Collect all links and sort them out
-		return new Tarjan1976().sort(builder);
+		List<String> sorted = new Tarjan1976().sort(builder);
+		if (sorted.indexOf(start) != (sorted.size() - 1)) {
+			throw new IllegalStateException();
+		} else {
+			sorted.remove((sorted.size() - 1));
+		}
+		logList("Apply", sorted);
+		return sorted;
 	}
 }

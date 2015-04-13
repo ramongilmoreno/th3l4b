@@ -26,22 +26,22 @@ import java.util.Set;
 public class Tarjan1976 {
 
 	/**
-	 * Finds the appropriate sorting for the nodes of the dg graph which may
-	 * be visited from the root. This allows finding all nodes in the graph,
-	 * but to compute the order the reversed links graph is used.
+	 * Finds the appropriate sorting for the nodes of the dg graph which may be
+	 * visited from the root. This allows finding all nodes in the graph, but to
+	 * compute the order the reversed links graph is used.
 	 */
-	public List<String> sort (IDirectedGraph dg) throws Exception {
+	public List<String> sort(IDirectedGraph dg) throws Exception {
 		ArrayList<String> r = new ArrayList<String>();
-	    HashSet<String> unmarked = new HashSet<String>();	
-	    bfs(dg, dg.getRoot(), unmarked);
-	    HashSet<String> temporary = new HashSet<String>();
-	    ReverseLinks reversed = new ReverseLinks(dg);
+		HashSet<String> unmarked = new HashSet<String>();
+		bfs(dg, dg.getRoot(), unmarked);
+		HashSet<String> temporary = new HashSet<String>();
+		ReverseLinks reversed = new ReverseLinks(dg);
 		while (!unmarked.isEmpty()) {
 			visit(unmarked.iterator().next(), reversed, unmarked, temporary, r);
 		}
 		return r;
 	}
-	
+
 	public void visit(String n, IDirectedGraph dg, HashSet<String> unmarked,
 			HashSet<String> temporary, List<String> r) throws Exception {
 		if (temporary.contains(n)) {
@@ -49,7 +49,7 @@ public class Tarjan1976 {
 		}
 		if (unmarked.contains(n)) {
 			temporary.add(n);
-			for (String m: dg.linksFrom(n)) {
+			for (String m : dg.linksFrom(n)) {
 				visit(m, dg, unmarked, temporary, r);
 			}
 			unmarked.remove(n);
@@ -62,13 +62,14 @@ public class Tarjan1976 {
 		}
 	}
 
-	public void bfs (IDirectedGraph dg, String start, Set<String> nodes) throws Exception {
+	public void bfs(IDirectedGraph dg, String start, Set<String> nodes)
+			throws Exception {
 		if (nodes.contains(start)) {
 			return;
 		}
-	    nodes.add(start);
-	    for (String to: dg.linksFrom(start)) {
-	    	bfs(dg, to, nodes);
-	    }
+		nodes.add(start);
+		for (String to : dg.linksFrom(start)) {
+			bfs(dg, to, nodes);
+		}
 	}
 }

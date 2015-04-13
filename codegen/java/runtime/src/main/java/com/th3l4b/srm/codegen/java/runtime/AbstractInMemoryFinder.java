@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.EntityStatus;
+import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
@@ -27,8 +28,10 @@ public abstract class AbstractInMemoryFinder implements IFinder {
 	public Collection<IInstance> all(String type) throws Exception {
 		ArrayList<IInstance> r = new ArrayList<IInstance>();
 		for (IInstance i : getMap().values()) {
-			if (NullSafe
-					.equals(i.coordinates().getIdentifier().getType(), type)) {
+			ICoordinates coordinates = i.coordinates();
+			if ((coordinates.getStatus() == EntityStatus.Saved)
+					&& NullSafe.equals(coordinates.getIdentifier().getType(),
+							type)) {
 				r.add(i);
 			}
 		}

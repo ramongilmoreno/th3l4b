@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.th3l4b.srm.json.Generator;
 import com.th3l4b.srm.json.JsonUtils;
@@ -91,6 +92,9 @@ public class ClientUpdateTracker {
 	 */
 	public Collection<IInstance> sync(Collection<IInstance> remote)
 			throws Exception {
+		// Null safe protection
+		remote = remote == null ? Collections.<IInstance>emptyList() : remote;
+		
 		// Group initial updates
 		remote = SyncUtils.groupUpdates(remote, getTracked().model());
 

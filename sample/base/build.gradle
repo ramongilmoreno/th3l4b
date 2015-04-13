@@ -4,6 +4,7 @@ dependencies {
     compile group: 'junit', name: 'junit', version: '4.11'
     compile project(':json')
     compile project(':sync:client')
+    compile project(':sync:server')
 }
 
 ext {

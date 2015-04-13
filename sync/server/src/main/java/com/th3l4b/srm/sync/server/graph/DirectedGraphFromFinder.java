@@ -2,12 +2,18 @@ package com.th3l4b.srm.sync.server.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.sync.server.generated.IServerSyncFinder;
 import com.th3l4b.srm.sync.server.generated.entities.IMerge;
 
+/**
+ * Builds a graph from the data in the {@link IServerSyncFinder} by following
+ * links {@link IMerge} in the direction {@link IMerge#getTo()} to
+ * {@link IMerge#getFrom()}
+ */
 public class DirectedGraphFromFinder implements IDirectedGraph {
 	String _start;
 	Collection<String> _fromStart = new HashSet<String>();
@@ -41,7 +47,7 @@ public class DirectedGraphFromFinder implements IDirectedGraph {
 			return _fromStart;
 		} else {
 			ArrayList<String> r = new ArrayList<String>();
-			for (IMerge s : _finder.referencesStatus_LeadsTo(from)) {
+			for (IMerge s : _finder.referencesStatus_ComesFrom(from)) {
 				String f = s.getFrom();
 				if (f != null) {
 					r.add(f);
@@ -53,6 +59,17 @@ public class DirectedGraphFromFinder implements IDirectedGraph {
 
 	@Override
 	public Collection<String> linksTo(String to) throws Exception {
-		throw new UnsupportedOperationException();
+		if (_fromStart.contains(to)) {
+			return Collections.singleton(_start);
+		} else {
+			ArrayList<String> r = new ArrayList<String>();
+			for (IMerge s : _finder.referencesStatus_LeadsTo(to)) {
+				String f = s.getTo();
+				if (f != null) {
+					r.add(f);
+				}
+			}
+			return r;
+		}
 	}
 }
