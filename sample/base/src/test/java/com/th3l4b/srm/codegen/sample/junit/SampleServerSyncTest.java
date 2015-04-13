@@ -119,14 +119,14 @@ public class SampleServerSyncTest {
 		registerAndCreateEntityAndSync(client2, "World", server, ++i);
 		registerAndCreateEntityAndSync(client3, "!", server, ++i);
 
-		// Resync
-		resync(client1, server, i);
-		// This caused an NPE during tests
-		resync(client1, server, i);
-		resync(client2, server, i);
+		// Resync in reverse order: server 3 has nothing to do, server 2 a
+		// little and server 1 needs to collect all changes
 		resync(client3, server, i);
+		resync(client2, server, i);
+		resync(client1, server, i);
 
 		// Resync again to check no status from the first phase are used again
+		// (resyncing twice caused an NPE during tests)
 		resync(client1, server, i);
 		resync(client2, server, i);
 		resync(client3, server, i);

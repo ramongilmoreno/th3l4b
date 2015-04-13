@@ -26,12 +26,13 @@ import com.th3l4b.srm.sync.server.generated.entities.IStatus;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinder;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinderWithFirstLevel;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphUtils;
+import com.th3l4b.srm.sync.server.graph.IDirectedGraph;
 import com.th3l4b.srm.sync.server.graph.Tarjan1976;
 import com.th3l4b.srm.sync.server.graph.TrackLeadsDirectedGraph;
 
 public class SyncServer {
 
-	public static final boolean LOG = true;
+	public static final boolean LOG = false;
 
 	public void log(String msg) {
 		if (LOG) {
@@ -108,53 +109,71 @@ public class SyncServer {
 
 		// If only the start status is found, do nothing.
 		String start = client.getStatus();
-		if ((statuses.size() == 1)
-				&& NullSafe.equals(start, statuses.iterator().next())
-				&& ((updates == null) || (updates.size() == 0))) {
+		boolean noUpdates = (updates == null) || (updates.size() == 0);
+		if ((statuses.size() == 1) && NullSafe.equals(start, statuses.get(0))
+				&& noUpdates) {
 			return new SyncResult(start);
 		} else {
-			// Need to create new status
-			IStatus newStatus = utils.createStatus();
-			// Place updates on it
-			if ((updates != null) && (updates.size() > 0)) {
-				StringWriter sw = new StringWriter();
-				IJsonModelRuntime jr = JsonUtils.runtime(runtime);
-				Generator generator = new Generator(jr, sw);
-				try {
-					generator.write(updates);
-				} finally {
-					generator.close();
+			IStatus newStatus;
+			boolean reuseStatus = false;
+			if (noUpdates && (statuses.size() == 1)) {
+				// Need to move to an existing status
+				newStatus = finder.findStatus(statuses.get(0));
+				reuseStatus = true;
+			} else {
+				// Need to create new status
+				newStatus = utils.createStatus();
+				// Place updates on it
+				if ((updates != null) && (updates.size() > 0)) {
+					StringWriter sw = new StringWriter();
+					IJsonModelRuntime jr = JsonUtils.runtime(runtime);
+					Generator generator = new Generator(jr, sw);
+					try {
+						generator.write(updates);
+					} finally {
+						generator.close();
+					}
+					newStatus.setContents(sw.getBuffer().toString());
+					log("Changes at: " + newStatus);
 				}
-				newStatus.setContents(sw.getBuffer().toString());
-				log("Changes at: " + newStatus);
+				changes.add(newStatus);
 			}
-			changes.add(newStatus);
 
 			// Delete parent status if no yet deleted
-			IStatus originalStatus = utils.createStatus();
-			originalStatus.coordinates().getIdentifier().setKey(start);
-			originalStatus.coordinates().setStatus(EntityStatus.ToDelete);
-			changes.add(originalStatus);
+			if (finder.findStatus(start).coordinates().getStatus() != EntityStatus.Deleted) {
+				IStatus originalStatus = utils.createStatus();
+				originalStatus.coordinates().getIdentifier().setKey(start);
+				originalStatus.coordinates().setStatus(EntityStatus.ToDelete);
+				changes.add(originalStatus);
+			}
 
 			// Update client
-			client.setStatus(newStatus);
-			client.coordinates().setStatus(EntityStatus.ToMerge);
-			changes.add(client);
+			IClient clientUpdate = utils.createClient();
+			clientUpdate.setStatus(newStatus);
+			clientUpdate.coordinates().getIdentifier()
+					.setKey(client.coordinates().getIdentifier().getKey());
+			clientUpdate.coordinates().setStatus(EntityStatus.ToMerge);
+			changes.add(clientUpdate);
 
 			// Merge from missing statuses
-			Collection<String> missing = parentsStatuses(finder, newStatus
-					.coordinates().getIdentifier().getKey(), statuses, start);
-			for (String parent : statuses) {
-				IMerge merge = utils.createMerge();
-				merge.setTo(newStatus);
-				merge.setFrom(parent);
-				changes.add(merge);
+			Collection<String> missing = reuseStatus ? parentsStatusesForReusedStartStatus(
+					finder, newStatus.coordinates().getIdentifier().getKey(),
+					start) : parentsStatusesForUnexistingStartStatus(finder,
+					newStatus.coordinates().getIdentifier().getKey(), statuses,
+					start);
+			if (!reuseStatus) {
+				for (String parent : statuses) {
+					IMerge merge = utils.createMerge();
+					merge.setTo(newStatus);
+					merge.setFrom(parent);
+					changes.add(merge);
 
-				IStatus deleteStatus = utils.createStatus();
-				ICoordinates coordinates = deleteStatus.coordinates();
-				coordinates.getIdentifier().setKey(parent);
-				coordinates.setStatus(EntityStatus.ToDelete);
-				changes.add(deleteStatus);
+					IStatus deleteStatus = utils.createStatus();
+					ICoordinates coordinates = deleteStatus.coordinates();
+					coordinates.getIdentifier().setKey(parent);
+					coordinates.setStatus(EntityStatus.ToDelete);
+					changes.add(deleteStatus);
+				}
 			}
 			utils.getRuntime().updater().update(changes);
 
@@ -206,12 +225,34 @@ public class SyncServer {
 	 * @return A sorted collection of the parent statuses. Updates shall be read
 	 *         and applied in the order returned by this method.
 	 */
-	protected Collection<String> parentsStatuses(IServerSyncFinder finder,
-			String start, Collection<String> found, String stop)
-			throws Exception {
+	protected Collection<String> parentsStatusesForUnexistingStartStatus(
+			IServerSyncFinder finder, String start, Collection<String> found,
+			String stop) throws Exception {
 
 		DirectedGraphFromFinderWithFirstLevel data = new DirectedGraphFromFinderWithFirstLevel(
 				start, found, finder);
+		List<String> sorted = parentStatuses(start, stop, data);
+		if (sorted.indexOf(start) != (sorted.size() - 1)) {
+			throw new IllegalStateException();
+		} else {
+			sorted.remove((sorted.size() - 1));
+		}
+		logList("Apply", sorted);
+		return sorted;
+	}
+
+	protected Collection<String> parentsStatusesForReusedStartStatus(
+			IServerSyncFinder finder, String start, String stop)
+			throws Exception {
+		DirectedGraphFromFinder data = new DirectedGraphFromFinder(start,
+				finder);
+		List<String> sorted = parentStatuses(start, stop, data);
+		logList("Apply", sorted);
+		return sorted;
+	}
+
+	private List<String> parentStatuses(String start, String stop,
+			IDirectedGraph data) throws Exception {
 		TrackLeadsDirectedGraph builder = new TrackLeadsDirectedGraph(data);
 		builder.addLead(start);
 		builder.ignore(stop);
@@ -231,12 +272,6 @@ public class SyncServer {
 		}
 		// Collect all links and sort them out
 		List<String> sorted = new Tarjan1976().sort(builder);
-		if (sorted.indexOf(start) != (sorted.size() - 1)) {
-			throw new IllegalStateException();
-		} else {
-			sorted.remove((sorted.size() - 1));
-		}
-		logList("Apply", sorted);
 		return sorted;
 	}
 }
