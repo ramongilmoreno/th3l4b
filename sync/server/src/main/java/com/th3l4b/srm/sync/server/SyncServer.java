@@ -24,13 +24,14 @@ import com.th3l4b.srm.sync.server.generated.entities.IClient;
 import com.th3l4b.srm.sync.server.generated.entities.IMerge;
 import com.th3l4b.srm.sync.server.generated.entities.IStatus;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinder;
+import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinderWithFirstLevel;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphUtils;
 import com.th3l4b.srm.sync.server.graph.Tarjan1976;
 import com.th3l4b.srm.sync.server.graph.TrackLeadsDirectedGraph;
 
 public class SyncServer {
 
-	public static final boolean LOG = false;
+	public static final boolean LOG = true;
 
 	public void log(String msg) {
 		if (LOG) {
@@ -97,6 +98,7 @@ public class SyncServer {
 		// Locate the client
 		IServerSyncFinder finder = utils.finder();
 		IClient client = finder.findClient(clientId);
+		log("Current status: " + client.getStatus());
 
 		// Find all active statuses from clients
 		ArrayList<String> statuses = new ArrayList<String>();
@@ -161,6 +163,13 @@ public class SyncServer {
 					.getIdentifier().getKey());
 			r._missingStatuses.addAll(missing);
 			r._updates = updates(missing, start, runtime);
+
+			if (LOG) {
+				log("Resulting tree:");
+				DirectedGraphUtils.print(new DirectedGraphFromFinder(r._status,
+						finder), r._status, System.out);
+			}
+
 			return r;
 		}
 
@@ -201,15 +210,11 @@ public class SyncServer {
 			String start, Collection<String> found, String stop)
 			throws Exception {
 
-		DirectedGraphFromFinder data = new DirectedGraphFromFinder(start,
-				found, finder);
+		DirectedGraphFromFinderWithFirstLevel data = new DirectedGraphFromFinderWithFirstLevel(
+				start, found, finder);
 		TrackLeadsDirectedGraph builder = new TrackLeadsDirectedGraph(data);
 		builder.addLead(start);
-
-		// Ignore all leading to the stop
-		for (IMerge m : finder.referencesStatus_ComesFrom(stop)) {
-			builder.ignore(m.getFrom());
-		}
+		builder.ignore(stop);
 
 		// Follow leads until nothing is left
 		while (!builder.leads().isEmpty()) {

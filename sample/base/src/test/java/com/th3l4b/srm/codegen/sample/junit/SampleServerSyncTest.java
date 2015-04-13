@@ -81,7 +81,6 @@ public class SampleServerSyncTest {
 			c.coordinates().getIdentifier().setKey(client._id);
 			IStatus s = _utils.createStatus();
 			c.setStatus(s);
-			log("Registered status: " + s);
 			ArrayList<IInstance> updates = new ArrayList<IInstance>();
 			updates.add(c);
 			updates.add(s);
@@ -126,7 +125,7 @@ public class SampleServerSyncTest {
 		resync(client1, server, i);
 		resync(client2, server, i);
 		resync(client3, server, i);
-		
+
 		// Resync again to check no status from the first phase are used again
 		resync(client1, server, i);
 		resync(client2, server, i);
