@@ -57,13 +57,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
         try {
-            amt.testCreateEntity();
-            amt.testMergeDeletedEntity();
-            amt.testReverse();
-            amt.testSaveDeletedEntity();
-            amt.testSaveEntity();
-            amt.testSavePreviouslyDeletedEntity();
-            amt.testToString();
+            amt.testAll();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

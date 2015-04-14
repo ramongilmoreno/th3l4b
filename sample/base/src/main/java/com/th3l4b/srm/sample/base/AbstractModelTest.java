@@ -1,6 +1,8 @@
 package com.th3l4b.srm.sample.base;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -50,7 +52,7 @@ public abstract class AbstractModelTest {
 	@Test
 	public void testUpdateEntity() throws Exception {
 		SampleModelUtils utils = createModelUtils();
-		
+
 		// Persist entity with one field set
 		IEntity1 e1 = utils.createEntity1();
 		IIdentifier id = e1.coordinates().getIdentifier();
@@ -65,7 +67,7 @@ public abstract class AbstractModelTest {
 		String v2 = "bye";
 		e1.setField12(v2);
 		updater.update(Collections.<IInstance> singleton(e1));
-		
+
 		// Check result keeps both values
 		e1 = utils.finder().findEntity1(id);
 		Assert.assertEquals(v1, e1.getField11());
@@ -204,6 +206,46 @@ public abstract class AbstractModelTest {
 		}
 		for (IEntity2 e2 : utils.finder().allEntity2()) {
 			System.out.println(e2);
+		}
+	}
+
+	@Test
+	public void testDeletedReferences() throws Exception {
+
+		// Check that everything is correctly setup
+		SampleModelUtils utils = createModelUtils();
+		IEntity1 e1 = utils.createEntity1();
+		IEntity2 e2a = utils.createEntity2();
+		e2a.setEntity1(e1);
+		IEntity2 e2b = utils.createEntity2();
+		e2b.setEntity1(e1);
+		utils.getRuntime().updater()
+				.update(Arrays.asList(new IInstance[] { e1, e2a, e2b }));
+		Collection<IEntity2> found = utils.finder()
+				.referencesEntity1_Sample(e1);
+		Assert.assertEquals(2, found.size());
+
+		// Now, delete one of the references
+		e2b.coordinates().setStatus(EntityStatus.ToDelete);
+		utils.getRuntime().updater()
+				.update(Collections.<IInstance> singleton(e2b));
+
+		// Check that everything is correctly setup
+		found = utils.finder().referencesEntity1_Sample(e1);
+		Assert.assertEquals(1, found.size());
+	}
+
+	/**
+	 * Do not mark this as {@link Test} or an infinite loop will happen. This
+	 * utility method is intented to execute all tests without requiring
+	 * updating the list of tests.
+	 */
+	public void testAll() throws Exception {
+		for (Method m : getClass().getMethods()) {
+			if (m.isAnnotationPresent(Test.class)) {
+				System.out.println(m);
+				m.invoke(this);
+			}
 		}
 	}
 }
