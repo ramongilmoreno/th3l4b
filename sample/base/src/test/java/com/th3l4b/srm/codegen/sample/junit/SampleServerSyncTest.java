@@ -2,12 +2,15 @@ package com.th3l4b.srm.codegen.sample.junit;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.th3l4b.srm.model.runtime.EntityStatus;
+import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IIdentifier;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.model.runtime.IRuntime;
@@ -19,7 +22,10 @@ import com.th3l4b.srm.sync.client.generated.inmemory.AbstractClientSyncInMemoryR
 import com.th3l4b.srm.sync.server.SyncServer;
 import com.th3l4b.srm.sync.server.SyncServer.SyncResult;
 import com.th3l4b.srm.sync.server.generated.ServerSyncModelUtils;
+import com.th3l4b.srm.sync.server.generated.entities.IMerge;
+import com.th3l4b.srm.sync.server.generated.entities.IStatus;
 import com.th3l4b.srm.sync.server.generated.inmemory.AbstractServerSyncInMemoryRuntime;
+import com.th3l4b.srm.sync.server.graph.DirectedGraphFromPersistence;
 import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
 import com.th3l4b.srm.sync.server.persistence.SRMBasedSyncServerPersistence;
 
@@ -148,5 +154,56 @@ public class SampleServerSyncTest {
 		Assert.assertEquals(entity1Count, client._utils.finder().allEntity1()
 				.size());
 		log();
+	}
+
+	private void ensureStatusExistsDeleted(Server server, String status)
+			throws Exception {
+		IStatus found = server._utils.finder().findStatus(status);
+		ICoordinates coordinates = found.coordinates();
+		if (coordinates.getStatus() == EntityStatus.Unknown) {
+			coordinates.setStatus(EntityStatus.ToDelete);
+			coordinates.getIdentifier().setKey(status);
+			server._utils.getRuntime().updater()
+					.update(Collections.<IInstance> singleton(found));
+		}
+	}
+
+	private void addLink(Server server, String from, String to)
+			throws Exception {
+		ensureStatusExistsDeleted(server, from);
+		ensureStatusExistsDeleted(server, to);
+		IMerge merge = server._utils.createMerge();
+		merge.setFrom(from);
+		merge.setTo(to);
+		server._utils.getRuntime().updater()
+				.update(Collections.<IInstance> singleton(merge));
+	}
+
+	@Test
+	public void testFunnySyncTree() throws Exception {
+		// Populate the tree in this way:
+		// 0 -> 1 -> 2 -> 3 -> 5
+		// and
+		// 1 -> 4 -> 5
+		// This makes a graph from 1 to 5 y two different ways
+		// The ignore path is from 3 upwards
+		// Hopefully the process shall stop at 1 or nearby to prevent going up
+		// unnecessary
+		Server server = new Server();
+		addLink(server, "0", "1");
+		addLink(server, "1", "2");
+		addLink(server, "2", "3");
+		addLink(server, "1", "4");
+		addLink(server, "4", "5");
+		addLink(server, "3", "5");
+
+		SyncServer ss = new SyncServer(server._persistence);
+		DirectedGraphFromPersistence data = new DirectedGraphFromPersistence(
+				server._persistence);
+		List<String> sorted = ss.parentStatuses("5", "3", data);
+		for (String forbidden : new String[] { "0", "1", "2", "3" }) {
+			Assert.assertFalse("Status " + forbidden + " cannot be applied",
+					sorted.contains(forbidden));
+		}
 	}
 }

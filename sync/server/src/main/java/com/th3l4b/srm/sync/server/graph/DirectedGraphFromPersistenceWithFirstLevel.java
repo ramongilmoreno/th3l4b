@@ -10,12 +10,14 @@ import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
 public class DirectedGraphFromPersistenceWithFirstLevel extends
 		DirectedGraphFromPersistence {
 
-	Collection<String> _fromStart = new HashSet<String>();
+	private Collection<String> _fromStart = new HashSet<String>();
+	private String _start;
 
 	public DirectedGraphFromPersistenceWithFirstLevel(String start,
 			Collection<String> fromStart, ISyncServerPersistence persistence)
 			throws Exception {
-		super(start, persistence);
+		super(persistence);
+		_start = start;
 		_fromStart = fromStart;
 	}
 

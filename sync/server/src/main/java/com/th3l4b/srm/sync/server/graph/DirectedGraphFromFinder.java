@@ -16,22 +16,10 @@ import com.th3l4b.srm.sync.server.generated.entities.IMerge;
  */
 public class DirectedGraphFromFinder implements IDirectedGraph {
 
-	String _start;
 	private IServerSyncFinder _finder;
 
-	public DirectedGraphFromFinder(String start, IServerSyncFinder finder) {
-		_start = start;
+	public DirectedGraphFromFinder(IServerSyncFinder finder) {
 		_finder = finder;
-	}
-
-	@Override
-	public void setRoot(String root) throws Exception {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getRoot() throws Exception {
-		return _start;
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class InMemoryDirectedGraph implements IDirectedGraph {
 
-	private String _root;
 	private HashMap<String, Collection<String>> _froms = new HashMap<String, Collection<String>>();
 	private HashMap<String, Collection<String>> _tos = new HashMap<String, Collection<String>>();
 
@@ -24,19 +23,9 @@ public class InMemoryDirectedGraph implements IDirectedGraph {
 	protected static void nonNullAdd(String n, String m,
 			Map<String, Collection<String>> map) {
 		if (!map.containsKey(n)) {
-			map.put(n,  new HashSet<String>());
+			map.put(n, new HashSet<String>());
 		}
 		map.get(n).add(m);
-	}
-
-	@Override
-	public void setRoot(String root) throws Exception {
-		_root = root;
-	}
-
-	@Override
-	public String getRoot() throws Exception {
-		return _root;
 	}
 
 	@Override
@@ -47,7 +36,7 @@ public class InMemoryDirectedGraph implements IDirectedGraph {
 
 	@Override
 	public Collection<String> linksFrom(String from) throws Exception {
-		return nonNullGet(from,  _froms);
+		return nonNullGet(from, _froms);
 	}
 
 	@Override

@@ -21,14 +21,6 @@ public class DirectedGraphFilter implements IDirectedGraph {
 		_delegated = delegated;
 	}
 
-	public void setRoot(String root) throws Exception {
-		_delegated.setRoot(root);
-	}
-
-	public String getRoot() throws Exception {
-		return _delegated.getRoot();
-	}
-
 	public void addLink(String from, String to) throws Exception {
 		_delegated.addLink(from, to);
 	}
@@ -41,4 +33,18 @@ public class DirectedGraphFilter implements IDirectedGraph {
 		return _delegated.linksTo(to);
 	}
 
+	@Override
+	public String toString() {
+		return _delegated.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return _delegated.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return _delegated.equals(obj);
+	}
 }

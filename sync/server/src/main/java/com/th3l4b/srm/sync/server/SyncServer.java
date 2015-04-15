@@ -2,6 +2,7 @@ package com.th3l4b.srm.sync.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -9,19 +10,19 @@ import java.util.UUID;
 import com.th3l4b.common.data.NullSafe;
 import com.th3l4b.srm.model.runtime.IInstance;
 import com.th3l4b.srm.sync.base.SyncUtils;
+import com.th3l4b.srm.sync.server.graph.AbstractFilteredDirectedGraphFilter;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromPersistence;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphFromPersistenceWithFirstLevel;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphUtils;
 import com.th3l4b.srm.sync.server.graph.IDirectedGraph;
 import com.th3l4b.srm.sync.server.graph.Tarjan1976;
-import com.th3l4b.srm.sync.server.graph.TrackLeadsDirectedGraph;
 import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
 import com.th3l4b.srm.sync.server.persistence.actions.DefaultMoveToOtherStatusAction;
 import com.th3l4b.srm.sync.server.persistence.actions.DefaultNewStatusAction;
 
 public class SyncServer {
 
-	public static final boolean LOG = false;
+	public static final boolean LOG = true;
 	private ISyncServerPersistence _persistence;
 
 	public void log(String msg) {
@@ -135,7 +136,7 @@ public class SyncServer {
 			if (LOG) {
 				log("Resulting tree:");
 				DirectedGraphUtils.print(new DirectedGraphFromPersistence(
-						r._status, _persistence), r._status, System.out);
+						_persistence), r._status, System.out);
 			}
 
 			return r;
@@ -178,10 +179,10 @@ public class SyncServer {
 		return sorted;
 	}
 
-	protected Collection<String> parentsStatusesForReusedStartStatus(
+	private Collection<String> parentsStatusesForReusedStartStatus(
 			String start, String stop) throws Exception {
 		DirectedGraphFromPersistence data = new DirectedGraphFromPersistence(
-				start, _persistence);
+				_persistence);
 		List<String> sorted = parentStatuses(start, stop, data);
 		logList("Apply", sorted);
 		return sorted;
@@ -199,27 +200,23 @@ public class SyncServer {
 	 * @return A sorted list of status from the start node to the older nodes,
 	 *         which are not parent of the stop node.
 	 */
-	private List<String> parentStatuses(String start, String stop,
+	public List<String> parentStatuses(String start, String stop,
 			IDirectedGraph data) throws Exception {
-		TrackLeadsDirectedGraph builder = new TrackLeadsDirectedGraph(data);
-		builder.addLead(start);
-		builder.ignore(stop);
-
-		// Follow leads until nothing is left
-		while (!builder.leads().isEmpty()) {
-			String status = builder.leads().iterator().next();
-			builder.setVisited(status);
-			for (String lead : builder.linksFrom(status)) {
-				builder.addLead(lead);
+		// Brute force up from start minus the stop and upper nodes.
+		final HashSet<String> fromStop = new HashSet<String>();
+		Tarjan1976.dfs(data, stop, fromStop);
+		AbstractFilteredDirectedGraphFilter found = new AbstractFilteredDirectedGraphFilter(
+				data) {
+			@Override
+			public boolean accept(String node) {
+				return !fromStop.contains(node);
 			}
-		}
-		log("Found statuses", builder.visited());
-		log("Found tree");
+		};
 		if (LOG) {
-			DirectedGraphUtils.print(builder, start, System.out);
+			log("Found tree");
+			DirectedGraphUtils.print(found, start, System.out);
 		}
-		// Collect all links and sort them out
-		List<String> sorted = new Tarjan1976().sort(builder);
+		List<String> sorted = new Tarjan1976().sort(found, start);
 		return sorted;
 	}
 }

@@ -6,23 +6,10 @@ import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
 
 public class DirectedGraphFromPersistence implements IDirectedGraph {
 
-	String _start;
 	private ISyncServerPersistence _persistence;
 
-	public DirectedGraphFromPersistence(String start,
-			ISyncServerPersistence persistence) {
-		_start = start;
+	public DirectedGraphFromPersistence(ISyncServerPersistence persistence) {
 		_persistence = persistence;
-	}
-
-	@Override
-	public void setRoot(String root) throws Exception {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getRoot() throws Exception {
-		return _start;
 	}
 
 	@Override

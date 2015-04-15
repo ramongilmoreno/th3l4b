@@ -30,12 +30,12 @@ public class Tarjan1976 {
 	 * visited from the root. This allows finding all nodes in the graph, but to
 	 * compute the order the reversed links graph is used.
 	 */
-	public List<String> sort(IDirectedGraph dg) throws Exception {
+	public List<String> sort(IDirectedGraph dg, String start) throws Exception {
 		ArrayList<String> r = new ArrayList<String>();
 		HashSet<String> unmarked = new HashSet<String>();
-		bfs(dg, dg.getRoot(), unmarked);
+		dfs(dg, start, unmarked);
 		HashSet<String> temporary = new HashSet<String>();
-		ReverseLinks reversed = new ReverseLinks(dg);
+		ReverseDirectedGraph reversed = new ReverseDirectedGraph(dg);
 		while (!unmarked.isEmpty()) {
 			visit(unmarked.iterator().next(), reversed, unmarked, temporary, r);
 		}
@@ -62,14 +62,14 @@ public class Tarjan1976 {
 		}
 	}
 
-	public void bfs(IDirectedGraph dg, String start, Set<String> nodes)
+	public static void dfs(IDirectedGraph dg, String start, Set<String> nodes)
 			throws Exception {
 		if (nodes.contains(start)) {
 			return;
 		}
 		nodes.add(start);
 		for (String to : dg.linksFrom(start)) {
-			bfs(dg, to, nodes);
+			dfs(dg, to, nodes);
 		}
 	}
 }

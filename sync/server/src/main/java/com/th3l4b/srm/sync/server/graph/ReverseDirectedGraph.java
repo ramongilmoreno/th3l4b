@@ -2,13 +2,13 @@ package com.th3l4b.srm.sync.server.graph;
 
 import java.util.Collection;
 
-public class ReverseLinks extends DirectedGraphFilter {
+public class ReverseDirectedGraph extends DirectedGraphFilter {
 
-	public ReverseLinks() {
+	public ReverseDirectedGraph() {
 		super();
 	}
 
-	public ReverseLinks(IDirectedGraph delegated) {
+	public ReverseDirectedGraph(IDirectedGraph delegated) {
 		super(delegated);
 	}		
 	
