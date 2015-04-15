@@ -71,7 +71,7 @@ public class SampleSyncTest {
 		Assert.assertEquals("Updates were not merged", 1, grouped.size());
 
 		// Check update was correct
-		smu.getRuntime().updater().update(grouped);
+		smu.runtime().updater().update(grouped);
 		IEntity1 found = smu.finder().findEntity1(id);
 		Assert.assertEquals(v1, found.getField11());
 		Assert.assertEquals(v2, found.getField12());
@@ -100,7 +100,7 @@ public class SampleSyncTest {
 
 		// Apply second step
 		List<IInstance> step2 = Collections.<IInstance> singletonList(e2);
-		IUpdater updater = smu.getRuntime().updater();
+		IUpdater updater = smu.runtime().updater();
 		updater.update(step2);
 
 		// Compute delta of first step
@@ -136,7 +136,7 @@ public class SampleSyncTest {
 
 		// Apply second step
 		List<IInstance> step2 = Collections.<IInstance> singletonList(e2);
-		IUpdater updater = smu.getRuntime().updater();
+		IUpdater updater = smu.runtime().updater();
 		updater.update(step2);
 
 		// Compute delta of first step
@@ -183,7 +183,7 @@ public class SampleSyncTest {
 		String v1 = "Hello";
 		IEntity1 e1 = te1._sampleModelUtils.createEntity1();
 		e1.setField11(v1);
-		te1._sampleModelUtils.getRuntime().updater()
+		te1._sampleModelUtils.runtime().updater()
 				.update(Collections.<IInstance> singletonList(e1));
 		ClientUpdateTracker.PendingUpdates pu1 = te1._updateTracker.pendingUpdates();
 		Assert.assertEquals(1, pu1._changes.size());
@@ -191,13 +191,13 @@ public class SampleSyncTest {
 		String v2 = "Bye";
 		IEntity1 e2 = te2._sampleModelUtils.createEntity1();
 		e2.setField11(v2);
-		te2._sampleModelUtils.getRuntime().updater()
+		te2._sampleModelUtils.runtime().updater()
 				.update(Collections.<IInstance> singletonList(e2));
 
 		String v3 = "Other";
 		IEntity2 e3 = te1._sampleModelUtils.createEntity2();
 		e3.setField21(v3);
-		te2._sampleModelUtils.getRuntime().updater()
+		te2._sampleModelUtils.runtime().updater()
 				.update(Collections.<IInstance> singletonList(e3));
 
 		// Sync first environment with the changes from the second
@@ -205,7 +205,7 @@ public class SampleSyncTest {
 		Collection<IInstance> mu = SyncUtils.missingUpdates(pu2._changes,
 				pu1._changes, SampleModelUtils.RUNTIME);
 		Assert.assertEquals(2, mu.size());
-		te1._sampleModelUtils.getRuntime().updater().update(mu);
+		te1._sampleModelUtils.runtime().updater().update(mu);
 
 		// Check updates
 		ISampleFinder finder = te1._sampleModelUtils.finder();

@@ -138,7 +138,7 @@ public class SampleServerSyncTest {
 		server.register(client);
 		IEntity1 e1 = client._utils.createEntity1();
 		e1.setField11(text);
-		client._utils.getRuntime().updater()
+		client._utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e1));
 		server.sync(client);
 
@@ -163,7 +163,7 @@ public class SampleServerSyncTest {
 		if (coordinates.getStatus() == EntityStatus.Unknown) {
 			coordinates.setStatus(EntityStatus.ToDelete);
 			coordinates.getIdentifier().setKey(status);
-			server._utils.getRuntime().updater()
+			server._utils.runtime().updater()
 					.update(Collections.<IInstance> singleton(found));
 		}
 	}
@@ -175,7 +175,7 @@ public class SampleServerSyncTest {
 		IMerge merge = server._utils.createMerge();
 		merge.setFrom(from);
 		merge.setTo(to);
-		server._utils.getRuntime().updater()
+		server._utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(merge));
 	}
 

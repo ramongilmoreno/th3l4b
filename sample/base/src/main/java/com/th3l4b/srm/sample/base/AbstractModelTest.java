@@ -40,7 +40,7 @@ public abstract class AbstractModelTest {
 		Assert.assertNotNull("Could not find unknown object", found);
 		Assert.assertEquals("Unknown object is not Unknown",
 				EntityStatus.Unknown, found.coordinates().getStatus());
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e1));
 		found = utils.finder().find(id);
 		Assert.assertNotNull("Not found just created object", found);
@@ -58,7 +58,7 @@ public abstract class AbstractModelTest {
 		IIdentifier id = e1.coordinates().getIdentifier();
 		String v1 = "hello";
 		e1.setField11(v1);
-		IUpdater updater = utils.getRuntime().updater();
+		IUpdater updater = utils.runtime().updater();
 		updater.update(Collections.<IInstance> singleton(e1));
 
 		// Persist entity setting the second field
@@ -90,7 +90,7 @@ public abstract class AbstractModelTest {
 		Assert.assertNotNull("Could not find unknown object", found);
 		Assert.assertEquals("Unknown object is not Unknown",
 				EntityStatus.Unknown, found.coordinates().getStatus());
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e1));
 		found = utils.finder().find(id);
 		Assert.assertNotNull("Not found just created object", found);
@@ -110,7 +110,7 @@ public abstract class AbstractModelTest {
 		e.coordinates().setIdentifier(id);
 		String value = UUID.randomUUID().toString();
 		e.setField11(value);
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e));
 
 		// Find result
@@ -132,7 +132,7 @@ public abstract class AbstractModelTest {
 		e.coordinates().setStatus(EntityStatus.ToSave);
 		String value = UUID.randomUUID().toString();
 		e.setField11(value);
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e));
 
 		// Find result
@@ -159,7 +159,7 @@ public abstract class AbstractModelTest {
 		updates.add(e1b);
 		updates.add(e1c);
 		updates.add(e2);
-		utils.getRuntime().updater().update(updates);
+		utils.runtime().updater().update(updates);
 		Collection<IEntity1> refs = utils.finder().referencesEntity2_Reverse(
 				e2.coordinates().getIdentifier().getKey());
 		boolean e1aFound = false;
@@ -200,7 +200,7 @@ public abstract class AbstractModelTest {
 	@Test
 	public void testToString() throws Exception {
 		SampleModelUtils utils = createModelUtils();
-		new SampleData().fill(utils.getRuntime());
+		new SampleData().fill(utils.runtime());
 		for (IEntity1 e : utils.finder().allEntity1()) {
 			System.out.println(e);
 		}
@@ -219,7 +219,7 @@ public abstract class AbstractModelTest {
 		e2a.setEntity1(e1);
 		IEntity2 e2b = utils.createEntity2();
 		e2b.setEntity1(e1);
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Arrays.asList(new IInstance[] { e1, e2a, e2b }));
 		Collection<IEntity2> found = utils.finder()
 				.referencesEntity1_Sample(e1);
@@ -227,7 +227,7 @@ public abstract class AbstractModelTest {
 
 		// Now, delete one of the references
 		e2b.coordinates().setStatus(EntityStatus.ToDelete);
-		utils.getRuntime().updater()
+		utils.runtime().updater()
 				.update(Collections.<IInstance> singleton(e2b));
 
 		// Check that everything is correctly setup

@@ -89,7 +89,7 @@ public class SRMBasedSyncServerPersistence implements ISyncServerPersistence {
 			updates.add(ds);
 		}
 
-		_utils.getRuntime().updater().update(updates);
+		_utils.runtime().updater().update(updates);
 
 		return sid;
 	}
@@ -109,7 +109,7 @@ public class SRMBasedSyncServerPersistence implements ISyncServerPersistence {
 			ds.coordinates().setStatus(EntityStatus.ToDelete);
 			updates.add(ds);
 		}
-		_utils.getRuntime().updater().update(updates);
+		_utils.runtime().updater().update(updates);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class SRMBasedSyncServerPersistence implements ISyncServerPersistence {
 		c.coordinates().getIdentifier().setKey(id);
 		c.coordinates().setStatus(EntityStatus.ToSave);
 		c.setStatus(s);
-		_utils.getRuntime().updater()
+		_utils.runtime().updater()
 				.update(Arrays.asList(new IInstance[] { c, s }));
 		return s.coordinates().getIdentifier().getKey();
 	}
