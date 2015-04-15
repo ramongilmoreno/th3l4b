@@ -12,7 +12,9 @@ public class TrackLeadsDirectedGraph extends DirectedGraphFilter {
 	protected HashSet<String> _visited = new HashSet<String>();
 	protected HashSet<String> _ignored = new HashSet<String>();
 
-	// Keep leads sorted
+	/**
+	 * Keep leads sorted for a breadth-first search like behavior
+	 */
 	protected LinkedHashSet<String> _leads = new LinkedHashSet<String>();
 
 	public TrackLeadsDirectedGraph() {
@@ -26,7 +28,7 @@ public class TrackLeadsDirectedGraph extends DirectedGraphFilter {
 	public Collection<String> visited() {
 		return _visited;
 	}
-	
+
 	public Collection<String> leads() {
 		return _leads;
 	}

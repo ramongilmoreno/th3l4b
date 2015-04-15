@@ -3,15 +3,16 @@ package com.th3l4b.srm.sync.server.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.th3l4b.srm.sync.server.SyncServer;
 import com.th3l4b.srm.sync.server.generated.IServerSyncFinder;
 import com.th3l4b.srm.sync.server.generated.entities.IMerge;
 
 /**
  * Builds a graph from the data in the {@link IServerSyncFinder} by following
  * links {@link IMerge} in the direction {@link IMerge#getTo()} to
- * {@link IMerge#getFrom()}
+ * {@link IMerge#getFrom()}.
  * 
- * @deprecated
+ * No longer used by the {@link SyncServer} but left for debugging purposes.
  */
 public class DirectedGraphFromFinder implements IDirectedGraph {
 

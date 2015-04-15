@@ -1,23 +1,21 @@
+#
+# Model for synchronization of clients.
+#
 
 model "Server sync";
 
-#
-# "Status"es are pointed by "Update"s
-# A "Client" request the changes since its last synced "Status"
-# By discovering, the "Client" will create a new discovered "Status" record.
-# If only the "Client" "Status" exist in the sytem, no further "Status"es are created.
-# If a single "Status" exist live in the sytem and "Client" "Status" is part of its parents chain via "Merge" records, then that "Status" will be used.
-# If new "Status"es (many or one) appear unrelated to "Client" "Status", all those live (non deleted) "Status" in the system will be pointed ("Merge"d) to a new "Status", that will become the new "Client" "Discovered" "Status" field. In the process, those "Status" will be deleted. Note that the "Client" previous "Discovered" (or "Client" "Status" if "Discovered" was null) status will be "Merge"d with the new "Status" even if it had been deleted by other processing.
-# Upon finished the discovery, starting at the new "Status" record the "Merge" relationship will be followed upwards until composing a list of "Status" but no "Client" "Status" status or any of its parents might exit in that list.
-# That list is sorted so "From" "To" relationships are observed.
-# Of the resulting list, the "Updates" related to those "Status" are retrieved, merged and returned to the caller of the discovery, including the ID of the new discovered "Status".
-# The client would update locally with all those "Update" contents merged. Its candidate updates remain unchanged and effective as they are applied last by com.th3l4b.srm.sync.base.SyncUtils.missingUpdates(Collection<IInstance>, Collection<IInstance>, IModelRuntime) as server updates are step1, and client updates are step2.
-# Anytime then, the customer can upload its updates by providing the discovered ID and the updates in a "Contents" that will be put in a new "Update" record. A new "Status" will be created ("Update" "Status" field will point to it) and the "Client" will point the "Client" "Status" to that status.
-# This new "Status" will point to the ID of the request by a "Merge" record.
-# There shall be an offline process that merges "Status"es by creating new "Status" and "Merge" records, deleting the existing records in the process.
-# When a new client wants to connect, it shall obtain a copy of the data from a client in a given "Status", and that will be its starting "Client" "Client" "Status" value.
-# That system might be chosen to be kept up to date with changes by continuously syncing. Note there is no guarantee of the order in which updates from paralell branches are applied.
-# It is considered to exist a system that reduces the number of live "Status" by continously merging until only one exist.
+# 
+# Each client points to an status, even though the status might have been deleted (not really removed, only marked as deleted)
+# The status is inmutable and contains the changes (contents) that were introduced when the status was added to the system.
+# When a client wants to post new changes, a new status is created
+# The new status stores the changes in the contents field
+# All other statuses that were live (non deleted) are deleted (marked for deleted)
+# Those statuses that were live are related to the new status with the merge entity: from the old statuses to the new status.
+# In the case no changes are introduced (the client just syncs) if only one status is live, the client moves to that status.
+# In the case no changes are introduced (the client just syncs) but more than one status exists, a new status (with its relationship, but no contents) is created related to all previous live statuses (that get deleted) 
+# To compute the updates, the directed acyclic graph (DAG) from the new status is reversed until the original status or ancestor is found. 
+# 
+
 
 entity "Status" {
    field "Contents";

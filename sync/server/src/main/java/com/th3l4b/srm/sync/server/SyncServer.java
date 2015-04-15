@@ -187,6 +187,18 @@ public class SyncServer {
 		return sorted;
 	}
 
+	/**
+	 * Makes a
+	 * 
+	 * @param start
+	 *            Start node (the new status)
+	 * @param stop
+	 *            The stop node (the old status)
+	 * @param data
+	 *            The graph
+	 * @return A sorted list of status from the start node to the older nodes,
+	 *         which are not parent of the stop node.
+	 */
 	private List<String> parentStatuses(String start, String stop,
 			IDirectedGraph data) throws Exception {
 		TrackLeadsDirectedGraph builder = new TrackLeadsDirectedGraph(data);
