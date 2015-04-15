@@ -33,7 +33,7 @@ public class DefaultModelUtils {
 		return runtime().updater();
 	}
 
-	Collection<IInstance> update(Collection<IInstance> entities)
+	public Collection<IInstance> update(Collection<IInstance> entities)
 			throws Exception {
 		return updater().update(entities);
 	}

@@ -77,7 +77,7 @@ public class ClientUpdateTracker {
 		IUpdate update = csmu.createUpdate();
 		update.setContents(sw.getBuffer().toString());
 		u.add(update);
-		csmu.runtime().updater().update(u);
+		csmu.update(u);
 	}
 
 	public class PendingUpdates {
