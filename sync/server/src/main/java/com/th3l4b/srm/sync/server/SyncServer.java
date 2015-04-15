@@ -1,38 +1,28 @@
 package com.th3l4b.srm.sync.server;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import com.th3l4b.common.data.NullSafe;
-import com.th3l4b.srm.json.Generator;
-import com.th3l4b.srm.json.IJsonModelRuntime;
-import com.th3l4b.srm.json.JsonUtils;
-import com.th3l4b.srm.json.Parser;
-import com.th3l4b.srm.model.runtime.EntityStatus;
-import com.th3l4b.srm.model.runtime.ICoordinates;
 import com.th3l4b.srm.model.runtime.IInstance;
-import com.th3l4b.srm.model.runtime.IModelRuntime;
-import com.th3l4b.srm.model.runtime.IRuntime;
 import com.th3l4b.srm.sync.base.SyncUtils;
-import com.th3l4b.srm.sync.server.generated.IServerSyncFinder;
-import com.th3l4b.srm.sync.server.generated.ServerSyncModelUtils;
-import com.th3l4b.srm.sync.server.generated.entities.IClient;
-import com.th3l4b.srm.sync.server.generated.entities.IMerge;
-import com.th3l4b.srm.sync.server.generated.entities.IStatus;
-import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinder;
-import com.th3l4b.srm.sync.server.graph.DirectedGraphFromFinderWithFirstLevel;
+import com.th3l4b.srm.sync.server.graph.DirectedGraphFromPersistence;
+import com.th3l4b.srm.sync.server.graph.DirectedGraphFromPersistenceWithFirstLevel;
 import com.th3l4b.srm.sync.server.graph.DirectedGraphUtils;
 import com.th3l4b.srm.sync.server.graph.IDirectedGraph;
 import com.th3l4b.srm.sync.server.graph.Tarjan1976;
 import com.th3l4b.srm.sync.server.graph.TrackLeadsDirectedGraph;
+import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
+import com.th3l4b.srm.sync.server.persistence.actions.DefaultMoveToOtherStatusAction;
+import com.th3l4b.srm.sync.server.persistence.actions.DefaultNewStatusAction;
 
 public class SyncServer {
 
 	public static final boolean LOG = false;
+	private ISyncServerPersistence _persistence;
 
 	public void log(String msg) {
 		if (LOG) {
@@ -62,14 +52,12 @@ public class SyncServer {
 		}
 	}
 
-	private IRuntime _repository;
-
-	public SyncServer(IRuntime repository) throws Exception {
-		_repository = repository;
+	public SyncServer(ISyncServerPersistence persistence) throws Exception {
+		_persistence = persistence;
 	}
 
-	public IRuntime getRepository() {
-		return _repository;
+	public ISyncServerPersistence getPersistence() {
+		return _persistence;
 	}
 
 	public class SyncResult {
@@ -85,108 +73,69 @@ public class SyncServer {
 	/**
 	 * Discovers the new status of a client (first step of the synchronization).
 	 * 
-	 * @param clientId
-	 *            The id of the client. If na {@link IClient} instance does not
-	 *            exist, this method creates one.
-	 * @return The ID of the {@link IStatus} of the discovered status for the
-	 *         customer and the list of updates.
+	 * @param client
+	 *            The id of the client.
+	 * @return The id of the status of the discovered status for the customer
+	 *         and the list of updates.
 	 */
-	public SyncResult discover(String clientId, Collection<IInstance> updates,
-			IModelRuntime runtime) throws Exception {
-		ServerSyncModelUtils utils = new ServerSyncModelUtils(_repository);
-		ArrayList<IInstance> changes = new ArrayList<IInstance>();
+	public SyncResult discover(String client, Collection<IInstance> updates)
+			throws Exception {
 
-		// Locate the client
-		IServerSyncFinder finder = utils.finder();
-		IClient client = finder.findClient(clientId);
-		log("Current status: " + client.getStatus());
+		String start = _persistence.clientStatus(client);
+		log("Current status: " + start);
 
 		// Find all active statuses from clients
-		ArrayList<String> statuses = new ArrayList<String>();
-		for (IStatus s : finder.allStatus()) {
-			statuses.add(s.coordinates().getIdentifier().getKey());
-		}
+		ArrayList<String> statuses = new ArrayList<String>(
+				_persistence.liveStatuses());
 
 		// If only the start status is found, do nothing.
-		String start = client.getStatus();
 		boolean noUpdates = (updates == null) || (updates.size() == 0);
-		if ((statuses.size() == 1) && NullSafe.equals(start, statuses.get(0))
+		if ((statuses.size() == 1)
+				&& NullSafe.equals(start, statuses.iterator().next())
 				&& noUpdates) {
 			return new SyncResult(start);
 		} else {
-			IStatus newStatus;
+			DefaultNewStatusAction newStatus = null;
+			DefaultMoveToOtherStatusAction moveStatus = null;
 			boolean reuseStatus = false;
 			if (noUpdates && (statuses.size() == 1)) {
 				// Need to move to an existing status
-				newStatus = finder.findStatus(statuses.get(0));
+				moveStatus = new DefaultMoveToOtherStatusAction();
+				moveStatus.setClient(client);
+				String targetStatus = statuses.iterator().next();
+				moveStatus.setStatus(targetStatus);
+				moveStatus.getStatusesToDelete().add(start);
 				reuseStatus = true;
 			} else {
 				// Need to create new status
-				newStatus = utils.createStatus();
-				// Place updates on it
-				if ((updates != null) && (updates.size() > 0)) {
-					StringWriter sw = new StringWriter();
-					IJsonModelRuntime jr = JsonUtils.runtime(runtime);
-					Generator generator = new Generator(jr, sw);
-					try {
-						generator.write(updates);
-					} finally {
-						generator.close();
-					}
-					newStatus.setContents(sw.getBuffer().toString());
-					log("Changes at: " + newStatus);
-				}
-				changes.add(newStatus);
+				newStatus = new DefaultNewStatusAction();
+				newStatus.setClient(client);
+				newStatus.setUpdates(updates);
+				newStatus.setStatusesToDelete(statuses);
+				newStatus.setStatusesForNewStatus(statuses);
 			}
-
-			// Delete parent status if no yet deleted
-			if (finder.findStatus(start).coordinates().getStatus() != EntityStatus.Deleted) {
-				IStatus originalStatus = utils.createStatus();
-				originalStatus.coordinates().getIdentifier().setKey(start);
-				originalStatus.coordinates().setStatus(EntityStatus.ToDelete);
-				changes.add(originalStatus);
-			}
-
-			// Update client
-			IClient clientUpdate = utils.createClient();
-			clientUpdate.setStatus(newStatus);
-			clientUpdate.coordinates().getIdentifier()
-					.setKey(client.coordinates().getIdentifier().getKey());
-			clientUpdate.coordinates().setStatus(EntityStatus.ToMerge);
-			changes.add(clientUpdate);
 
 			// Merge from missing statuses
 			Collection<String> missing = reuseStatus ? parentsStatusesForReusedStartStatus(
-					finder, newStatus.coordinates().getIdentifier().getKey(),
-					start) : parentsStatusesForUnexistingStartStatus(finder,
-					newStatus.coordinates().getIdentifier().getKey(), statuses,
-					start);
-			if (!reuseStatus) {
-				for (String parent : statuses) {
-					IMerge merge = utils.createMerge();
-					merge.setTo(newStatus);
-					merge.setFrom(parent);
-					changes.add(merge);
-
-					IStatus deleteStatus = utils.createStatus();
-					ICoordinates coordinates = deleteStatus.coordinates();
-					coordinates.getIdentifier().setKey(parent);
-					coordinates.setStatus(EntityStatus.ToDelete);
-					changes.add(deleteStatus);
-				}
+					moveStatus.getStatus(), start)
+					: parentsStatusesForUnexistingStartStatus(statuses, start);
+			String resultStatus = null;
+			if (reuseStatus) {
+				resultStatus = moveStatus.getStatus();
+				_persistence.moveToOtherStatus(moveStatus);
+			} else {
+				resultStatus = _persistence.newStatus(newStatus);
 			}
-			utils.getRuntime().updater().update(changes);
 
 			// Return
-			SyncResult r = new SyncResult(newStatus.coordinates()
-					.getIdentifier().getKey());
+			SyncResult r = new SyncResult(resultStatus);
 			r._missingStatuses.addAll(missing);
-			r._updates = updates(missing, start, runtime);
+			r._updates = updates(missing, start);
 
 			if (LOG) {
 				log("Resulting tree:");
-				DirectedGraphUtils.print(new DirectedGraphFromFinder(r._status,
-						finder), r._status, System.out);
+				DirectedGraphUtils.print(new DirectedGraphFromPersistence(
+						r._status, _persistence), r._status, System.out);
 			}
 
 			return r;
@@ -195,30 +144,18 @@ public class SyncServer {
 	}
 
 	private Collection<IInstance> updates(Collection<String> statuses,
-			String start, IModelRuntime runtime) throws Exception {
+			String start) throws Exception {
 		ArrayList<IInstance> r = new ArrayList<IInstance>();
-		IJsonModelRuntime jr = JsonUtils.runtime(runtime);
-		ServerSyncModelUtils utils = new ServerSyncModelUtils(getRepository());
-		IServerSyncFinder finder = utils.finder();
 		for (String s : statuses) {
 			if (NullSafe.equals(start, s)) {
 				// Do not apply changes from the start status. They are already
 				// applied.
 				continue;
 			}
-			String contents = finder.findStatus(s).getContents();
-			if (contents != null) {
-				StringReader input = new StringReader(contents);
-				Parser parser = new Parser(jr, input);
-				try {
-					r.addAll(parser.parse(false, true)._many);
-				} finally {
-					parser.close();
-				}
-			}
+			r.addAll(_persistence.updates(s));
 		}
 
-		return SyncUtils.groupUpdates(r, runtime);
+		return SyncUtils.groupUpdates(r, _persistence.modelRuntime());
 	}
 
 	/**
@@ -226,11 +163,11 @@ public class SyncServer {
 	 *         and applied in the order returned by this method.
 	 */
 	protected Collection<String> parentsStatusesForUnexistingStartStatus(
-			IServerSyncFinder finder, String start, Collection<String> found,
-			String stop) throws Exception {
-
-		DirectedGraphFromFinderWithFirstLevel data = new DirectedGraphFromFinderWithFirstLevel(
-				start, found, finder);
+			Collection<String> found, String stop) throws Exception {
+		// Make up a status name
+		String start = "candidate-status-" + UUID.randomUUID().toString();
+		DirectedGraphFromPersistenceWithFirstLevel data = new DirectedGraphFromPersistenceWithFirstLevel(
+				start, found, _persistence);
 		List<String> sorted = parentStatuses(start, stop, data);
 		if (sorted.indexOf(start) != (sorted.size() - 1)) {
 			throw new IllegalStateException();
@@ -242,10 +179,9 @@ public class SyncServer {
 	}
 
 	protected Collection<String> parentsStatusesForReusedStartStatus(
-			IServerSyncFinder finder, String start, String stop)
-			throws Exception {
-		DirectedGraphFromFinder data = new DirectedGraphFromFinder(start,
-				finder);
+			String start, String stop) throws Exception {
+		DirectedGraphFromPersistence data = new DirectedGraphFromPersistence(
+				start, _persistence);
 		List<String> sorted = parentStatuses(start, stop, data);
 		logList("Apply", sorted);
 		return sorted;

@@ -10,6 +10,8 @@ import com.th3l4b.srm.sync.server.generated.entities.IMerge;
  * Builds a graph from the data in the {@link IServerSyncFinder} by following
  * links {@link IMerge} in the direction {@link IMerge#getTo()} to
  * {@link IMerge#getFrom()}
+ * 
+ * @deprecated
  */
 public class DirectedGraphFromFinder implements IDirectedGraph {
 

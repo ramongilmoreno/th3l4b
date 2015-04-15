@@ -5,20 +5,17 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import com.th3l4b.common.data.NullSafe;
-import com.th3l4b.srm.sync.server.generated.IServerSyncFinder;
+import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
 
-/**
- * @deprecated
- */
-public class DirectedGraphFromFinderWithFirstLevel extends
-		DirectedGraphFromFinder {
+public class DirectedGraphFromPersistenceWithFirstLevel extends
+		DirectedGraphFromPersistence {
 
 	Collection<String> _fromStart = new HashSet<String>();
 
-	public DirectedGraphFromFinderWithFirstLevel(String start,
-			Collection<String> fromStart, IServerSyncFinder finder)
+	public DirectedGraphFromPersistenceWithFirstLevel(String start,
+			Collection<String> fromStart, ISyncServerPersistence persistence)
 			throws Exception {
-		super(start, finder);
+		super(start, persistence);
 		_fromStart = fromStart;
 	}
 

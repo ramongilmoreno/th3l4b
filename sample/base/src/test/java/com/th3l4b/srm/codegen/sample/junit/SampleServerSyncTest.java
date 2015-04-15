@@ -1,6 +1,5 @@
 package com.th3l4b.srm.codegen.sample.junit;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,9 +19,9 @@ import com.th3l4b.srm.sync.client.generated.inmemory.AbstractClientSyncInMemoryR
 import com.th3l4b.srm.sync.server.SyncServer;
 import com.th3l4b.srm.sync.server.SyncServer.SyncResult;
 import com.th3l4b.srm.sync.server.generated.ServerSyncModelUtils;
-import com.th3l4b.srm.sync.server.generated.entities.IClient;
-import com.th3l4b.srm.sync.server.generated.entities.IStatus;
 import com.th3l4b.srm.sync.server.generated.inmemory.AbstractServerSyncInMemoryRuntime;
+import com.th3l4b.srm.sync.server.persistence.ISyncServerPersistence;
+import com.th3l4b.srm.sync.server.persistence.SRMBasedSyncServerPersistence;
 
 public class SampleServerSyncTest {
 
@@ -62,7 +61,8 @@ public class SampleServerSyncTest {
 		public Map<IIdentifier, IInstance> _map;
 		public SyncServer _syncServer;
 		public IRuntime _repository;
-		private ServerSyncModelUtils _utils;
+		public ServerSyncModelUtils _utils;
+		public ISyncServerPersistence _persistence;
 
 		public Server() throws Exception {
 			_map = new LinkedHashMap<IIdentifier, IInstance>();
@@ -73,24 +73,18 @@ public class SampleServerSyncTest {
 				}
 			};
 			_utils = new ServerSyncModelUtils(_repository);
-			_syncServer = new SyncServer(_repository);
+			_persistence = new SRMBasedSyncServerPersistence(_repository,
+					SampleModelUtils.RUNTIME);
+			_syncServer = new SyncServer(_persistence);
 		}
 
 		public void register(Client client) throws Exception {
-			IClient c = _utils.createClient();
-			c.coordinates().getIdentifier().setKey(client._id);
-			IStatus s = _utils.createStatus();
-			c.setStatus(s);
-			ArrayList<IInstance> updates = new ArrayList<IInstance>();
-			updates.add(c);
-			updates.add(s);
-			_utils.getRuntime().updater().update(updates);
+			_persistence.createClient(client._id);
 		}
 
 		public void sync(Client client) throws Exception {
 			SyncResult discovered = _syncServer.discover(client._id,
-					client._tracker.pendingUpdates()._changes,
-					SampleModelUtils.RUNTIME);
+					client._tracker.pendingUpdates()._changes);
 			client._tracker.sync(discovered._updates);
 		}
 
