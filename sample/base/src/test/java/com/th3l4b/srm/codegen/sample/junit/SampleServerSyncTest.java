@@ -190,6 +190,8 @@ public class SampleServerSyncTest {
 		// Hopefully the process shall stop at 1 or nearby to prevent going up
 		// unnecessary
 		Server server = new Server();
+		addLink(server, "-2", "-1");
+		addLink(server, "-1", "0");
 		addLink(server, "0", "1");
 		addLink(server, "1", "2");
 		addLink(server, "2", "3");

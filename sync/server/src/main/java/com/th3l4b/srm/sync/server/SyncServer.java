@@ -2,8 +2,10 @@ package com.th3l4b.srm.sync.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -22,7 +24,7 @@ import com.th3l4b.srm.sync.server.persistence.actions.DefaultNewStatusAction;
 
 public class SyncServer {
 
-	public static final boolean LOG = true;
+	public static final boolean LOG = false;
 	private ISyncServerPersistence _persistence;
 
 	public void log(String msg) {
@@ -202,21 +204,62 @@ public class SyncServer {
 	 */
 	public List<String> parentStatuses(String start, String stop,
 			IDirectedGraph data) throws Exception {
-		// Brute force up from start minus the stop and upper nodes.
-		final HashSet<String> fromStop = new HashSet<String>();
-		Tarjan1976.dfs(data, stop, fromStop);
-		AbstractFilteredDirectedGraphFilter found = new AbstractFilteredDirectedGraphFilter(
-				data) {
-			@Override
-			public boolean accept(String node) {
-				return !fromStop.contains(node);
+
+		// Lis of leads, including its depth
+		List<List<List<String>>> toFind = new ArrayList<List<List<String>>>();
+		Set<String> found = new HashSet<String>();
+		List<Collection<String>> toIgnore = new ArrayList<Collection<String>>();
+		final Set<String> ignore = new HashSet<String>();
+
+		toFind.add(Collections.singletonList(Collections.singletonList(start)));
+		toIgnore.add(Collections.singletonList(stop));
+
+		boolean something = true;
+		while (something) {
+			something = false;
+			if (!toFind.isEmpty()) {
+				l1: for (List<String> lead : toFind.remove(0)) {
+					// If any node (path of parents) is in the ignore list, skip
+					for (String n : lead) {
+						if (ignore.contains(n)) {
+							continue l1;
+						}
+					}
+
+					// Check if lead has been visited
+					String head = lead.get(0);
+					if (!found.contains(head) && !ignore.contains(head)) {
+						found.add(head);
+						List<List<String>> newLeads = new ArrayList<List<String>>();
+						for (String link : data.linksFrom(head)) {
+							ArrayList<String> newLead = new ArrayList<String>(
+									lead.size() + 1);
+							newLead.add(link);
+							newLead.addAll(lead);
+							newLeads.add(newLead);
+						}
+						toFind.add(newLeads);
+					}
+				}
+				something = true;
 			}
-		};
-		if (LOG) {
-			log("Found tree");
-			DirectedGraphUtils.print(found, start, System.out);
+			if (!toIgnore.isEmpty()) {
+				for (String c : toIgnore.remove(0)) {
+					if (!ignore.contains(c)) {
+						ignore.add(c);
+						toIgnore.add(data.linksFrom(c));
+					}
+				}
+			}
 		}
-		List<String> sorted = new Tarjan1976().sort(found, start);
+
+		List<String> sorted = new Tarjan1976().sort(
+				new AbstractFilteredDirectedGraphFilter(data) {
+					@Override
+					protected boolean accept(String node) throws Exception {
+						return !ignore.contains(node);
+					}
+				}, start);
 		return sorted;
 	}
 }
