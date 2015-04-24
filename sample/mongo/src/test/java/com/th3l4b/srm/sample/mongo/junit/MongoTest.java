@@ -8,12 +8,10 @@ import org.junit.Before;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import com.th3l4b.srm.model.runtime.IFinder;
-import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.mongo.MongoRuntime;
 import com.th3l4b.srm.mongo.MongoUtils;
 import com.th3l4b.srm.sample.base.AbstractModelTest;
-import com.th3l4b.srm.sample.base.generated.AbstractSampleRuntime;
+import com.th3l4b.srm.sample.base.generated.NoPersistenceSampleRuntime;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -58,27 +56,17 @@ public class MongoTest extends AbstractModelTest {
 	@Override
 	protected SampleModelUtils createModelUtils() throws Exception {
 		final DB db = _mongoClient.getDB(UUID.randomUUID().toString());
-		AbstractSampleRuntime asr = new AbstractSampleRuntime() {
-			@Override
-			protected IFinder createFinder() throws Exception {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			protected IUpdater createUpdater() throws Exception {
-				throw new UnsupportedOperationException();
-			}
-		};
-		MongoRuntime mongoRuntime = new MongoRuntime(asr) {
+		MongoRuntime mongoRuntime = new MongoRuntime(
+				new NoPersistenceSampleRuntime()) {
 			@Override
 			protected DB getDB() throws Exception {
 				return db;
 			}
 		};
-		
+
 		// Apply indexes
 		MongoUtils.ensureIndexes(mongoRuntime.getMongoModel(), db);
-		
+
 		// Return result
 		return new SampleModelUtils(mongoRuntime);
 	}

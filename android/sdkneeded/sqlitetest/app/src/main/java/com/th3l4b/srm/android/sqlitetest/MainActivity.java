@@ -13,8 +13,8 @@ import com.th3l4b.srm.model.runtime.IFinder;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IUpdater;
 import com.th3l4b.srm.sample.base.AbstractModelTest;
-import com.th3l4b.srm.sample.base.generated.AbstractSampleRuntime;
 import com.th3l4b.srm.sample.base.generated.SampleModelUtils;
+import com.th3l4b.srm.sample.base.generated.NoPersistenceSampleRuntime;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -32,18 +32,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
         final SQLiteDatabase database = asoh.getWritableDatabase();
-        AbstractSampleRuntime asr = new AbstractSampleRuntime() {
-            @Override
-            protected IFinder createFinder() throws Exception {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            protected IUpdater createUpdater() throws Exception {
-                throw new UnsupportedOperationException();
-            }
-        };
-        SQLiteRuntime runtime = new SQLiteRuntime(asr) {
+        SQLiteRuntime runtime = new SQLiteRuntime(new NoPersistenceSampleRuntime()) {
             @Override
             protected SQLiteDatabase getDatabase() throws Exception {
                 return database;

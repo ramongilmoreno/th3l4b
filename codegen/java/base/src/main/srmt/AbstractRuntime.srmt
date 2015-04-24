@@ -1,5 +1,5 @@
 #
-# SRM Template for runtime implementation
+# SRM Template for abstract runtime implementation
 #
 
 unit: model
