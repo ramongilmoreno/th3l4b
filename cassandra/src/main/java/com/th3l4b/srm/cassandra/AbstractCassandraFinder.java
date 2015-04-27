@@ -60,7 +60,7 @@ public abstract class AbstractCassandraFinder implements IFinder {
 		for (Row row : rs) {
 			IInstance instance = cer.runtime().create();
 			cer.apply(row, instance);
-
+			r.add(instance);
 		}
 		return r;
 	}
@@ -72,8 +72,8 @@ public abstract class AbstractCassandraFinder implements IFinder {
 				.select()
 				.all()
 				.from(cer.table())
-				.where(QueryBuilder.eq(ICassandraConstants.FIELD_ID,
-						id.getKey()));
+				.where(QueryBuilder.eq(
+						CassandraUtils.FIELD_RUNTIME_ID.column(), id.getKey()));
 		ResultSet rs = getSession().execute(where);
 		IInstance unknown = cer.runtime().create();
 		ICoordinates coordinates = unknown.coordinates();
@@ -93,8 +93,10 @@ public abstract class AbstractCassandraFinder implements IFinder {
 			throws Exception {
 		IReverseRelationship rr = reverse().get(id.getType()).get(relationship);
 		ICassandraEntityRuntime cer = cassandraModel().get(rr.getSourceType());
-		Where where = QueryBuilder.select().all().from(cer.table()).where();
-		where = where.and(QueryBuilder.eq(ICassandraConstants.FIELD_STATUS,
+		Where where = QueryBuilder.select().from(cer.table())
+				.allowFiltering().where();
+		where = where.and(QueryBuilder.eq(
+				CassandraUtils.FIELD_RUNTIME_STATUS.column(),
 				EntityStatus.Saved.toString()));
 		where = where.and(QueryBuilder.eq(cer.get(rr.getField()).column(),
 				id.getKey()));
@@ -103,6 +105,7 @@ public abstract class AbstractCassandraFinder implements IFinder {
 		for (Row row : rs) {
 			IInstance instance = cer.runtime().create();
 			cer.apply(row, instance);
+			r.add(instance);
 		}
 		return r;
 	}

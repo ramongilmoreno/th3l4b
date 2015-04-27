@@ -237,7 +237,6 @@ public abstract class AbstractModelTest {
 	public void testAll() throws Exception {
 		for (Method m : getClass().getMethods()) {
 			if (m.isAnnotationPresent(Test.class)) {
-				System.out.println(m);
 				m.invoke(this);
 			}
 		}

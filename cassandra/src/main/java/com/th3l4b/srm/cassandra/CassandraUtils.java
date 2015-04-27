@@ -1,10 +1,14 @@
 package com.th3l4b.srm.cassandra;
 
+import java.util.ArrayList;
+
 import com.th3l4b.srm.codegen.java.runtime.DefaultIdentifierFieldRuntime;
 import com.th3l4b.srm.codegen.java.runtime.DefaultStatusFieldRuntime;
 import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
+import com.th3l4b.srm.model.runtime.IReferenceRuntime;
+import com.th3l4b.srm.model.runtime.IRuntime;
 
 public class CassandraUtils implements ICassandraConstants {
 
@@ -48,30 +52,51 @@ public class CassandraUtils implements ICassandraConstants {
 		return mmr;
 	}
 
-	public static String[] createSQL(IModelRuntime model) throws Exception {
-		String[] r = new String[model.size()];
+	public static String[] createSQL(IRuntime runtime) throws Exception {
+		ArrayList<String> r = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();
-		CassandraNames names = new CassandraNames();
-		int i = 0;
-		for (IEntityRuntime er : model) {
+		ICassandraModelRuntime cmr = create(runtime.model());
+		for (ICassandraEntityRuntime cer : cmr) {
 			sb.setLength(0);
 			sb.append("CREATE TABLE ");
-			sb.append(names.name(er));
+			sb.append(cer.table());
 			sb.append(" ( ");
-			sb.append(FIELD_ID);
-			sb.append(" TEXT NOT NULL PRIMARY KEY, ");
-			sb.append(FIELD_STATUS);
-			sb.append(" TEXT NOT NULL");
-			for (IFieldRuntime fr : er) {
+			sb.append(CassandraUtils.FIELD_RUNTIME_ID.column());
+			sb.append(" TEXT PRIMARY KEY, ");
+			sb.append(CassandraUtils.FIELD_RUNTIME_STATUS.column());
+			sb.append(" TEXT ");
+			for (ICassandraFieldRuntime cfr : cer) {
 				sb.append(", ");
-				sb.append(PREFIX_FIELDS);
-				sb.append(names.name(fr));
+				sb.append(cfr.column());
 				sb.append(" TEXT");
 			}
 			sb.append(" )");
-			r[i++] = sb.toString();
+			r.add(sb.toString());
+
+			sb.setLength(0);
+			sb.append("CREATE INDEX ON ");
+			sb.append(cer.table());
+			sb.append(" ( ");
+			sb.append(CassandraUtils.FIELD_RUNTIME_STATUS.column());
+			sb.append(" )");
+			r.add(sb.toString());
+
+			// Create index on references
+			for (ICassandraFieldRuntime cfr : cer) {
+				IFieldRuntime fr = cfr.runtime();
+				if (fr instanceof IReferenceRuntime) {
+					sb.setLength(0);
+					sb.append("CREATE INDEX ON ");
+					sb.append(cer.table());
+					sb.append(" ( ");
+					sb.append(cfr.column());
+					sb.append(" )");
+					r.add(sb.toString());
+				}
+			}
 		}
-		return r;
+
+		return r.toArray(new String[r.size()]);
 	}
 
 }

@@ -10,4 +10,5 @@ Making things simpler:
 * Types needs simplification (actually, types will be removed from base implementation. Only strings used)
 * Now with Gradle as build engine.
 * Syncing fully implemented
+* MongoDB and Cassandra supported easily
 
