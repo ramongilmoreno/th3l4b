@@ -8,7 +8,6 @@ import com.th3l4b.srm.model.runtime.IEntityRuntime;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IModelRuntime;
 import com.th3l4b.srm.model.runtime.IReferenceRuntime;
-import com.th3l4b.srm.model.runtime.IRuntime;
 
 public class CassandraUtils implements ICassandraConstants {
 
@@ -52,10 +51,10 @@ public class CassandraUtils implements ICassandraConstants {
 		return mmr;
 	}
 
-	public static String[] createSQL(IRuntime runtime) throws Exception {
+	public static String[] createSQL(IModelRuntime model) throws Exception {
 		ArrayList<String> r = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();
-		ICassandraModelRuntime cmr = create(runtime.model());
+		ICassandraModelRuntime cmr = create(model);
 		for (ICassandraEntityRuntime cer : cmr) {
 			sb.setLength(0);
 			sb.append("CREATE TABLE ");

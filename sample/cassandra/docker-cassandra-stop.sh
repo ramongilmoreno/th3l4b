@@ -1,2 +1,3 @@
 #!/bin/bash
-docker ps | grep cassandra | awk '{ print $1 }' | xargs -I {} bash -c "sudo docker stop {}; sudo docker rm {}"
+docker stop th3l4bsrmcassandratest
+docker rm th3l4bsrmcassandratest

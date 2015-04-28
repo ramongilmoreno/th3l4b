@@ -2,6 +2,6 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 
 dependencies {
     compile project(':codegen:java:runtime')
-    compile 'com.datastax.cassandra:cassandra-driver-core:2.1.5'
+    provided 'com.datastax.cassandra:cassandra-driver-core:2.1.5'
 }
 
