@@ -11,6 +11,8 @@ import com.th3l4b.srm.model.runtime.IInstance;
 public abstract class AbstractInstance implements IInstance, Serializable {
 
 	private ICoordinates _coordinates;
+	
+	protected abstract String type () throws Exception;
 
 	private ICoordinates createCoordinates() throws Exception {
 		DefaultCoordinates r = new DefaultCoordinates();

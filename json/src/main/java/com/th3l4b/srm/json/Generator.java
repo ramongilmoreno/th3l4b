@@ -45,7 +45,7 @@ public class Generator implements IJsonConstants {
 		JsonGenerator generator = getJackson();
 		generator.writeStartObject();
 		generator.writeFieldName(FIELD_TYPE);
-		generator.writeString(instance.type());
+		generator.writeString(instance.coordinates().getIdentifier().getType());
 		generator.writeFieldName(FIELD_ID);
 		generator.writeString(instance.coordinates().getIdentifier().getKey());
 		generator.writeFieldName(FIELD_STATUS);
@@ -54,7 +54,8 @@ public class Generator implements IJsonConstants {
 		if (!instance.empty()) {
 			generator.writeFieldName(FIELD_FIELDS);
 			generator.writeStartObject();
-			IJsonEntityRuntime jer = getRuntime().get(instance.type());
+			IJsonEntityRuntime jer = getRuntime().get(
+					instance.coordinates().getIdentifier().getType());
 			for (IJsonFieldRuntime jfr : jer) {
 				IFieldRuntime fr = jfr.runtime();
 				if (fr.isSet(instance)) {
