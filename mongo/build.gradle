@@ -2,6 +2,6 @@ apply from: rootProject.file('buildtools/gradle/java.gradle')
 
 dependencies {
     compile project(':codegen:java:runtime')
-    compile 'org.mongodb:mongo-java-driver:2.11.4'
+    provided 'org.mongodb:mongo-java-driver:2.11.4'
 }
 

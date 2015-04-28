@@ -3,8 +3,8 @@ package com.th3l4b.srm.sample.mongo.junit;
 import java.net.ServerSocket;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
@@ -24,12 +24,14 @@ import de.flapdoodle.embed.process.runtime.Network;
 
 public class MongoTest extends AbstractModelTest {
 
-	private int _port;
-	private MongodExecutable _mongodExecutable;
-	private MongoClient _mongoClient;
+	static int _port;
+	static MongodExecutable _mongodExecutable;
+	static MongoClient _mongoClient;
+	static DB _db;
+	static MongoRuntime _mongoRuntime;
 
-	@Before
-	public void before() throws Exception {
+	@BeforeClass
+	public static void before() throws Exception {
 		// http://blog.yohanliyanage.com/2012/11/integration-testing-mongodb-spring-data/
 
 		// Find a free port
@@ -45,29 +47,26 @@ public class MongoTest extends AbstractModelTest {
 		_mongodExecutable = starter.prepare(mongodConfig);
 		_mongodExecutable.start();
 		_mongoClient = new MongoClient("localhost", _port);
+		_db = _mongoClient.getDB(UUID.randomUUID().toString());
+
+		// Apply indexes
+		_mongoRuntime = new MongoRuntime(new NoPersistenceSampleRuntime()) {
+			@Override
+			protected DB getDB() throws Exception {
+				return _db;
+			}
+		};
+		MongoUtils.ensureIndexes(_mongoRuntime.getMongoModel(), _db);
 
 	}
 
-	@After
-	public void after() throws Exception {
+	@AfterClass
+	public static void after() throws Exception {
 		_mongodExecutable.stop();
 	}
 
 	@Override
 	protected SampleModelUtils createModelUtils() throws Exception {
-		final DB db = _mongoClient.getDB(UUID.randomUUID().toString());
-		MongoRuntime mongoRuntime = new MongoRuntime(
-				new NoPersistenceSampleRuntime()) {
-			@Override
-			protected DB getDB() throws Exception {
-				return db;
-			}
-		};
-
-		// Apply indexes
-		MongoUtils.ensureIndexes(mongoRuntime.getMongoModel(), db);
-
-		// Return result
-		return new SampleModelUtils(mongoRuntime);
+		return new SampleModelUtils(_mongoRuntime);
 	}
 }
