@@ -1,5 +1,7 @@
 package com.th3l4b.srm.mongo;
 
+import java.util.Map;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.th3l4b.common.data.named.DefaultNamedContainer;
@@ -16,7 +18,13 @@ public class DefaultMongoEntityRuntime extends
 	public DefaultMongoEntityRuntime(IEntityRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_collection = MongoUtils.NAMES.name(runtime);
+		Map<String, String> properties = runtime.getProperties();
+		if (properties.containsKey(MongoNames.PROPERTY_IDENTIFIER)) {
+			_collection = properties.get(MongoNames.PROPERTY_IDENTIFIER);
+		} else {
+			_collection = IMongoConstants.PREFIX_TABLES
+					+ MongoUtils.NAMES.name(runtime);
+		}
 	}
 
 	@Override

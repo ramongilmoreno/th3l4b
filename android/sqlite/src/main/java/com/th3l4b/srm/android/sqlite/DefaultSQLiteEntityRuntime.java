@@ -1,5 +1,7 @@
 package com.th3l4b.srm.android.sqlite;
 
+import java.util.Map;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -17,7 +19,13 @@ public class DefaultSQLiteEntityRuntime extends
 	public DefaultSQLiteEntityRuntime(IEntityRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_table = SQLiteUtils.NAMES.name(runtime);
+		Map<String, String> properties = runtime.getProperties();
+		if (properties.containsKey(SQLiteNames.PROPERTY_IDENTIFIER)) {
+			_table = properties.get(SQLiteNames.PROPERTY_IDENTIFIER);
+		} else {
+			_table = ISQLiteConstants.PREFIX_TABLES
+					+ SQLiteUtils.NAMES.name(runtime);
+		}
 	}
 
 	@Override
