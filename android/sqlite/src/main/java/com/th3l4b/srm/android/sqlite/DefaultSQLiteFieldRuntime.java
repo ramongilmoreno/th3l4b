@@ -7,8 +7,6 @@ import com.th3l4b.common.data.named.DefaultNamed;
 import com.th3l4b.srm.model.runtime.IFieldRuntime;
 import com.th3l4b.srm.model.runtime.IInstance;
 
-import java.util.Map;
-
 public class DefaultSQLiteFieldRuntime extends DefaultNamed implements
 		ISQLiteFieldRuntime {
 
@@ -20,12 +18,8 @@ public class DefaultSQLiteFieldRuntime extends DefaultNamed implements
 			throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-        Map<String, String> properties = runtime.getProperties();
-        if (properties.containsKey(SQLiteNames.PROPERTY_IDENTIFIER)) {
-            _columnName = properties.get(SQLiteNames.PROPERTY_IDENTIFIER);
-        } else {
-            _columnName = ISQLiteConstants.PREFIX_FIELDS + SQLiteUtils.NAMES.name(runtime);
-        }
+		_columnName = SQLiteUtils.NAMES.customIdentifier(runtime,
+				ISQLiteConstants.PREFIX_FIELDS);
 		_columnIndex = columnIndex;
 	}
 

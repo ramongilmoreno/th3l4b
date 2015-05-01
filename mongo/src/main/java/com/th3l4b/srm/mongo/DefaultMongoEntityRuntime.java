@@ -1,7 +1,5 @@
 package com.th3l4b.srm.mongo;
 
-import java.util.Map;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.th3l4b.common.data.named.DefaultNamedContainer;
@@ -18,13 +16,8 @@ public class DefaultMongoEntityRuntime extends
 	public DefaultMongoEntityRuntime(IEntityRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		Map<String, String> properties = runtime.getProperties();
-		if (properties.containsKey(MongoNames.PROPERTY_IDENTIFIER)) {
-			_collection = properties.get(MongoNames.PROPERTY_IDENTIFIER);
-		} else {
-			_collection = IMongoConstants.PREFIX_TABLES
-					+ MongoUtils.NAMES.name(runtime);
-		}
+		_collection = MongoUtils.NAMES.customIdentifier(runtime,
+				IMongoConstants.PREFIX_TABLES);
 	}
 
 	@Override
@@ -36,7 +29,7 @@ public class DefaultMongoEntityRuntime extends
 	public void apply(DBObject o, IInstance instance) throws Exception {
 		MongoUtils.FIELD_RUNTIME_ID.apply(o, instance);
 		MongoUtils.FIELD_RUNTIME_STATUS.apply(o, instance);
-		
+
 		// Load subfields
 		Object fields = o.get(IMongoConstants.FIELD_FIELDS);
 		if (fields instanceof DBObject) {

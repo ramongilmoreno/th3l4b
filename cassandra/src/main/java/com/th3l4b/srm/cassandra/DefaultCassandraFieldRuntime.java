@@ -1,7 +1,5 @@
 package com.th3l4b.srm.cassandra;
 
-import java.util.Map;
-
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.Insert;
@@ -20,13 +18,8 @@ public class DefaultCassandraFieldRuntime extends DefaultNamed implements
 	public DefaultCassandraFieldRuntime(IFieldRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		Map<String, String> properties = runtime.getProperties();
-		if (properties.containsKey(CassandraNames.PROPERTY_IDENTIFIER)) {
-			_columnName = properties.get(CassandraNames.PROPERTY_IDENTIFIER);
-		} else {
-			_columnName = ICassandraConstants.PREFIX_FIELDS
-					+ CassandraUtils.NAMES.name(runtime);
-		}
+		_columnName = CassandraUtils.NAMES.customIdentifier(runtime,
+				ICassandraConstants.PREFIX_FIELDS);
 	}
 
 	@Override

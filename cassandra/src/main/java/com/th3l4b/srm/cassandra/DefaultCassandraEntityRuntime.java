@@ -1,7 +1,5 @@
 package com.th3l4b.srm.cassandra;
 
-import java.util.Map;
-
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.Update.Assignments;
@@ -21,13 +19,8 @@ public class DefaultCassandraEntityRuntime extends
 			throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		Map<String, String> properties = runtime.getProperties();
-		if (properties.containsKey(CassandraNames.PROPERTY_IDENTIFIER)) {
-			_table = properties.get(CassandraNames.PROPERTY_IDENTIFIER);
-		} else {
-			_table = ICassandraConstants.PREFIX_FIELDS
-					+ CassandraUtils.NAMES.name(runtime);
-		}
+		_table = CassandraUtils.NAMES.customIdentifier(runtime,
+				ICassandraConstants.PREFIX_TABLES);
 	}
 
 	@Override
