@@ -63,7 +63,6 @@ public class SQLiteUtils {
 			sb.append(" TEXT NOT NULL");
 			for (ISQLiteFieldRuntime fr : er) {
 				sb.append(", ");
-				sb.append(ISQLiteConstants.PREFIX_FIELDS);
 				sb.append(fr.columnName());
 				sb.append(" TEXT");
 			}
