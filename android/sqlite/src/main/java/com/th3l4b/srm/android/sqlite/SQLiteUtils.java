@@ -48,23 +48,23 @@ public class SQLiteUtils {
 	}
 
 	public static String[] createSQL(IModelRuntime model) throws Exception {
+		ISQLiteModelRuntime mr = create(model);
 		String[] r = new String[model.size()];
 		StringBuilder sb = new StringBuilder();
-		SQLiteNames names = new SQLiteNames();
 		int i = 0;
-		for (IEntityRuntime er : model) {
+		for (ISQLiteEntityRuntime er : mr) {
 			sb.setLength(0);
 			sb.append("CREATE TABLE ");
-			sb.append(names.name(er));
+			sb.append(er.table());
 			sb.append(" ( ");
-			sb.append(ISQLiteConstants.FIELD_ID);
+			sb.append(FIELD_RUNTIME_ID.columnName());
 			sb.append(" TEXT NOT NULL PRIMARY KEY, ");
-			sb.append(ISQLiteConstants.FIELD_STATUS);
+			sb.append(FIELD_RUNTIME_STATUS.columnName());
 			sb.append(" TEXT NOT NULL");
-			for (IFieldRuntime fr : er) {
+			for (ISQLiteFieldRuntime fr : er) {
 				sb.append(", ");
 				sb.append(ISQLiteConstants.PREFIX_FIELDS);
-				sb.append(names.name(fr));
+				sb.append(fr.columnName());
 				sb.append(" TEXT");
 			}
 			sb.append(" )");
