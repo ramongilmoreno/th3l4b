@@ -17,7 +17,7 @@ public class DefaultSQLiteEntityRuntime extends
 	public DefaultSQLiteEntityRuntime(IEntityRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_table = SQLiteUtils.NAMES.customIdentifier(runtime,
+		_table = SQLiteUtils.NAMES.name(runtime,
 				ISQLiteConstants.PREFIX_TABLES);
 	}
 

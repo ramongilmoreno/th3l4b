@@ -20,12 +20,12 @@ public class CassandraUtils implements ICassandraConstants {
 		try {
 			DefaultIdentifierFieldRuntime idr = new DefaultIdentifierFieldRuntime(
 					FIELD_ID);
-			idr.getProperties().put(CassandraNames.PROPERTY_IDENTIFIER,
+			idr.getProperties().put(CassandraNames.PROPERTY_NAME,
 					FIELD_ID);
 			FIELD_RUNTIME_ID = new DefaultCassandraFieldRuntime(idr);
 			DefaultStatusFieldRuntime statusr = new DefaultStatusFieldRuntime(
 					FIELD_STATUS);
-			statusr.getProperties().put(CassandraNames.PROPERTY_IDENTIFIER,
+			statusr.getProperties().put(CassandraNames.PROPERTY_NAME,
 					FIELD_STATUS);
 			FIELD_RUNTIME_STATUS = new DefaultCassandraFieldRuntime(statusr);
 		} catch (Exception e) {

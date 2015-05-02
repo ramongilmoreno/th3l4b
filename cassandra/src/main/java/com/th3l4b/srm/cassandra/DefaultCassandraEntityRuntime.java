@@ -19,7 +19,7 @@ public class DefaultCassandraEntityRuntime extends
 			throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_table = CassandraUtils.NAMES.customIdentifier(runtime,
+		_table = CassandraUtils.NAMES.name(runtime,
 				ICassandraConstants.PREFIX_TABLES);
 	}
 

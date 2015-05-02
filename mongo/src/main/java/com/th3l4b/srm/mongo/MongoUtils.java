@@ -21,12 +21,12 @@ public class MongoUtils {
 		try {
 			DefaultIdentifierFieldRuntime idr = new DefaultIdentifierFieldRuntime(
 					IMongoConstants.FIELD_ID);
-			idr.getProperties().put(MongoNames.PROPERTY_IDENTIFIER,
+			idr.getProperties().put(MongoNames.PROPERTY_NAME,
 					IMongoConstants.FIELD_ID);
 			FIELD_RUNTIME_ID = new DefaultMongoFieldRuntime(idr);
 			DefaultStatusFieldRuntime statusr = new DefaultStatusFieldRuntime(
 					IMongoConstants.FIELD_STATUS);
-			statusr.getProperties().put(MongoNames.PROPERTY_IDENTIFIER,
+			statusr.getProperties().put(MongoNames.PROPERTY_NAME,
 					IMongoConstants.FIELD_STATUS);
 			FIELD_RUNTIME_STATUS = new DefaultMongoFieldRuntime(statusr);
 		} catch (Exception e) {

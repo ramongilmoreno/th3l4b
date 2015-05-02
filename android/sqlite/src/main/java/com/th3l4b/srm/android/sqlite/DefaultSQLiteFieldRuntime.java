@@ -18,7 +18,7 @@ public class DefaultSQLiteFieldRuntime extends DefaultNamed implements
 			throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_columnName = SQLiteUtils.NAMES.customIdentifier(runtime,
+		_columnName = SQLiteUtils.NAMES.name(runtime,
 				ISQLiteConstants.PREFIX_FIELDS);
 		_columnIndex = columnIndex;
 	}

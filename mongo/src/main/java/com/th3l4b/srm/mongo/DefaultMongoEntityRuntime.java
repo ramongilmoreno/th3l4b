@@ -16,7 +16,7 @@ public class DefaultMongoEntityRuntime extends
 	public DefaultMongoEntityRuntime(IEntityRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_collection = MongoUtils.NAMES.customIdentifier(runtime,
+		_collection = MongoUtils.NAMES.name(runtime,
 				IMongoConstants.PREFIX_TABLES);
 	}
 

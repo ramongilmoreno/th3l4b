@@ -17,12 +17,12 @@ public class SQLiteUtils {
 		try {
 			DefaultIdentifierFieldRuntime idr = new DefaultIdentifierFieldRuntime(
 					ISQLiteConstants.FIELD_ID);
-			idr.getProperties().put(SQLiteNames.PROPERTY_IDENTIFIER,
+			idr.getProperties().put(SQLiteNames.PROPERTY_NAME,
 					ISQLiteConstants.FIELD_ID);
 			FIELD_RUNTIME_ID = new DefaultSQLiteFieldRuntime(idr, 0);
 			DefaultStatusFieldRuntime statusr = new DefaultStatusFieldRuntime(
 					ISQLiteConstants.FIELD_STATUS);
-			statusr.getProperties().put(SQLiteNames.PROPERTY_IDENTIFIER,
+			statusr.getProperties().put(SQLiteNames.PROPERTY_NAME,
 					ISQLiteConstants.FIELD_STATUS);
 			FIELD_RUNTIME_STATUS = new DefaultSQLiteFieldRuntime(statusr, 1);
 		} catch (Exception e) {

@@ -14,7 +14,7 @@ public class DefaultMongoFieldRuntime extends DefaultNamed implements
 	public DefaultMongoFieldRuntime(IFieldRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_field = MongoUtils.NAMES.customIdentifier(runtime,
+		_field = MongoUtils.NAMES.name(runtime,
 				IMongoConstants.PREFIX_FIELDS);
 	}
 

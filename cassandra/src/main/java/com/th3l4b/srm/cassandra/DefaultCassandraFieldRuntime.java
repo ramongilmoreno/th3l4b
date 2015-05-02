@@ -18,7 +18,7 @@ public class DefaultCassandraFieldRuntime extends DefaultNamed implements
 	public DefaultCassandraFieldRuntime(IFieldRuntime runtime) throws Exception {
 		setName(runtime.getName());
 		_runtime = runtime;
-		_columnName = CassandraUtils.NAMES.customIdentifier(runtime,
+		_columnName = CassandraUtils.NAMES.name(runtime,
 				ICassandraConstants.PREFIX_FIELDS);
 	}
 

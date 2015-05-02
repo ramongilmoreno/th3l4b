@@ -6,9 +6,9 @@ public class CassandraNames extends ModelNames {
 
 	private static final String PREFIX = CassandraNames.class.getPackage()
 			.getName() + ".names";
-	public static final String PROPERTY_IDENTIFIER = PREFIX + ".identifier";
+	public static final String PROPERTY_NAME = PREFIX + ".name";
 
-	protected String customIdentifierProperty() {
-		return PROPERTY_IDENTIFIER;
+	protected String customNameProperty() {
+		return PROPERTY_NAME;
 	}
 }
