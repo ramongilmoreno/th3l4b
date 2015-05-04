@@ -1,0 +1,22 @@
+apply plugin: 'eclipse'
+
+def fqn (p) {
+    if (p == p.rootProject) {
+        return "com.th3l4b.srm";
+    } else {
+        return fqn(p.parent) + "." + p.name;
+    }
+}
+
+
+group = fqn(project.parent)
+version = "1.0-SNAPSHOT"
+
+eclipse.project.name = fqn(project)
+
+// http://stackoverflow.com/questions/18715137/extract-common-methods-from-gradle-build-script
+ext {
+    fqn = this.&fqn
+}
+
+

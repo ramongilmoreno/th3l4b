@@ -1,5 +1,7 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
+
+apply from: rootProject.file('buildtools/gradle/eclipse.gradle')
+
 apply plugin: 'maven'
 
 sourceCompatibility = JavaVersion.VERSION_1_6
@@ -42,21 +44,11 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-def fqn (p) {
-    if (p == p.rootProject) {
-        return "com.th3l4b.srm";
-    } else {
-        return fqn(p.parent) + "." + p.name;
-    }
-}
-
 
 group = fqn(project.parent)
 version = "1.0-SNAPSHOT"
 
 jar.archiveName = fqn(project) + "-${version}.${jar.extension}"
-
-eclipse.project.name = fqn(project)
 
 eclipse.classpath {
     defaultOutputDir = file('build/classes')
