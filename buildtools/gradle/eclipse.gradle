@@ -19,4 +19,8 @@ ext {
     fqn = this.&fqn
 }
 
+tasks.cleanEclipse.doLast {
+    // Delete .settings directory
+    delete(file('.settings'))
+}
 

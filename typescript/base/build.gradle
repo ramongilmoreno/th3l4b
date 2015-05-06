@@ -1,0 +1,65 @@
+// https://github.com/sothmann/typescript-gradle-plugin
+buildscript {
+    repositories {
+       jcenter()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:typescript-gradle-plugin:1.1'
+    }
+}
+
+apply plugin: "typescript"
+
+apply from: rootProject.file('buildtools/gradle/eclipse.gradle')
+
+eclipse {
+    project {
+        // To use the Palantir Eclipse plugin from
+        // https://github.com/palantir/eclipse-typescript
+        
+        // http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.eclipse.model.EclipseProject.html
+        natures 'com.palantir.typescript.typeScriptNature'
+        buildCommand 'com.palantir.typescript.typeScriptBuilder'
+    }
+}
+
+
+compileTypeScript {
+    sourcemap = true
+    // additional configuration options
+
+    // We are building a module
+    module = "AMD"
+
+    // Using setters and getters require ECMAScript5
+    target = "ES5"
+}
+
+// https://blog.oio.de/2014/01/31/how-to-integrate-the-typescript-compiler-into-a-gradle-build/
+
+
+
+tasks.eclipse.doLast {
+
+   // Produce file
+   //    .settings/com.palantir.typescript.prefs
+   //
+   // With these lines:
+   // 
+   //     compiler.codeGenTarget=ECMASCRIPT5
+   //     compiler.moduleGenTarget=ASYNCHRONOUS
+   //     eclipse.preferences.version=1
+
+   def contents = '''
+compiler.codeGenTarget=ECMASCRIPT5
+compiler.moduleGenTarget=ASYNCHRONOUS
+eclipse.preferences.version=1
+'''
+   def tdir = file('.settings')
+   tdir.mkdirs()
+   file('.settings/com.palantir.typescript.prefs').text = contents;
+}
+
+task b (dependsOn: ['eclipse']) {}
+task c (dependsOn: ['cleanEclipse']) {}
+
