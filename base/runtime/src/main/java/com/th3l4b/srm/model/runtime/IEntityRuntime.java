@@ -21,7 +21,7 @@ public interface IEntityRuntime extends INamedPropertied,
 	/**
 	 * Removes from the source entity the fields set in the fields entity.
 	 */
-	void substract(IInstance from, IInstance fields) throws Exception;
+	void subtract(IInstance from, IInstance fields) throws Exception;
 
 	void unSetNulls(IInstance entity) throws Exception;
 }

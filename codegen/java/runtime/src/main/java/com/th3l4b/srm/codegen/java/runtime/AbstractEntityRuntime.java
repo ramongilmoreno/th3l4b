@@ -43,7 +43,7 @@ public abstract class AbstractEntityRuntime extends
 	}
 	
 	@Override
-	public void substract(IInstance from, IInstance fields) throws Exception {
+	public void subtract(IInstance from, IInstance fields) throws Exception {
 		for (IFieldRuntime fr : this) {
 			if (fr.isSet(fields)) {
 				fr.unSet(from);

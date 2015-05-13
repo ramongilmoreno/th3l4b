@@ -91,7 +91,7 @@ public class SyncUtils {
 				IInstance copy = er.create();
 				er.copy(found, copy);
 
-				er.substract(copy, i);
+				er.subtract(copy, i);
 
 				// Check the step1 + step2 status
 				EntityStatus finalStatus = null;
